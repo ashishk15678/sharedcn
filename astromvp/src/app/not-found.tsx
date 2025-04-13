@@ -10,7 +10,7 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <div className="gradient-bg min-h-screen flex items-center justify-center bg-gradient-to-r from-pink-100 via-pink-200  to-pink-100/300">
-        
+
       <div className="relative w-full max-w-4xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -41,7 +41,7 @@ export default function NotFound() {
               Oops! Page Not Found
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Looks like you've ventured into uncharted territory. 
+              Looks like you've ventured into uncharted territory.
               Don't worry, even the best explorers sometimes get lost.
             </p>
           </motion.div>
@@ -59,7 +59,7 @@ export default function NotFound() {
                 Back to Home
               </Button>
             </Link>
-            <Button 
+            <Button
               onClick={() => window.history.back()}
               className="bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-full px-8 py-6 text-lg flex items-center gap-2"
             >
