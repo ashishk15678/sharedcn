@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { DeleteIcon, Home, Menu, MessageSquare, Settings, User, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { AlertCircle, CheckCircle, DeleteIcon, Home, Menu, MessageSquare, Settings, User, X, XCircle } from "lucide-react";
 import { Suspense, useState, useEffect, useCallback } from "react";
 import { cn } from "./lib/utils";
 const HoldToDeleteButton = () => {
@@ -121,36 +121,63 @@ function FluidMenuAnimation() {
 
 function TransactionChecker() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [checked, setChecked] = useState<"pending" | "success" | "failed">("pending");
+  const [state, setState] = useState<"success" | "failed" | "analyzing">("analyzing");
+
+  const shakeAnimation = {
+    failed: {
+      x: [0, -10, 10, -10, 10, -5, 5, -2, 2, 0],
+      transition: {
+        duration: 0.5,
+        type: "spring",
+        stiffness: 400,
+        damping: 10
+      }
+    }
+  };
+
   return (
-    <div className="inline-flex justify-center">
-      <button
-        onClick={() => {
-          setIsAnalyzing(true)
-          setTimeout(() => {
-            setIsAnalyzing(false)
-          }, 3000)
-        }
-        }
-        className={cn(
-          "bg-blue-100 px-6 py-2 rounded-full text-blue-600 text-xl font-medium hover:opacity-90 cursor-pointer",
-          "transition-all duration-500 ease-in-out",
-          "flex flex-row items-center gap-2"
-        )}
-        style={{
-          width: isAnalyzing ? '280px' : '140px', // Adjust based on text
-        }}
-      >
-        {isAnalyzing ? (
-          <>
-            <div className="w-5 h-5 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin" />
-            <span>Analyzing Transaction</span>
-          </>
-        ) : (
-          <span className="mx-auto">Analyze</span>
-        )}
-      </button>
-    </div>
+    <>
+      <div className="inline-flex justify-center">
+        <motion.button
+          animate={state === "failed" ? "failed" : ""}
+          variants={shakeAnimation}
+          // @ts-ignore
+          onClick={() => {
+            setIsAnalyzing(true);
+            setTimeout(() => setIsAnalyzing(false), 3000);
+          }}
+          className={cn(
+            "px-6 py-2 rounded-full text-xl font-medium hover:opacity-90 cursor-pointer",
+            "transition-all duration-500 ease-in-out h-12",
+            "flex items-center justify-center relative overflow-hidden",
+            state === "analyzing" ? "w-[280px]" : state === "success" ? "w-[220px]" : "w-[240px]",
+            state === "analyzing" ? "bg-blue-100" : state === "success" ? "bg-green-100" : "bg-red-100",
+            state === "analyzing" ? "text-blue-600" : state === "success" ? "text-green-600" : "text-red-600",
+          )}
+        >
+          <motion.div
+            key={state}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            // @ts-ignore
+            className="flex items-center gap-2"
+          >
+            {state === "analyzing" && <div className="w-7 h-7 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin" />}
+            {state === "success" && <CheckCircle className="w-7 h-7 text-green-500" />}
+            {state === "failed" && <AlertCircle className="w-7 h-7 text-red-500" />}
+            <span>{state === "analyzing" ? "Analyzing Transaction" : state === "success" ? "Success" : "Failed"}</span>
+          </motion.div>
+        </motion.button>
+      </div>
+
+      <div className="flex flex-row items-center justify-center gap-x-4 mt-8">
+        <button className="bg-green-100 text-green-700 px-4 py-2 rounded-full" onClick={() => setState("success")}>Success</button>
+        <button className="bg-red-100 text-red-700 px-4 py-2 rounded-full" onClick={() => setState("failed")}>Failed</button>
+        <button className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full" onClick={() => setState("analyzing")}>Analyzing</button>
+      </div>
+    </>
   );
 }
 
@@ -335,59 +362,60 @@ export const components = [
         <FluidMenuAnimation />
       </Suspense>
     ),
-    code: `
-    const [clicked, setClicked] = useState<boolean>(false);
-      return (
+    code: "will upload after challenge , if i forget mail me at hi@ashish.services"
+    //     code: `
+    //     const [clicked, setClicked] = useState<boolean>(false);
+    //       return (
 
-        <div className="w-full h-[200px] flex flex-col items-center ">
-          <button
-            className="transition-all duration-300 bg-zinc-100 rounded-full p-4 relative"
-            onClick={() => setClicked(!clicked)}
+    //         <div className="w-full h-[200px] flex flex-col items-center ">
+    //           <button
+    //             className="transition-all duration-300 bg-zinc-100 rounded-full p-4 relative"
+    //             onClick={() => setClicked(!clicked)}
 
-          >
-            {clicked ? <X className="  active:opacity-0 active:text-zinc-100 transition-all duration-700" /> :
-              <Menu className=" active:opacity-0 active:text-zinc-100 active:scale-110 transition-all duration-700" />}
-          </button>
-          {clicked ? <>
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            >
-              <div className=" ">
-                <div className="flex flex-col gap-[-1px] relative">
-                  <div className="w-full hover:text-zinc-700 text-zinc-400 bg-zinc-100 rounded-full p-4 bg-zinc-100">
-                    <Home />
-                  </div>
-                  <div className="w-full hover:text-zinc-700 text-zinc-400 bg-zinc-100 rounded-full p-4 bg-zinc-100">
-                    <MessageSquare />
-                  </div>
-                  <div className="w-full hover:text-zinc-700 text-zinc-400 bg-zinc-100 rounded-full p-4 bg-zinc-100">
-                    <User />
-                  </div>
-                  <div className="w-full hover:text-zinc-700 text-zinc-400 bg-zinc-100 rounded-full p-4 bg-zinc-100">
-                    <Settings />
-                  </div>
+    //           >
+    //             {clicked ? <X className="  active:opacity-0 active:text-zinc-100 transition-all duration-700" /> :
+    //               <Menu className=" active:opacity-0 active:text-zinc-100 active:scale-110 transition-all duration-700" />}
+    //           </button>
+    //           {clicked ? <>
+    //             <motion.div
+    //               initial={{ opacity: 0, y: -10 }}
+    //               animate={{ opacity: 1, y: 0 }}
+    //               exit={{ opacity: 0, y: -10 }}
+    //               transition={{ type: "spring", stiffness: 300, damping: 30 }}
+    //             >
+    //               <div className=" ">
+    //                 <div className="flex flex-col gap-[-1px] relative">
+    //                   <div className="w-full hover:text-zinc-700 text-zinc-400 bg-zinc-100 rounded-full p-4 bg-zinc-100">
+    //                     <Home />
+    //                   </div>
+    //                   <div className="w-full hover:text-zinc-700 text-zinc-400 bg-zinc-100 rounded-full p-4 bg-zinc-100">
+    //                     <MessageSquare />
+    //                   </div>
+    //                   <div className="w-full hover:text-zinc-700 text-zinc-400 bg-zinc-100 rounded-full p-4 bg-zinc-100">
+    //                     <User />
+    //                   </div>
+    //                   <div className="w-full hover:text-zinc-700 text-zinc-400 bg-zinc-100 rounded-full p-4 bg-zinc-100">
+    //                     <Settings />
+    //                   </div>
 
-                </div>
-              </div>
-            </motion.div>
-          </> : <>
-            {/* <motion.div
-              initial={{ opacity: 1, y: -10 }}
-              animate={{ opacity: 0.5, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            >
-              <div className="bg-zinc-100 h-[100px] transition-all duration-700 rounded-full">
-              </div>
-            </motion.div> */}
-          </>}
-        </div>
-      );
-}
-    `,
+    //                 </div>
+    //               </div>
+    //             </motion.div>
+    //           </> : <>
+    //             {/* <motion.div
+    //               initial={{ opacity: 1, y: -10 }}
+    //               animate={{ opacity: 0.5, y: 0 }}
+    //               exit={{ opacity: 0, y: -10 }}
+    //               transition={{ type: "spring", stiffness: 300, damping: 30 }}
+    //             >
+    //               <div className="bg-zinc-100 h-[100px] transition-all duration-700 rounded-full">
+    //               </div>
+    //             </motion.div> */}
+    //           </>}
+    //         </div>
+    //       );
+    // }
+    //     `,
   },
 
   {
@@ -404,8 +432,8 @@ export const components = [
         <TransactionChecker />
       </Suspense>
     ),
-    code: `
-  `}
+    code: `Will upload after challenge , if i forget mail me at hi@ashish.services`
+  }
 ];
 
 // Add the HoldToDeleteButton component definition

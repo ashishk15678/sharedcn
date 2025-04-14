@@ -18,7 +18,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({ component, onSelect }) =>
                     </div>
                 </div>
                 <button
-                    className="absolute top-2 right-2 px-3 py-1.5 rounded-lg bg-gray-900 text-white font-medium flex items-center gap-2 text-sm hover:bg-gray-800 transition-colors"
+                    className="absolute top-2 right-2 px-3 py-2 rounded-lg bg-transparent backdrop-blur-sm ring-1 ring-zinc-300 shadow-xl text-zinc-800 font-medium flex items-center gap-2 text-sm hover:bg-zinc-100 transition-colors"
                     onClick={() => onSelect(component)}
                 >
                     <Code className="w-4 h-4" />
