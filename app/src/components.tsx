@@ -181,6 +181,66 @@ function TransactionChecker() {
   );
 }
 
+function AnimatedToggle() {
+  const [toggled, setToggled] = useState<"free" | "month" | "year">("free")
+  return (
+    <div className="relative mx-auto  w-[400px] overflow-hidden h-14 ring-2 ring-zinc-200 shadow-md rounded-full p-2">
+      <motion.div
+        // @ts-ignore
+        className="absolute w-1/2 bg-zinc-800 h-10 rounded-full"
+        animate={{
+          x: toggled === "free" ? "0%" : "100%",
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      />
+      <button
+        onClick={() => setToggled("free")}
+        className={`relative z-10 w-1/2 text-center py-2 rounded-full transition-all duration-300 font-extrabold ${toggled === "free" ? "text-white scale-100" : "text-black scale-95 opacity-70"
+          }`}
+      >
+        Free
+      </button>
+      <div className="absolute right-0 top-0  w-1/2 flex flex-col items-center justify-center">
+        {
+          toggled == "free" ? <div className="w-full rounded-full font-bold items-center justify-center flex transition-all duration-300">Premium</div> :
+            <>
+              <motion.div
+                // @ts-ignore
+                className="w-3/7 bg-white absolute h-8 rounded-full transition-all duration-300"
+                style={{
+                  left: toggled === "year" ? "10%" : "50%",
+                }}
+
+              /></>
+        }
+        <div className={cn("flex flex-row items-center justify-center h-full",
+          toggled == "free" ? "p-0 " : "p-2 w-full")}>
+
+          <button
+            onClick={() => setToggled("year")}
+            className={`w-full  text-center z-10 rounded-full transition-all duration-300
+               ${toggled === "year" ? "text-black py-2 text-lg font-bold" :
+                toggled === "month" ? "text-white py-2 text-lg" : "text-black "
+              }`}
+          >
+            Year
+          </button>
+          <button
+            onClick={() => setToggled("month")}
+            className={`w-full  text-center z-10 rounded-full transition-all duration-300 
+              ${toggled === "month" ? "text-black py-2 text-lg font-bold" : toggled === "year" ? "text-white py-2 text-lg" : "text-black ml-4"
+              }`}
+          >
+            Month
+          </button>
+        </div>
+      </div>
+    </div >
+  )
+}
+
+
+
 // All the compo
 export const components = [
   {
@@ -200,10 +260,10 @@ export const components = [
       </Suspense>
     ),
     code: `const GradientButton = () => (
-  <button className="px-6 py-3 rounded-lg bg-gradient-to-r from-green-400 to-blue-500 text-white font-medium hover:opacity-90 transition-opacity">
-    Gradient Button
-  </button>
-);`,
+      <button className="px-6 py-3 rounded-lg bg-gradient-to-r from-green-400 to-blue-500 text-white font-medium hover:opacity-90 transition-opacity">
+        Gradient Button
+      </button>
+      );`,
   },
   {
     id: "2",
@@ -223,21 +283,21 @@ export const components = [
     ),
     code: `const ModeToggler = () => {
   const [isDark, setIsDark
-            ] = useState(false);
-  return (
-    <button
-      onClick={() => setIsDark(!isDark)
-            }
-      className={\`p-2 rounded-full transition-colors \${
-        isDark ? "bg-slate-800": "bg-yellow-400"
-                }\`
+      ] = useState(false);
+      return (
+      <button
+        onClick={() => setIsDark(!isDark)
+        }
+        className={\`p-2 rounded-full transition-colors \${
+        isDark ? "bg-slate-800" : "bg-yellow-400"
+      }\`
             }
     >
-      {isDark ? "🌙": "☀️"
-            }
+      {isDark ? "🌙" : "☀️"
+      }
     </button>
   );
-        };`,
+}; `,
   },
   {
     id: "4",
@@ -257,10 +317,10 @@ export const components = [
   const [isHolding, setIsHolding] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
-  
+
   const HOLD_DURATION = 1000; // 1 second to complete
   const ANIMATION_INTERVAL = 10; // Update every 10ms
-  
+
   useEffect(() => {
     let intervalId;
     if (isHolding && progress < 100) {
@@ -279,7 +339,7 @@ export const components = [
       setProgress(0);
       setIsComplete(false);
     }
-    
+
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
@@ -307,12 +367,12 @@ export const components = [
         style={{ width: \`\${progress}%\`, opacity: 0.2 }}
       />
       <span className="relative z-10 flex items-center gap-2">
-        {isComplete ? 'Release to delete' : 'Hold to delete'} 
+        {isComplete ? 'Release to delete' : 'Hold to delete'}
         <DeleteIcon size={20} />
       </span>
     </button>
   );
-};`,
+}; `,
   },
 
   {
@@ -345,8 +405,8 @@ export const components = [
       </Suspense>
     ),
     code: `
-    const lol = works,
-    `,
+const lol = works,
+`,
   },
   {
     id: 6,
@@ -430,6 +490,20 @@ export const components = [
         }
       >
         <TransactionChecker />
+      </Suspense>
+    ),
+    code: `Will upload after challenge , if i forget mail me at hi@ashish.services`
+  }, {
+
+    id: 8,
+    title: "Animated Toggle",
+    description: "A animated toggle button",
+    tags: ["Animation", "Other", "Peerlist"],
+    component: (
+      <Suspense
+
+      >
+        <AnimatedToggle />
       </Suspense>
     ),
     code: `Will upload after challenge , if i forget mail me at hi@ashish.services`
