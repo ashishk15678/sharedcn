@@ -474,6 +474,7 @@ function Collectibles() {
         initial="hidden"
         animate="animate"
         exit="hidden"
+        // @ts-ignore
         className={`grid gap-4 ${gridCols}`}
         transition={{ layout: { duration: 0.5, type: "spring", stiffness: 300 } }}
       >
