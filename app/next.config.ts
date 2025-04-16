@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['github.com'], // Add other domains as needed
+    domains: ['picsum.photos', "github.com"], // Add other domains as needed
     unoptimized: false,
   },
   experimental: {

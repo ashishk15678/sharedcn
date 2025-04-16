@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertCircle, CheckCircle, DeleteIcon, Home, Menu, MessageSquare, Settings, User, X, XCircle } from "lucide-react";
-import { Suspense, useState, useEffect, useCallback } from "react";
+import { AlertCircle, CheckCircle, DeleteIcon, Grid, Home, List, Menu, MessageSquare, Package, Settings, User, View, X, XCircle } from "lucide-react";
+import { Suspense, useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "./lib/utils";
+import Image from "next/image";
 const HoldToDeleteButton = () => {
   const [isHolding, setIsHolding] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -238,8 +239,347 @@ function AnimatedToggle() {
     </div >
   )
 }
+function CollectibleItem({ id, name, price, image, view }: { id: number, name: string, price: string, image: string, view: string }) {
+  // Tailwind classes for each view
+  const containerClass =
+    view === "list"
+      ? "flex items-center p-4 bg-gray-50 border border-gray-200 rounded-lg"
+      : "flex flex-col items-center p-4 bg-gray-50 border border-gray-200 rounded-lg";
+
+  const infoClass = view === "list" ? "ml-4 text-left" : "mt-2 text-center";
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -30 },
+  };
+
+  return (
+    <motion.div
+      layout
+      variants={itemVariants}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+      transition={{ duration: 0.5 }}
+      // @ts-ignore
+      className={containerClass}
+    >
+      {/* --- Animated Image --- */}
+      <motion.img
+        // @ts-ignore
+        src={image}
+        alt={name}
+        className="w-20 h-20 object-cover rounded-full"
+        whileHover={{ scale: 1.1, rotate: 3 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      />
+      <div className={infoClass}>
+        {/* --- Show detailed info except in "pack" view --- */}
+        {view !== "pack" && (
+          <>
+            <h4 className="font-semibold text-lg">{name}</h4>
+            <p className="text-gray-600">{price}</p>
+          </>
+        )}
+        <p className="mt-1 font-bold text-gray-800">#{id}</p>
+      </div>
+    </motion.div>
+  );
+}
+
+function Collectibles() {
+  // Below code was generateed by chatgpt , chatgpt sucks
+  // I repeat Chatgpt sucks
+  //
+  // const views = ['List view', 'Card view', 'Pack view'];
+
+  const mockCollectibles = [
+    {
+      id: 209,
+      name: 'Skilled Fingers Series',
+      price: '0.855 ETH',
+      image: 'https://picsum.photos/id/237/200/300',
+    },
+    {
+      id: 808,
+      name: 'Vibrant Vibes Series',
+      price: '0.209 ETH',
+      image: 'https://picsum.photos/seed/picsum/200/300',
+    },
+  ];
+  // const [activeView, setActiveView] = useState('List view');
+  // const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+  // const buttonsRef = useRef([]);
+
+  // useEffect(() => {
+  //   const index = views.indexOf(activeView);
+  //   const button = buttonsRef.current[index];
+  //   if (button) {
+  //     setIndicatorStyle({
+  //       left: button.offsetLeft,
+  //       width: button.offsetWidth,
+  //     });
+  //   }
+  // }, [activeView]);
+
+  // return (
+  //   <div className="max-w-md mx-auto p-6 font-sans text-black bg-white min-h-screen">
+  //     <h2 className="text-xl font-semibold mb-4">Collectibles</h2>
+
+  //     {/* Toggle Buttons */}
+  //     <div className="relative flex bg-gray-100 rounded-full p-1 mb-6 w-fit">
+  //       {views.map((view, idx) => (
+  //         <button
+  //           key={view}
+  //           ref={(el) => (buttonsRef.current[idx] = el)}
+  //           onClick={() => setActiveView(view)}
+  //           className={`relative z-10 px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${activeView === view ? 'text-white' : 'text-gray-700'
+  //             }`}
+  //         >
+  //           {view}
+  //         </button>
+  //       ))}
+  //       <motion.div
+  //         className="absolute top-0 bottom-0 bg-blue-500 rounded-full z-0"
+  //         layout
+  //         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+  //         style={{ left: indicatorStyle.left, width: indicatorStyle.width }}
+  //       />
+  //     </div>
+
+  //     {/* List View */}
+  //     {activeView === 'List view' && (
+  //       <div className="space-y-4">
+  //         {collectibles.map((item) => (
+  //           <div
+  //             key={item.id}
+  //             className="flex items-center space-x-4 bg-gray-50 p-3 rounded-lg shadow-sm"
+  //           >
+  //             <Image
+  //               width={
+  //                 48
+  //               }
+  //               height={
+  //                 48
+  //               }
+  //               src={item.image}
+  //               alt={item.name}
+  //             />
+  //             <div className="flex-1">
+  //               <div className="font-medium text-gray-900">{item.name}</div>
+  //               <div className="text-gray-600 text-sm">{item.price} ETH</div>
+  //             </div>
+  //             <div className="text-yellow-500 font-semibold text-sm">#{item.id}</div>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     )}
+
+  //     {/* Card View */}
+  //     {activeView === 'Card view' && (
+  //       <div className="grid grid-cols-2 gap-4">
+  //         {collectibles.map((item) => (
+  //           <div
+  //             key={item.id}
+  //             className="bg-gray-100 rounded-xl p-4 shadow-md flex flex-col items-center"
+  //           >
+  //             <Image
+  //               width={248}
+  //               height={248}
+  //               src={item.image}
+
+  //               alt={item.name}
+  //               className="w-40 h-40 mb-2 rounded-md object-cover"
+  //             />
+  //             <div className="font-semibold text-center text-sm">{item.name}</div>
+  //             <div className="text-gray-600 text-xs">{item.price} ETH</div>
+  //             <div className="text-yellow-500 text-xs font-semibold">#{item.id}</div>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     )}
+
+  //     {/* Pack View */}
+  //     {activeView === 'Pack view' && (
+  //       <div className="flex flex-col space-y-4">
+  //         {collectibles.map((item) => (
+  //           <div
+  //             key={item.id}
+  //             className="bg-gradient-to-r from-yellow-100 via-red-100 to-pink-100 p-4 rounded-xl shadow-md flex items-center space-x-4"
+  //           >
+  //             <img
+  //               src={item.image}
+  //               alt={item.name}
+  //               className="w-14 h-14 rounded-lg object-cover"
+  //             />
+  //             <div className="flex-1">
+  //               <div className="font-semibold text-base">{item.name}</div>
+  //               <div className="text-sm text-gray-700">{item.price} ETH</div>
+  //             </div>
+  //             <div className="text-yellow-600 font-bold text-sm">#{item.id}</div>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     )}
+  //   </div>
+  // );
 
 
+  const containerVariants = {
+    initial: {},
+    animate: { transition: { staggerChildren: 0.08 } },
+  };
+
+  // --- Item animation variants ---
+  // These are fixed values to replicate the same animation every time.
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -30 },
+  };
+  const [view, setView] = useState("list"); // possible: "list", "card", "pack"
+
+  // Set grid column classes based on the selected view.
+  const gridCols =
+    view === "list"
+      ? "grid-cols-1"
+      : view === "card"
+        ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+        : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4";
+
+  return (
+    <div className="max-w-4xl mx-auto p-4">
+      {/* --- View Toggle Buttons --- */}
+      <div className="flex justify-center gap-2 mb-6">
+        {["list", "card", "pack"].map((mode) => (
+          <button
+            key={mode}
+            onClick={() => setView(mode)}
+            className={`px-4 py-2 border rounded transition-colors 
+              ${view === mode
+                ? "bg-blue-600 text-white border-blue-600"
+                : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+              }`}
+          >
+            {mode.charAt(0).toUpperCase() + mode.slice(1)} view
+          </button>
+        ))}
+      </div>
+
+      {/* --- Animated Collectibles Grid --- */}
+      <motion.div
+        layout // enables smooth layout transitions
+        variants={containerVariants}
+        initial="hidden"
+        animate="animate"
+        exit="hidden"
+        className={`grid gap-4 ${gridCols}`}
+        transition={{ layout: { duration: 0.5, type: "spring", stiffness: 300 } }}
+      >
+        {mockCollectibles.map((collectible) => (
+          <CollectibleItem key={collectible.id} view={view} {...collectible} />
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+function AnimatedCheckbox() {
+  const [isChecked, setIsChecked] = useState(false);
+  const [isBorderComplete, setIsBorderComplete] = useState(false);
+
+  return (
+    <div className="flex items-center justify-center w-full h-full gap-3">
+      <motion.button
+        // @ts-ignore
+        onClick={() => {
+          setIsChecked(!isChecked);
+          if (!isChecked) {
+            setIsBorderComplete(false);
+          }
+        }}
+        className="relative w-10 h-10 rounded-xl p-1.5 bg-zinc-100"
+      >
+        {/* Background animation */}
+        <motion.div
+          // @ts-ignore
+          className="absolute inset-0 rounded-xl bg-blue-500"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isBorderComplete && isChecked ? 1 : 0 }}
+          transition={{
+            duration: 0.2 // Quick fade in, no delay
+          }}
+        />
+
+        {/* Border animation */}
+        <svg className="absolute inset-0 w-full h-full">
+          <motion.rect
+            x="0"
+            y="0"
+            width="40"
+            height="40"
+            rx="12"
+            fill="none"
+            strokeWidth="3"
+            stroke="currentColor"
+            className="text-blue-500"
+            initial={{ pathLength: 0, pathOffset: 0 }}
+            animate={{
+              pathLength: 1,
+              pathOffset: isChecked ? 0 : 1
+            }}
+            transition={{
+              duration: 0.4,
+              ease: "easeInOut"
+            }}
+            onAnimationComplete={() => {
+              if (isChecked) {
+                setIsBorderComplete(true);
+              }
+            }}
+          />
+        </svg>
+
+        {/* Checkmark */}
+        <motion.div
+          initial={false}
+          animate={{
+            scale: isChecked ? 1 : 0,
+            opacity: isChecked ? 1 : 0
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 400,
+            damping: 30,
+            delay: 0.4 // Appears right after background
+          }}
+          // @ts-ignore
+          className="absolute inset-0 flex items-center justify-center text-white"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="36"
+            height="36"
+            stroke="currentColor"
+            strokeWidth="3"
+            fill="none"
+          >
+            <motion.path
+              d="M5 13l4 4L19 7"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: isChecked ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+            />
+          </svg>
+        </motion.div>
+      </motion.button>
+      <span className="text-lg text-gray-700">
+        had to make checkbox
+      </span>
+    </div>
+  );
+}
 
 // All the compo
 export const components = [
@@ -507,7 +847,37 @@ const lol = works,
       </Suspense>
     ),
     code: `Will upload after challenge , if i forget mail me at hi@ashish.services`
+  }, {
+    id: 9,
+    title: "Animated Checkbox",
+    description: "A animated checkbox button",
+    tags: ["Animation", "Other", "Peerlist"],
+    component: (
+      <Suspense
+        fallback={
+          <div className="h-10 w-32 bg-gray-200 animate-pulse rounded-lg" />
+        }
+      >
+        <AnimatedCheckbox />
+      </Suspense>
+    ),
+    code: `Will upload after challenge , if i forget mail me at hi@ashish.services`
+  }, {
+
+    id: 10,
+    title: "Collectibles",
+    description: "A collectibles component",
+    tags: ["Animation", "Other", "Peerlist"],
+    component: (
+      <Suspense
+
+      >
+        <Collectibles />
+      </Suspense>
+    ),
+    code: `Will upload after challenge , if i forget mail me at hi@ashish.services`
   }
+
 ];
 
 // Add the HoldToDeleteButton component definition
