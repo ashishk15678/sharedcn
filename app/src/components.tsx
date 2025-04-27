@@ -5,7 +5,9 @@ import {
   DeleteIcon,
   Grid,
   Home,
+  Link,
   List,
+  LucideArrowUpRightSquare,
   Menu,
   MessageSquare,
   Package,
@@ -18,6 +20,7 @@ import {
 import { Suspense, useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "./lib/utils";
 import Image from "next/image";
+
 const HoldToDeleteButton = () => {
   const [isHolding, setIsHolding] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -317,6 +320,7 @@ function AnimatedToggle() {
     </div>
   );
 }
+
 function CollectibleItem({
   id,
   name,
@@ -703,11 +707,15 @@ function ClothButton() {
     <div className="flex items-center justify-center w-full h-full gap-3">
       <button
         className="rounded-full p-1  bg-radial-[at_70%_30%] from-gray-400 via-gray-300 to-gray-100
-        ring-1 ring-zinc-400 shadow-sm shadow-zinc-700"
+        ring-1 ring-zinc-400 shadow-sm shadow-zinc-700
+        relative group overflow-hidden
+        active:scale-95 transition-all duration-300 active:shadow-xl
+        "
       >
-        <div className="border border-dashed border-white rounded-4xl">
+        {/* <div className="border border-dashed border-white rounded-4xl">
           <div
-            className="w-full h-full group-hover:bg-blue-700 [background-image:url('https://i.pinimg.com/736x/56/0d/3c/560d3ce4cc4b86bbfd5ee8958b462034.jpg')] transition-all duration-300 text-xl rounded-4xl px-8 py-4
+            className="w-full h-full group-hover:bg-blue-700 
+            [background-image:url('https://i.pinimg.com/736x/56/0d/3c/560d3ce4cc4b86bbfd5ee8958b462034.jpg')] transition-all duration-300 text-xl rounded-4xl px-8 py-4
             backdrop-blur-sm text-transparent bg-cover relative"
             draggable={false}
           >
@@ -719,9 +727,159 @@ function ClothButton() {
               Cloth Button
             </span>
           </div>
+
+       
+          <div
+            className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+            style={{
+              transform: "skewX(-20deg)",
+              width: "200%",
+              left: "-50%",
+            }}
+          ></div>
+          <div
+            className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 [transition-delay:100ms] bg-gradient-to-r from-transparent via-white/20 to-transparent"
+            style={{
+              transform: "skewX(-20deg)",
+              width: "150%",
+              left: "-25%",
+            }}
+          ></div>
+        </div> */}
+        <div className="relative z-10 overflow-hidden">
+          <div
+            className="w-full h-full group-hover:bg-blue-700 
+            [background-image:url('https://i.pinimg.com/736x/56/0d/3c/560d3ce4cc4b86bbfd5ee8958b462034.jpg')] transition-all duration-300 text-xl rounded-4xl px-8 py-4
+            backdrop-blur-sm text-transparent bg-cover relative"
+            draggable={false}
+          >
+            <span
+              className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-zinc-200 to-[#8499bf] font-extrabold
+                text-shadow-lg"
+            >
+              Cloth Button
+            </span>
+            {/* First shine - wide and slanted */}
+            <div
+              className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+              style={{
+                transform: "skewX(-20deg)",
+                width: "100%",
+                left: "-50%",
+              }}
+            ></div>
+            {/* Second shine - thin and slanted */}
+            <div
+              className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 [transition-delay:100ms] bg-gradient-to-r from-transparent via-white/20 to-transparent"
+              style={{
+                transform: "skewX(-20deg)",
+                width: "50%",
+                left: "-25%",
+              }}
+            ></div>
+          </div>
         </div>
       </button>
     </div>
+  );
+}
+
+const LIVE_LINKS = [
+  {
+    id: 1,
+    name: "Astromvp",
+    url: "https://astromvp.resources.ashish.services",
+    color: "bg-red-500",
+    icon: "astromvp",
+  },
+];
+
+export function LiveLinksModal({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) {
+  // Handle ESC key press
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener("keydown", handleEsc);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [isOpen, onClose]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          // @ts-ignore
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            // @ts-ignore
+            className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 w-full max-w-4xl border border-white/20 shadow-2xl"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-zinc-200 to-[#8499bf] bg-clip-text text-transparent">
+                Live Links
+              </h2>
+              <button
+                onClick={onClose}
+                className="p-2 rounded-full hover:bg-white/10 transition-colors"
+              >
+                <X className="w-6 h-6 text-zinc-400" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {LIVE_LINKS.map((link) => (
+                <div
+                  key={link.id}
+                  className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-white/20 transition-colors"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className={`w-3 h-3 rounded-full ${link.color}`}></div>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      className="flex items-center gap-2 w-full "
+                    >
+                      <h3 className="text-lg font-semibold text-zinc-200 flex items-center gap-2">
+                        {link.name}
+                        <LucideArrowUpRightSquare />
+                      </h3>
+                    </a>
+                  </div>
+                  <div className="aspect-video rounded-lg overflow-hidden bg-white">
+                    <iframe
+                      src={link.url}
+                      className="w-full h-full"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

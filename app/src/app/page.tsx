@@ -3,23 +3,35 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Code, X } from "lucide-react";
 import type { MotionDivProps } from "@/types/motion";
-import { useState, useRef, useEffect, useMemo, useCallback, Suspense } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+  Suspense,
+} from "react";
 
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import { ResourcesLoadingFallback } from "@/components/utils";
 import { BackgroundBeams } from "@/components/layout/BackgroundBeams";
+import { LiveLinksModal } from "@/components";
 // Dynamically import Resources with loading fallback
 const DynamicResources = dynamic(
-  () => import('@/components/resources/ResourcesComponent').then(mod => mod.ResourcesComponent),
+  () =>
+    import("@/components/resources/ResourcesComponent").then(
+      (mod) => mod.ResourcesComponent
+    ),
   {
     loading: () => <ResourcesLoadingFallback />,
-    ssr: false // Disable SSR for Resources component
+    ssr: false, // Disable SSR for Resources component
   }
 );
 
 export default function Page() {
   const [shouldLoadResources, setShouldLoadResources] = useState(false);
   const [isInResourcesView, setIsInResourcesView] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Intersection Observer to detect when Resources section is in view
   useEffect(() => {
@@ -31,11 +43,11 @@ export default function Page() {
         }
       },
       {
-        rootMargin: '100px' // Start loading slightly before the section is in view
+        rootMargin: "100px", // Start loading slightly before the section is in view
       }
     );
 
-    const resourcesSection = document.getElementById('resources');
+    const resourcesSection = document.getElementById("resources");
     if (resourcesSection) {
       observer.observe(resourcesSection);
     }
@@ -46,7 +58,9 @@ export default function Page() {
   // Handle scroll to resources
   const handleScrollToResources = () => {
     setShouldLoadResources(true); // Start loading when user clicks the button
-    document.getElementById("resources")?.scrollIntoView({ behavior: "smooth" });
+    document
+      .getElementById("resources")
+      ?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -108,8 +122,9 @@ export default function Page() {
                 // @ts-ignore
                 className="mx-auto max-w-2xl text-xl text-gray-600 leading-relaxed"
               >
-                Join our mission to create a more inclusive tech community. Share knowledge,
-                discover resources, and grow together with developers from around the globe.
+                Join our mission to create a more inclusive tech community.
+                Share knowledge, discover resources, and grow together with
+                developers from around the globe.
               </motion.p>
 
               {/* CTA Buttons */}
@@ -127,8 +142,11 @@ export default function Page() {
                   Get Started
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
-                <button className="px-8 py-4 rounded-full bg-gray-100 text-gray-900 font-medium text-lg hover:bg-gray-200 transition-all duration-200">
-                  Learn More
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="px-8 py-4 rounded-full bg-gray-100 text-gray-900 font-medium text-lg hover:bg-gray-200 transition-all duration-200"
+                >
+                  Live Links
                 </button>
               </motion.div>
 
@@ -170,8 +188,9 @@ export default function Page() {
                     <span className="text-4xl">💡</span>
                   </div>
                   <p className="text-xl text-gray-700 italic">
-                    "The greatest reward in becoming a developer is not in the code we create,
-                    but in the developers we become by coding it."
+                    "The greatest reward in becoming a developer is not in the
+                    code we create, but in the developers we become by coding
+                    it."
                   </p>
                   <footer className="mt-4 text-gray-600 font-medium">
                     - The Developer Community
@@ -182,11 +201,18 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div id="resources" className="h-screen w-screen bg-gradient-to-b from-white to-green-200">
+      <div
+        id="resources"
+        className="h-screen w-screen bg-gradient-to-b from-white to-green-200"
+      >
         <Suspense fallback={<ResourcesLoadingFallback />}>
           {shouldLoadResources && <DynamicResources />}
         </Suspense>
       </div>
+      <LiveLinksModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </>
   );
 }
