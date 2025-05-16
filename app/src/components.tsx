@@ -20,6 +20,7 @@ import {
 import { Suspense, useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "./lib/utils";
 import Image from "next/image";
+import PremiumPlanSelector from "./components/premium";
 
 const HoldToDeleteButton = () => {
   const [isHolding, setIsHolding] = useState(false);
@@ -709,8 +710,9 @@ function ClothButton() {
         className="rounded-full p-1  bg-radial-[at_70%_30%] from-gray-400 via-gray-300 to-gray-100
         ring-1 ring-zinc-400 shadow-sm shadow-zinc-700
         relative group overflow-hidden
-        active:scale-95 transition-all duration-300 active:shadow-xl
-        "
+         transition-all duration-300 active:shadow-xl
+        active:scale-105
+         "
       >
         {/* <div className="border border-dashed border-white rounded-4xl">
           <div
@@ -755,7 +757,7 @@ function ClothButton() {
           >
             <span
               className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-zinc-200 to-[#8499bf] font-extrabold
-                text-shadow-lg"
+                text-shadow-lg "
             >
               Cloth Button
             </span>
@@ -780,6 +782,28 @@ function ClothButton() {
           </div>
         </div>
       </button>
+    </div>
+  );
+}
+
+export function ColorfulBorderBox() {
+  return (
+    <div className="relative group">
+      {/* Main content box */}
+      <div className="relative z-10 bg-white rounded-xl p-6 shadow-lg transition-all duration-300 group-hover:translate-y-[-2px]">
+        <h3 className="text-lg font-semibold text-gray-800">Content Box</h3>
+        <p className="text-gray-600 mt-2">Hover to see the colorful borders!</p>
+      </div>
+
+      {/* Colorful 3D borders */}
+      <div className="absolute inset-0 transform translate-y-2">
+        {/* Red border layer */}
+        <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl transform rotate-[-1deg] translate-y-1"></div>
+        {/* Blue border layer */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl transform rotate-[1deg] translate-y-2"></div>
+        {/* Green border layer */}
+        <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl transform rotate-[-0.5deg] translate-y-3"></div>
+      </div>
     </div>
   );
 }
@@ -1191,6 +1215,42 @@ const lol = works,
     tags: ["Button", "Animation"],
     component: <ClothButton />,
     code: `Cloth button`,
+  },
+  {
+    id: 13,
+    title: "A premium plan selector",
+    description: "A premium plan selector",
+    tags: ["Modal", "Other"],
+    component: <PremiumPlanSelector />,
+    code: `Premium plan selector`,
+  },
+  {
+    id: "14",
+    title: "Colorful Border Box",
+    description: "A box with colorful 3D borders that appear on hover",
+    tags: ["Animation", "Borders", "Effects"],
+    component: <ColorfulBorderBox />,
+    code: `function ColorfulBorderBox() {
+  return (
+    <div className="relative group">
+      {/* Main content box */}
+      <div className="relative z-10 bg-white rounded-xl p-6 shadow-lg transition-all duration-300 group-hover:translate-y-[-2px]">
+        <h3 className="text-lg font-semibold text-gray-800">Content Box</h3>
+        <p className="text-gray-600 mt-2">Hover to see the colorful borders!</p>
+      </div>
+
+      {/* Colorful 3D borders */}
+      <div className="absolute inset-0 transform translate-y-2">
+        {/* Red border layer */}
+        <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl transform rotate-[-1deg] translate-y-1"></div>
+        {/* Blue border layer */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl transform rotate-[1deg] translate-y-2"></div>
+        {/* Green border layer */}
+        <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl transform rotate-[-0.5deg] translate-y-3"></div>
+      </div>
+    </div>
+  );
+}`,
   },
 ];
 
