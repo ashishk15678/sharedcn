@@ -45,3 +45,20 @@ body {
   background-image: radial-gradient(circle, #000 1px, transparent 1px);
   background-size: 20px 20px;
 }
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+.animate-float-delayed {
+  animation: float-delayed 8s ease-in-out infinite;
+}

@@ -907,6 +907,251 @@ export function LiveLinksModal({
   );
 }
 
+export function AppleButton() {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const [ripples, setRipples] = useState<
+    Array<{ x: number; y: number; id: number }>
+  >([]);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const rippleId = useRef(0);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!buttonRef.current) return;
+
+    const rect = buttonRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    setMousePosition({ x, y });
+
+    // Add ripple effect on mouse move
+    if (Math.random() > 0.7) {
+      // Control ripple frequency
+      setRipples((prev) => [...prev, { x, y, id: rippleId.current++ }]);
+    }
+  };
+
+  // Remove ripples after animation
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRipples((prev) =>
+        prev.filter((ripple) => ripple.id < rippleId.current - 5)
+      );
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="relative h-[200px] w-full overflow-hidden bg-gradient-to-br from-zinc-50 to-zinc-100">
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-purple-50/50 to-pink-50/50" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-blue-100/30 via-purple-100/30 to-pink-100/30 blur-3xl" />
+
+      {/* Scrollable container */}
+      <div className="h-[200px] overflow-y-auto relative z-10">
+        <div className="p-16 flex items-center justify-center">
+          <Image
+            src="/apple.jpeg"
+            alt="Apple"
+            width={100}
+            height={100}
+            className="w-[500px] aspect-square rounded-2xl mix-blend-multiply"
+          />
+        </div>
+      </div>
+
+      {/* Liquid glass button */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+        {/* Outer glow effect */}
+        <div
+          className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 
+            blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        />
+
+        {/* Border container */}
+        <div className="relative">
+          {/* Border glow layers */}
+          <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-white/40 via-white/20 to-white/40 blur-sm" />
+          <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-b from-white/30 via-white/10 to-white/30 blur-sm" />
+
+          <button
+            ref={buttonRef}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="relative group overflow-hidden rounded-full ring-1 ring-zinc-200/30 shadow-sm px-12 py-6 text-2xl
+              bg-white/0 backdrop-blur-lg
+              transition-all duration-300 ease-out
+              hover:bg-white/40
+              active:bg-white/50
+              border border-white/30
+              shadow-[0_0_25px_rgba(255,255,255,0.8)]
+              hover:shadow-[0_0_25px_rgba(255,255,255,0.4)]
+              hover:border-white/40
+              hover:scale-[1.02]"
+            style={
+              {
+                "--mouse-x": `${mousePosition.x}px`,
+                "--mouse-y": `${mousePosition.y}px`,
+              } as React.CSSProperties
+            }
+          >
+            {/* Water surface effect */}
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              style={{
+                background: `radial-gradient(
+                  800px circle at var(--mouse-x) var(--mouse-y),
+                  rgba(255, 255, 255, 0.4),
+                  transparent 80%
+                )`,
+                transform: isHovered ? "scale(1.5)" : "scale(1)",
+                transition: "transform 0.8s cubic-bezier(0.4, 0, 0.2, 2)",
+                filter: "blur(8px)",
+              }}
+            />
+
+            {/* Water depth effect */}
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              style={{
+                background: `radial-gradient(
+                  600px circle at var(--mouse-x) var(--mouse-y),
+                  rgba(255, 255, 255, 0.2),
+                  transparent 40%
+                )`,
+                transform: isHovered ? "scale(1.2)" : "scale(1)",
+                transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+                filter: "blur(12px)",
+              }}
+            />
+
+            {/* Ripple effects */}
+            {ripples.map((ripple) => (
+              <div
+                key={ripple.id}
+                className="absolute rounded-full bg-zinc-200/80"
+                style={{
+                  left: ripple.x,
+                  top: ripple.y,
+                  transform: "translate(-50%, -50%)",
+                  width: "100px",
+                  height: "100px",
+                  animation: "ripple 1s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+                  filter: "blur(4px)",
+                }}
+              />
+            ))}
+
+            {/* Water shine effect */}
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              style={{
+                background: `linear-gradient(
+                  45deg,
+                  transparent 0%,
+                  rgba(255, 255, 255, 0.1) 45%,
+                  rgba(255, 255, 255, 0.3) 50%,
+                  rgba(255, 255, 255, 0.1) 55%,
+                  transparent 100%
+                )`,
+                transform: isHovered ? "translateX(100%)" : "translateX(-100%)",
+                transition: "transform 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                filter: "blur(2px)",
+              }}
+            />
+
+            {/* Button content */}
+            <span className="relative z-10 text-zinc-800 font-medium">
+              Something
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function GtaMasking() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+
+    const container = containerRef.current;
+    const scrollTop = container.scrollTop;
+    const scrollHeight = container.scrollHeight - container.clientHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+
+    setScrollProgress(progress);
+
+    // Get both images
+    const firstImage = container.querySelector(
+      "img:not(#second-img)"
+    ) as HTMLImageElement;
+    const secondImage = container.querySelector(
+      "#second-img"
+    ) as HTMLImageElement;
+
+    if (firstImage) {
+      // First image scales up and fades out in the first 60% of the scroll
+      const firstImageProgress = Math.min(progress * 1.67, 100); // Complete in first 60% of scroll
+      const scale = 1 + firstImageProgress * 0.015; // Scale up to 2.5x
+      const opacity = 1 - firstImageProgress / 120; // Slower fade out
+
+      firstImage.style.transform = `scale(${scale})`;
+      firstImage.style.opacity = `${opacity}`;
+    }
+
+    if (secondImage) {
+      // Second image starts appearing after first image is mostly gone (at 50% scroll)
+      const secondImageProgress = Math.max(0, (progress - 50) * 2); // Start at 50% scroll, complete by 100%
+      const scale = 0.95 + secondImageProgress * 0.001; // Subtle scale up
+      const opacity = Math.min(secondImageProgress / 100, 1);
+
+      secondImage.style.transform = `scale(${scale})`;
+      secondImage.style.opacity = `${opacity}`;
+    }
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      onScroll={handleScroll}
+      className="bg-zinc-900 rounded-xl p-4 w-[1400px] h-[800px] overflow-y-auto relative"
+    >
+      {/* Add more content to enable longer scrolling */}
+      <div className="h-[3000px] relative">
+        <div className="sticky top-0 h-[800px] flex items-center justify-center">
+          <div className="relative w-[1000px] h-[600px] flex items-center justify-center">
+            <div className="relative w-full h-full flex items-center justify-center">
+              <Image
+                src="/gta.svg"
+                alt="GTA Logo"
+                width={400}
+                height={400}
+                draggable={false}
+                className="transition-all duration-300 ease-out absolute max-w-[120%] h-auto z-10"
+              />
+              <Image
+                id="second-img"
+                src="/gta5.jpg"
+                alt="GTA Background"
+                width={1000}
+                height={600}
+                draggable={false}
+                className="absolute opacity-0 transition-all duration-300 ease-out object-cover rounded-xl w-full h-full"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // All the compo
 export const components = [
   {
@@ -1251,6 +1496,22 @@ const lol = works,
     </div>
   );
 }`,
+  },
+  {
+    id: "15",
+    title: "Gta Masking",
+    description: "A gta masking component",
+    tags: ["Animation", "Other"],
+    component: <GtaMasking />,
+    code: `Gta masking`,
+  },
+  {
+    id: "16",
+    title: "Apple Button",
+    description: "A apple button",
+    tags: ["Button", "Animation"],
+    component: <AppleButton />,
+    code: `Apple button`,
   },
 ];
 
