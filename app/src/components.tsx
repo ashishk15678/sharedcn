@@ -107,6 +107,8 @@ function FluidMenuAnimation() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            // @ts-ignore
+            className=""
           >
             <div className=" ">
               <div className="flex flex-col gap-[-1px] relative">
