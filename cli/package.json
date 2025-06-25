@@ -1,0 +1,15 @@
+{
+  "name": "cli",
+  "main": "index.ts",
+  "module": "index.ts",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "bin": {
+    "cli": "./index.ts"
+  },
+  "type": "module"
+}
