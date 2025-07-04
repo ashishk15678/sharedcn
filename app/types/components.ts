@@ -1,10 +1,3 @@
-import { ReactNode } from 'react';
+import { Component } from "@/../generated/client";
 
-export interface ComponentData {
-    id: string;
-    title: string;
-    description: string;
-    tags: string[];
-    component: ReactNode;
-    code: string;
-} 
+export type ComponentData = Component;

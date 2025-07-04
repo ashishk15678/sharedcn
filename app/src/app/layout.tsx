@@ -5,6 +5,10 @@ import "./globals.css";
 import { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
+import { User } from "../../generated/client";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,32 +22,79 @@ const geistMono = Geist_Mono({
 
 const queryClient = new QueryClient();
 
-// export const metadata: Metadata = {
-//   title: "Resources Hub",
-//   description: "A collection of useful resources and components for developers",
-//   keywords: "Resource, startup, tech, build",
-//   openGraph: {
-//     title: "Resources Hub",
-//     description:
-//       "A collection of useful resources and components for developers",
-//     url: "https://resources.ashish.services",
-//     siteName: "Resources Hub",
-//     locale: "en-US",
-//     type: "website",
-//   },
-// };
+function GlobalBreadcrumbs() {
+  const pathname = usePathname();
+  const parts = pathname.split("/").filter(Boolean);
+  let path = "";
+  return (
+    <nav className="text-xs text-zinc-400 mb-6 flex items-center space-x-1 select-none px-4 pt-4">
+      <Link
+        href="/"
+        className="hover:underline text-zinc-500 hover:text-zinc-300"
+      >
+        Home
+      </Link>
+      {parts.map((part, i) => {
+        path += "/" + part;
+        const isLast = i === parts.length - 1;
+        return (
+          <span key={part} className="flex items-center space-x-1">
+            <span className="mx-1">/</span>
+            {isLast ? (
+              <span className="text-zinc-400">{part}</span>
+            ) : (
+              <Link
+                href={path}
+                className="hover:underline text-zinc-500 hover:text-zinc-300"
+              >
+                {part}
+              </Link>
+            )}
+          </span>
+        );
+      })}
+    </nav>
+  );
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
+  // const fetchUser = useQuery({
+  //   queryKey: ["user"],
+  //   queryFn: async () => {
+  //     const user: User = await fetch("/api/user");
+
+  //     if (!user.username || user.username.length < 3) {
+  //       redirect("/onboarding");
+  //     }
+  //   },
+  // });
+
+  // export const metadata: Metadata = {
+  //   title: "Resources Hub",
+  //   description: "A collection of useful resources and components for developers",
+  //   keywords: "Resource, startup, tech, build",
+  //   openGraph: {
+  //     title: "Resources Hub",
+  //     description:
+  //       "A collection of useful resources and components for developers",
+  //     url: "https://resources.ashish.services",
+  //     siteName: "Resources Hub",
+  //     locale: "en-US",
+  //     type: "website",
+  //   },
+  // };
+
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={" bg-gradient-to-b from-black via-zinc-900 to-zinc-950 "}
       >
         <QueryClientProvider client={queryClient}>
+          <GlobalBreadcrumbs />
           {children}
           <Toaster position="top-right" richColors />
         </QueryClientProvider>
