@@ -11,6 +11,7 @@ function getHost() {
     }
   } catch {}
   return "http://localhost:3000";
+  // return "http://sharedcn.vercel.app";
 }
 const HOST = getHost();
 
@@ -54,45 +55,112 @@ function getAuthToken() {
 (async () => {
   switch (args[0]) {
     case "add": {
-      // Usage: npx sharedcn add <alias> [--without-auth]
-      const alias = args[1];
+      // Usage: npx sharedcn add <alias1> <alias2> ... [--without-auth]
+      const aliases = [];
       let withoutAuth = false;
-      for (let i = 2; i < args.length; ++i) {
+      for (let i = 1; i < args.length; ++i) {
         if (args[i] === "--without-auth") withoutAuth = true;
+        else if (!args[i].startsWith("--")) aliases.push(args[i]);
       }
-      if (!alias) {
+      if (aliases.length === 0) {
         console.log(
           chalk.red(
-            "[ERROR] Please provide the alias of the component to fetch."
+            "[ERROR] Please provide at least one alias of the component to fetch."
           )
         );
         process.exit(1);
       }
       let token = null;
       if (!withoutAuth) token = getAuthToken();
-      let spinner = startSpinner("Fetching component...");
+      let spinner = startSpinner("Fetching component(s)...");
       try {
-        const comp = await fetchComponentByAlias(alias, token);
+        const comps = await fetchComponentByAlias(aliases, token);
         stopSpinner(spinner);
-        if (comp.error) {
-          console.log(chalk.red(`[ERROR] ${comp.error}`));
+        if (!Array.isArray(comps) || comps.length === 0) {
+          console.log(
+            chalk.red(
+              `[ERROR] No components found for aliases: ${aliases.join(", ")}`
+            )
+          );
           process.exit(1);
         }
-        // Write files to components/<alias>/
-        const aliasDir = path.join(process.cwd(), "components", comp.alias);
-        fs.mkdirSync(aliasDir, { recursive: true });
-        if (Array.isArray(comp.code)) {
-          for (const fileObj of comp.code) {
-            const outPath = path.join(aliasDir, fileObj.filename);
-            fs.writeFileSync(outPath, fileObj.code, "utf-8");
-            console.log(
-              chalk.green(
-                `Created: components/${comp.alias}/${fileObj.filename}`
-              )
-            );
+        let found = 0;
+        const failedInstalls = [];
+        const notExist = [];
+        const installedDeps = new Set();
+        for (const comp of comps) {
+          if (comp.error) {
+            notExist.push(comp.alias);
+            console.log(chalk.red(`[ERROR] ${comp.alias}: ${comp.error}`));
+            continue;
           }
+          found++;
+          const aliasDir = path.join(
+            process.cwd(),
+            "components",
+            "custom",
+            comp.alias
+          );
+          fs.mkdirSync(aliasDir, { recursive: true });
+          if (Array.isArray(comp.code)) {
+            for (const fileObj of comp.code) {
+              const outPath = path.join(aliasDir, fileObj.filename);
+              fs.writeFileSync(outPath, fileObj.code, "utf-8");
+              console.log(
+                chalk.green(
+                  `Created: components/custom/${comp.alias}/${fileObj.filename}`
+                )
+              );
+            }
+          }
+          // Install dependencies
+          if (comp.dependent) {
+            let deps = comp.dependent;
+            if (typeof deps === "string")
+              deps = deps.split(/\s+/).filter(Boolean);
+            if (Array.isArray(deps)) {
+              for (const dep of deps) {
+                if (installedDeps.has(dep)) continue;
+                try {
+                  await installDependency(dep);
+                  installedDeps.add(dep);
+                  console.log(chalk.blue(`Installed: ${dep}`));
+                } catch (e) {
+                  failedInstalls.push({
+                    alias: comp.alias,
+                    dep,
+                    error: e.message || e,
+                  });
+                  console.log(
+                    chalk.red(
+                      `Failed to install ${dep} for ${comp.alias}: ${
+                        e.message || e
+                      }`
+                    )
+                  );
+                }
+              }
+            }
+          }
+          console.log(
+            chalk.green(`[SUCCESS] Component fetched: ${comp.alias}`)
+          );
         }
-        console.log(chalk.green(`[SUCCESS] Component fetched: ${comp.alias}`));
+        if (found === 0) {
+          console.log(chalk.red(`[ERROR] No valid components fetched.`));
+          process.exit(1);
+        }
+        // Summary
+        if (notExist.length > 0) {
+          console.log(chalk.yellow("\nComponents that do not exist:"));
+          notExist.forEach((a) => console.log(chalk.yellow(`- ${a}`)));
+        }
+        if (failedInstalls.length > 0) {
+          console.log(chalk.red("\nPackages that failed to install:"));
+          failedInstalls.forEach((f) =>
+            console.log(chalk.red(`- ${f.dep} (for ${f.alias}): ${f.error}`))
+          );
+        }
       } catch (e) {
         stopSpinner(spinner);
         console.error(chalk.red("Error:"), e.message || e);
@@ -233,6 +301,8 @@ function getAuthToken() {
       console.log(chalk.cyan("\nUsage:"));
       console.log(chalk.yellow("  npx sharedcn add <link-of-the-component>"));
       console.log(chalk.yellow("  npx sharedcn push <path-to-json-file>"));
+      console.log(chalk.yellow("  npx sharedcn setup-auth <token>"));
+
       process.exit(127);
     }
   }
@@ -353,18 +423,14 @@ function stopSpinner(interval) {
   process.stdout.write("\b ");
 }
 
-async function fetchComponentByAlias(alias, token) {
+async function fetchComponentByAlias(aliases, token) {
+  // Accepts an array of aliases
   const headers = { "Content-Type": "application/json" };
   if (token) headers["Authorization"] = `Bearer ${token}`;
-  const res = await fetch(`${HOST}/api/components/add`, {
+  const res = await fetch(`${HOST}/api/components/fetch`, {
     method: "POST",
     headers,
-    body: JSON.stringify({
-      name: alias,
-      description: "",
-      dependent: [],
-      code: [],
-    }),
+    body: JSON.stringify(aliases),
   });
   if (!res.ok) {
     let errMsg = `HTTP error! status: ${res.status}`;
@@ -374,5 +440,5 @@ async function fetchComponentByAlias(alias, token) {
     } catch {}
     throw new Error(errMsg);
   }
-  return await res.json();
+  return await res.json(); // Returns an array
 }

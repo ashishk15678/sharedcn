@@ -33,6 +33,32 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // If body is an array, treat as fetch-by-aliases
+  if (Array.isArray(body)) {
+    // Accepts array of aliases (strings)
+    const aliases = body.filter((a) => typeof a === "string");
+    if (aliases.length === 0) {
+      return NextResponse.json(
+        { error: "No valid aliases provided." },
+        { status: 400, headers: corsHeaders }
+      );
+    }
+    // Fetch all components by alias
+    const components = await prisma.component.findMany({
+      where: { alias: { in: aliases } },
+    });
+    // Map to alias -> component
+    const compMap = new Map();
+    for (const comp of components) compMap.set(comp.alias, comp);
+    // Build response array in same order as input
+    const result = aliases.map((alias) => {
+      if (compMap.has(alias)) return compMap.get(alias);
+      return { alias, error: "doesnot exist" };
+    });
+    prisma.$disconnect();
+    return NextResponse.json(result, { status: 200, headers: corsHeaders });
+  }
+
   // Validate input
   const { name, description, dependent, code } = body;
   if (name == "token-validation") {
@@ -47,6 +73,7 @@ export async function POST(req: NextRequest) {
       { status: status ? 200 : 300 }
     );
   }
+
   if (
     !name ||
     typeof name !== "string" ||

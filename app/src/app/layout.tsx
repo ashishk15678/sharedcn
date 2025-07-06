@@ -90,6 +90,12 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <link rel="icon" href="/logo.png"></link>
+      <title>SharedCN</title>
+      <meta
+        name="description"
+        content="Share your components effortlessly , in the easiest manner. It helps people using only cli , and that is it."
+      ></meta>
       <body
         className={" bg-gradient-to-b from-black via-zinc-900 to-zinc-950 "}
       >
