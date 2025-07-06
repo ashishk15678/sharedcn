@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@/../generated/client";
+import { prisma } from "../../prisma";
 import { headers } from "next/headers";
-
-const prisma = new PrismaClient();
 
 export async function OPTIONS() {
   return new NextResponse(null, {
@@ -55,7 +53,6 @@ export async function POST(req: NextRequest) {
       if (compMap.has(alias)) return compMap.get(alias);
       return { alias, error: "doesnot exist" };
     });
-    prisma.$disconnect();
     return NextResponse.json(result, { status: 200, headers: corsHeaders });
   }
 
@@ -97,7 +94,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Get token from Authorization header
-  const authHeader = req.headers.get("authorization") || "";
+  const authHeader = (await headers()).get("authorization") || "";
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
   let user = null;
@@ -133,7 +130,6 @@ export async function POST(req: NextRequest) {
   });
 
   if (component) {
-    prisma.$disconnect();
     return NextResponse.json(
       { error: `Alias '${fullAlias}' is already taken.` },
       { status: 409, headers: corsHeaders }
@@ -150,6 +146,5 @@ export async function POST(req: NextRequest) {
       userId: user.id,
     },
   });
-  prisma.$disconnect();
   return NextResponse.json(component, { status: 201, headers: corsHeaders });
 }

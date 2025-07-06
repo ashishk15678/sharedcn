@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@/../generated/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../prisma";
 
 export async function POST(req: NextRequest) {
   const corsHeaders = {
@@ -55,6 +53,5 @@ export async function POST(req: NextRequest) {
     }
     return { alias, error: "doesnot exist" };
   });
-  prisma.$disconnect();
   return NextResponse.json(result, { status: 200, headers: corsHeaders });
 }
