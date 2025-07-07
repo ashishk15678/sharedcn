@@ -1,10 +1,13 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.3",
   "name": "sharedcn",
   "main": "index.js",
   "module": "index.js",
   "bin": {
     "sharedcn": "index.js"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "chalk": "^5.4.1"
+  }
 }

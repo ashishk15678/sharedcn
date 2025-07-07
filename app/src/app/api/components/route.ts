@@ -18,9 +18,18 @@ export async function POST(req: NextRequest) {
   if (!session)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { name, description, dependent, code } = await req.json();
-  if (!name || !description || !code)
+  if (
+    !name ||
+    !description ||
+    !Array.isArray(code) ||
+    code.length === 0 ||
+    !code.every((f) => f.filename && f.code)
+  )
     return NextResponse.json(
-      { error: "Missing required fields" },
+      {
+        error:
+          "Missing or invalid required fields. 'code' must be an array of {filename, code} objects.",
+      },
       { status: 400 }
     );
   // Alias is the name, must be unique for this user

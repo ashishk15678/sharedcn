@@ -10,8 +10,8 @@ function getHost() {
       if (data.host) return data.host;
     }
   } catch {}
-  return "http://localhost:3000";
-  // return "http://sharedcn.vercel.app";
+  // return "http://localhost:3000";
+  return "http://sharedcn.vercel.app";
 }
 const HOST = getHost();
 
@@ -19,7 +19,6 @@ import fs from "fs";
 import path from "path";
 import chalk from "chalk";
 import { exec } from "child_process";
-import { pushComponents } from "./push.js";
 import os from "os";
 
 const args = process.argv.slice(2);

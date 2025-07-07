@@ -22,6 +22,14 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import type { Monaco } from "@monaco-editor/react";
+
+// Dynamically import MonacoEditor for fast load
+const MonacoEditor = dynamic(
+  () => import("@monaco-editor/react").then((mod) => mod.default),
+  { ssr: false }
+);
 
 export default function Page() {
   const [component, setComponent] = useState<ReactNode>();
@@ -29,7 +37,7 @@ export default function Page() {
     name: "",
     description: "",
     dependent: "",
-    code: "",
+    code: [{ filename: "Component.tsx", code: "" }],
   });
   const [aliasAvailable, setAliasAvailable] = useState<null | boolean>(null);
   const [checkingAlias, setCheckingAlias] = useState(false);
@@ -138,7 +146,12 @@ export default function Page() {
     onSuccess: () => {
       toast.success("Component created!");
       setSheetOpen(false);
-      setComp({ name: "", description: "", dependent: "", code: "" });
+      setComp({
+        name: "",
+        description: "",
+        dependent: "",
+        code: [...comp.code, { filename: "Component.tsx", code: "" }],
+      });
       setAliasAvailable(null);
       queryClient.invalidateQueries({ queryKey: ["components"] });
     },
@@ -150,7 +163,9 @@ export default function Page() {
   const canSubmit =
     comp.name &&
     comp.description &&
-    comp.code &&
+    Array.isArray(comp.code) &&
+    comp.code.length > 0 &&
+    comp.code.every((f) => f.filename && f.code) &&
     aliasAvailable === true &&
     !createMutation.isPending;
 
@@ -226,6 +241,23 @@ export default function Page() {
   });
 
   const [activeFileIdx, setActiveFileIdx] = useState(0);
+
+  // Add state for renaming dialog
+  const [renameDialog, setRenameDialog] = useState<{
+    open: boolean;
+    idx: number | null;
+  }>({ open: false, idx: null });
+  const [renameValue, setRenameValue] = useState("");
+
+  // Add state for file editing dialog
+  const [editDialog, setEditDialog] = useState<{
+    open: boolean;
+    idx: number | null;
+  }>({ open: false, idx: null });
+  const [editFile, setEditFile] = useState<{ filename: string; code: string }>({
+    filename: "",
+    code: "",
+  });
 
   return (
     <>
@@ -354,10 +386,7 @@ export default function Page() {
                   <FileBoxIcon size={18} />
                 </button>
               </SheetTrigger>
-              <SheetContent
-                className="
-            bg-gradient-to-b from-black to-zinc-800 text-white border-zinc-700 text-md"
-              >
+              <SheetContent className="flex flex-col bg-gradient-to-b from-black to-zinc-800 text-white border-zinc-700 text-md max-h-none md:max-h-[90vh]">
                 <SheetHeader>
                   <SheetTitle className="text-white">
                     Create new component
@@ -366,7 +395,16 @@ export default function Page() {
                     Create new components from here or your cli.
                   </SheetDescription>
                 </SheetHeader>
-                <div className="mx-4 flex flex-col gap-6">
+                <div
+                  className="mx-4 flex-1 flex flex-col gap-6 min-h-0"
+                  style={{
+                    overflowY: "auto",
+                    maxHeight: "none",
+                    ...(typeof window !== "undefined" && window.innerWidth < 900
+                      ? { maxHeight: "100vh", overflowY: "auto" }
+                      : {}),
+                  }}
+                >
                   <div className="flex flex-col  justify-center gap-2">
                     <p className="text-zinc-400">Component name: *</p>
                     <input
@@ -417,19 +455,139 @@ export default function Page() {
                     />
                   </div>
                   <div className="flex flex-col  justify-center gap-2">
-                    <p className="text-zinc-400">Code: *</p>
-                    <textarea
-                      onChange={(e) =>
-                        setComp({ ...comp, code: e.target.value })
+                    <p className="text-zinc-400">Files: *</p>
+                    {comp.code.map((file, idx) => (
+                      <div
+                        key={idx}
+                        className="mb-2 flex flex-row items-center gap-2"
+                      >
+                        <span className="font-mono text-xs text-zinc-400">
+                          {file.filename}
+                        </span>
+                        <button
+                          className="text-blue-400 text-xs px-2 py-1 rounded hover:bg-blue-900/30"
+                          onClick={() => {
+                            setEditDialog({ open: true, idx });
+                            setEditFile({
+                              filename: file.filename,
+                              code: file.code,
+                            });
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="text-red-400 text-xs px-2 py-1 rounded hover:bg-red-900/30"
+                          onClick={() => {
+                            const newFiles = comp.code.filter(
+                              (_, i) => i !== idx
+                            );
+                            setComp({ ...comp, code: newFiles });
+                          }}
+                          disabled={comp.code.length === 1}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      className="bg-zinc-700 text-white px-3 py-1 rounded mt-2 text-xs"
+                      onClick={() =>
+                        setComp({
+                          ...comp,
+                          code: [
+                            ...comp.code,
+                            {
+                              filename: `File${comp.code.length + 1}.ts`,
+                              code: "",
+                            },
+                          ],
+                        })
                       }
-                      placeholder="Pretty printed code for my component"
-                      className="
-            w-full bg-zinc-800 rounded-md p-2 resize-none"
-                      rows={15}
-                    />
+                    >
+                      + Add File
+                    </button>
+                    {/* File Edit Dialog */}
+                    {editDialog.open && editDialog.idx !== null && (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                        <div className="bg-zinc-900 p-8 rounded-2xl shadow-2xl flex flex-col gap-4 min-w-[600px] max-w-[95vw] min-h-[500px] max-h-[90vh]">
+                          <h3 className="text-xl font-bold text-white mb-2">
+                            Edit File
+                          </h3>
+                          <input
+                            type="text"
+                            value={editFile.filename}
+                            onChange={(e) =>
+                              setEditFile({
+                                ...editFile,
+                                filename: e.target.value,
+                              })
+                            }
+                            className="w-full bg-zinc-800 rounded-md p-2 text-sm font-mono"
+                            placeholder="Filename"
+                          />
+                          <div className="flex-1 min-h-[350px] max-h-[60vh]">
+                            <MonacoEditor
+                              height="350px"
+                              defaultLanguage={
+                                editFile.filename.endsWith(".tsx")
+                                  ? "typescript"
+                                  : "javascript"
+                              }
+                              language={
+                                editFile.filename.endsWith(".tsx")
+                                  ? "typescript"
+                                  : "javascript"
+                              }
+                              value={editFile.code}
+                              theme="vs-dark"
+                              options={{
+                                fontSize: 14,
+                                minimap: { enabled: false },
+                                wordWrap: "on",
+                                scrollBeyondLastLine: false,
+                                automaticLayout: true,
+                              }}
+                              onChange={(val: string | undefined) =>
+                                setEditFile({ ...editFile, code: val ?? "" })
+                              }
+                            />
+                          </div>
+                          <div className="flex flex-row gap-2 justify-end mt-2">
+                            <button
+                              className="px-4 py-2 rounded bg-zinc-700 text-white text-sm"
+                              onClick={() =>
+                                setEditDialog({ open: false, idx: null })
+                              }
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              className="px-4 py-2 rounded bg-blue-600 text-white text-sm"
+                              onClick={() => {
+                                if (
+                                  editDialog.idx !== null &&
+                                  editFile.filename.trim()
+                                ) {
+                                  const newFiles = [...comp.code];
+                                  newFiles[editDialog.idx] = {
+                                    ...editFile,
+                                    filename: editFile.filename.trim(),
+                                  };
+                                  setComp({ ...comp, code: newFiles });
+                                }
+                                setEditDialog({ open: false, idx: null });
+                              }}
+                            >
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <SheetFooter>
+                <SheetFooter className="shrink-0 bg-gradient-to-t from-black/80 to-transparent pt-4">
                   <button
                     onClick={() => createMutation.mutate(comp)}
                     className="w-full bg-zinc-500 text-white font-bold py-2 rounded-xl shadow-xl hover:shadow-none transition-all shadow-zinc-600"
