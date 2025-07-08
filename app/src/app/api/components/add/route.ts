@@ -31,6 +31,30 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Validate input
+  const { name, description, dependent, code, token } = body;
+  if (name === "token-validation") {
+    // Accept token from body, not header
+    if (!token || typeof token !== "string") {
+      return NextResponse.json(
+        { error: "Token is required" },
+        { status: 400, headers: corsHeaders }
+      );
+    }
+    const user = await prisma.user.findUnique({ where: { authToken: token } });
+    if (user) {
+      return NextResponse.json(
+        { valid: true },
+        { status: 200, headers: corsHeaders }
+      );
+    } else {
+      return NextResponse.json(
+        { error: "Invalid token" },
+        { status: 401, headers: corsHeaders }
+      );
+    }
+  }
+
   // If body is an array, treat as fetch-by-aliases
   if (Array.isArray(body)) {
     // Accepts array of aliases (strings)
@@ -54,21 +78,6 @@ export async function POST(req: NextRequest) {
       return { alias, error: "doesnot exist" };
     });
     return NextResponse.json(result, { status: 200, headers: corsHeaders });
-  }
-
-  // Validate input
-  const { name, description, dependent, code } = body;
-  if (name == "token-validation") {
-    const token = (await headers()).get("Authorization")?.split(" ")[1];
-    const status = await prisma.user.findUnique({
-      where: { authToken: token },
-    });
-    return NextResponse.json(
-      {
-        valid: status,
-      },
-      { status: status ? 200 : 300 }
-    );
   }
 
   if (
@@ -95,7 +104,6 @@ export async function POST(req: NextRequest) {
 
   // Get token from Authorization header
   const authHeader = (await headers()).get("authorization") || "";
-  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
   let user = null;
   if (token) {

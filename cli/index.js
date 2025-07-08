@@ -10,8 +10,8 @@ function getHost() {
       if (data.host) return data.host;
     }
   } catch {}
-  // return "http://localhost:3000";
-  return "http://sharedcn.vercel.app";
+  return "http://localhost:3000";
+  // return "http://sharedcn.vercel.app";
 }
 const HOST = getHost();
 
@@ -261,14 +261,8 @@ function getAuthToken() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            name: "token-validation",
-            description: "",
-            dependent: [],
-            code: [],
-          }),
+          body: JSON.stringify({ token, name: "token-validation" }),
         });
         stopSpinner(spinner);
         if (!res.ok) {
@@ -309,11 +303,11 @@ function getAuthToken() {
 
 async function fetchComponentAdd(component, token) {
   const headers = { "Content-Type": "application/json" };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const body = token ? { ...component, token } : component;
   const res = await fetch(`${HOST}/api/components/add`, {
     method: "POST",
     headers,
-    body: JSON.stringify(component),
+    body: JSON.stringify(body),
   });
   if (!res.ok) {
     let errMsg = `HTTP error! status: ${res.status}`;

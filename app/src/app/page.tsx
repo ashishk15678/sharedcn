@@ -212,7 +212,7 @@ export default function Page() {
         </div>
         <div className="h-full border-l-2 border-dashed border-zinc-900 bg-zinc-800 m-12" />
       </div>
-      <div
+      {/* <div
         className="bg-yellow-800/20"
         style={{
           position: "fixed",
@@ -232,7 +232,7 @@ export default function Page() {
         ⚠️ The CLI setup-auth command is currently <b>halted</b>. Please use
         only the add/push features for now. In push your components will be
         added but with @public prefix
-      </div>
+      </div> */}
     </div>
   );
 }

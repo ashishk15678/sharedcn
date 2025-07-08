@@ -1,24 +1,12 @@
 "use client";
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
-import { User } from "../../generated/client";
-import { redirect } from "next/navigation";
+import { Analytics } from "@vercel/analytics/next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import ReactGA from "react-ga4";
 
 const queryClient = new QueryClient();
 
@@ -62,32 +50,16 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  // const fetchUser = useQuery({
-  //   queryKey: ["user"],
-  //   queryFn: async () => {
-  //     const user: User = await fetch("/api/user");
-
-  //     if (!user.username || user.username.length < 3) {
-  //       redirect("/onboarding");
-  //     }
-  //   },
-  // });
-
-  // export const metadata: Metadata = {
-  //   title: "Resources Hub",
-  //   description: "A collection of useful resources and components for developers",
-  //   keywords: "Resource, startup, tech, build",
-  //   openGraph: {
-  //     title: "Resources Hub",
-  //     description:
-  //       "A collection of useful resources and components for developers",
-  //     url: "https://resources.ashish.services",
-  //     siteName: "Resources Hub",
-  //     locale: "en-US",
-  //     type: "website",
-  //   },
-  // };
-
+  const TRACKING_ID = "G-NHX0XB1HWG";
+  useEffect(() => {
+    ReactGA.initialize(TRACKING_ID);
+    // Send pageview with a custom path
+    ReactGA.send({
+      hitType: "pageview",
+      page: "/landingpage",
+      title: "Landing Page",
+    });
+  }, []);
   return (
     <html lang="en">
       <link rel="icon" href="/logo.png"></link>
@@ -104,6 +76,7 @@ export default function RootLayout({
           {children}
           <Toaster position="top-right" richColors />
         </QueryClientProvider>
+        <Analytics />
       </body>
     </html>
   );
