@@ -10,8 +10,8 @@ function getHost() {
       if (data.host) return data.host;
     }
   } catch {}
-  return "http://localhost:3000";
-  // return "http://sharedcn.vercel.app";
+  // return "http://localhost:3000";
+  return "http://sharedcn.vercel.app";
 }
 const HOST = getHost();
 

@@ -90,7 +90,7 @@ export default function Page() {
     queryKey: ["user"],
     queryFn: async () => {
       const res = await fetch("/api/token", { method: "POST" });
-      if (!res.ok) router.push("/sign-in");
+      if (!res.ok) router.push("/login");
       return res.json();
     },
   });
@@ -100,7 +100,7 @@ export default function Page() {
     queryKey: ["components"],
     queryFn: async () => {
       const res = await fetch("/api/components");
-      if (!res.ok) router.push("/sign-in");
+      if (!res.ok) router.push("/login");
       return res.json();
     },
   });
