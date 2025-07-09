@@ -179,6 +179,15 @@ exports.Prisma.VerificationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.FeedbackScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  content: 'content',
+  rating: 'rating',
+  isAnonymous: 'isAnonymous',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -200,7 +209,8 @@ exports.Prisma.ModelName = {
   Component: 'Component',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  Feedback: 'Feedback'
 };
 
 /**

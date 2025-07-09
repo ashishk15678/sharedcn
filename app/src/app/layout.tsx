@@ -15,7 +15,7 @@ function GlobalBreadcrumbs() {
   const parts = pathname.split("/").filter(Boolean);
   let path = "";
   return (
-    <nav className="text-xs text-zinc-400 mb-6 flex items-center space-x-1 select-none px-4 pt-4">
+    <nav className="text-xs text-zinc-400 absolute flex items-center space-x-1 select-none px-4 pt-4">
       <Link
         href="/"
         className="hover:underline text-zinc-500 hover:text-zinc-300"
@@ -68,9 +68,7 @@ export default function RootLayout({
         name="description"
         content="Share your components effortlessly , in the easiest manner. It helps people using only cli , and that is it."
       ></meta>
-      <body
-        className={" bg-gradient-to-b from-black via-zinc-900 to-zinc-950 "}
-      >
+      <body className={""}>
         <QueryClientProvider client={queryClient}>
           <GlobalBreadcrumbs />
           {children}

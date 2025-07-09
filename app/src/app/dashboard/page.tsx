@@ -6,6 +6,8 @@ import {
   XCircle,
   Sparkles,
   ThumbsUp,
+  Menu,
+  X,
 } from "lucide-react";
 import { components } from "@/components";
 import { ReactNode, useState, useRef, useEffect, useCallback } from "react";
@@ -24,6 +26,8 @@ import debounce from "lodash.debounce";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import type { Monaco } from "@monaco-editor/react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 // Dynamically import MonacoEditor for fast load
 const MonacoEditor = dynamic(
@@ -32,7 +36,7 @@ const MonacoEditor = dynamic(
 );
 
 export default function Page() {
-  const [component, setComponent] = useState<ReactNode>();
+  const [selectedComponent, setSelectedComponent] = useState<any | null>(null);
   const [comp, setComp] = useState({
     name: "",
     description: "",
@@ -44,6 +48,7 @@ export default function Page() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const queryClient = useQueryClient();
   const debounceRef = useRef<any>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { mutate: usernameMutation } = useMutation({
     mutationFn: async () => {
@@ -261,94 +266,197 @@ export default function Page() {
 
   return (
     <>
-      <div
-        className="h-screen w-full flex items-center justify-center bg-gradient-to-b from-black via-zinc-900 to-zinc-950 
-      "
-      >
-        <div className="w-full absolute top-2 border-t-2 border-dashed border-zinc-900 bg-zinc-800 m-12" />
-
-        <div className="h-full border-l-2 border-dashed border-zinc-900 bg-zinc-800 m-12" />
-
-        <div className="p-2">
-          <div
-            className="p-3 border-4 border-zinc-800 rounded-2xl flex flex-row gap-2 bg-gradient-to-bl from-yellow-700/20 hover:from-yellow-700/40 via-zinc-950  to-yellow-500/30 hover:to-yellow-500/80 transition-colors
-       text-zinc-100"
+      {/* Top Navbar */}
+      <nav className="fixed top-0 left-0 w-full z-40 bg-white/80 backdrop-blur border-b border-zinc-200 flex items-center justify-between px-4 md:px-8 h-14">
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
+            <span className="text-black font-bold text-sm">S</span>
+          </div>
+          <span className="text-xl font-bold text-black">SharedCN</span>
+        </div>
+        <div className="hidden md:flex items-center space-x-8">
+          <Link
+            href="/"
+            className="text-gray-600 hover:text-black transition-colors"
           >
-            <div className="border border-zinc-800 p-2 rounded-xl bg-zinc-900">
+            Home
+          </Link>
+          <Link
+            href="/dashboard"
+            className="text-gray-600 hover:text-black transition-colors"
+          >
+            Dashboard
+          </Link>
+          <Button
+            onClick={() => (window.location.href = "/login")}
+            variant="ghost"
+            className="text-gray-600 hover:text-black"
+          >
+            Login
+          </Button>
+          <Button
+            onClick={() => (window.location.href = "/docs")}
+            className="bg-black text-white hover:bg-gray-800"
+          >
+            Documentation
+          </Button>
+        </div>
+        <button
+          className="md:hidden p-2 rounded-lg hover:bg-zinc-100 transition"
+          onClick={() => setMobileMenuOpen(true)}
+          aria-label="Open menu"
+        >
+          <Menu className="w-6 h-6 text-zinc-700" />
+        </button>
+      </nav>
+      {/* Mobile menu overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/40 flex flex-col">
+          <div className="bg-white w-5/6 max-w-xs h-full shadow-2xl p-6 flex flex-col gap-6">
+            <div className="flex items-center justify-between mb-8">
+              <span className="text-xl font-bold text-black">SharedCN</span>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                aria-label="Close menu"
+              >
+                <X className="w-6 h-6 text-zinc-700" />
+              </button>
+            </div>
+            <Link
+              href="/"
+              className="text-zinc-700 text-lg py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              href="/dashboard"
+              className="text-zinc-700 text-lg py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Dashboard
+            </Link>
+            <Button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                window.location.href = "/login";
+              }}
+              variant="ghost"
+              className="text-zinc-700 text-lg py-2"
+            >
+              Login
+            </Button>
+            <Button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                window.location.href = "/docs";
+              }}
+              className="bg-black text-white text-lg py-2"
+            >
+              Documentation
+            </Button>
+          </div>
+          <div className="flex-1" onClick={() => setMobileMenuOpen(false)} />
+        </div>
+      )}
+      {/* Main dashboard content, responsive */}
+      <div className="min-h-screen w-full flex flex-col items-center justify-center bg-white pt-14">
+        <div className="w-full max-w-5xl mx-auto p-4 md:p-8">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-6 mb-12 md:h-96">
+            {/* Left: List of components */}
+            <div className="border border-zinc-200 rounded-xl bg-white w-64 p-4 flex flex-col h-full overflow-y-auto">
               <input
                 type="text"
-                placeholder="Components"
-                className="text-md  border border-zinc-800 rounded-lg p-1 px-4 bg-zinc-800/60  w-[180px] placeholder:text-zinc-200 text-zinc-200"
+                placeholder="Search components..."
+                className="mb-4 px-3 py-2 rounded-lg border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white text-sm"
+                disabled
               />
-              <ul className="mt-4 text-zinc-600 text-md w-full flex flex-col gap-y-1 p-2 ring ring-zinc-800 bg-zinc-800/40 rounded-xl h-[330px] overflow-auto">
+              <ul className="flex-1 overflow-y-auto space-y-1">
                 {isLoadingComponents ? (
                   [...Array(5)].map((_, i) => (
                     <li
                       key={i}
-                      className="h-6 bg-zinc-800/60 rounded animate-pulse mb-2"
+                      className="h-6 bg-zinc-100/60 rounded animate-pulse mb-2"
                     />
                   ))
                 ) : userComponents && userComponents.length > 0 ? (
-                  userComponents.map((component: any) => (
+                  userComponents.map((component: any, idx: number) => (
                     <li
                       key={component.id}
-                      onClick={() => setComponent(component)}
-                      className="hover:translate-x-2 transition-all hover:text-zinc-100 cursor-pointer"
+                      onClick={() => {
+                        setSelectedComponent(component);
+                        setActiveFileIdx(0);
+                      }}
+                      className={`cursor-pointer px-3 py-2 rounded-lg text-sm transition-all ${
+                        selectedComponent &&
+                        selectedComponent.id === component.id
+                          ? "bg-yellow-100 text-yellow-800 font-semibold"
+                          : "hover:bg-zinc-100 text-zinc-700"
+                      }`}
                     >
                       {component.name || component.alias}
                     </li>
                   ))
                 ) : (
-                  <li className="text-zinc-500">No components yet.</li>
+                  <li className="text-zinc-400 text-sm">No components yet.</li>
                 )}
               </ul>
             </div>
-            <div></div>
-            <div className="w-[400px]  h-[400px] rounded-xl ring ring-zinc-800 bg-zinc-900 flex  flex-col px-4 py-2">
-              {component &&
-                typeof component === "object" &&
-                "alias" in component && (
-                  <div className="text-2xl text-white">
-                    {(component as any).alias}
-                  </div>
-                )}
-              {component &&
-              typeof component === "object" &&
-              "code" in component ? (
-                <div className="flex flex-col gap-4 mt-4">
-                  {Array.isArray((component as any).code) ? (
-                    <>
-                      <div className="flex flex-row gap-2 w-full mb-2">
-                        {(component as any).code.map(
-                          (file: any, idx: number) => (
-                            <button
-                              key={idx}
-                              onClick={() => setActiveFileIdx(idx)}
-                              className={`px-3 py-1 rounded-t bg-zinc-800 border-b-2 ${
-                                activeFileIdx === idx
-                                  ? "border-yellow-400 text-yellow-300"
-                                  : "border-transparent text-zinc-400"
-                              } font-mono text-xs transition-all`}
-                            >
-                              {file.filename}
-                            </button>
-                          )
-                        )}
-                      </div>
-                      <pre className="w-full max-h-64 overflow-auto bg-zinc-900 text-zinc-100 p-2 rounded-b-md whitespace-pre-wrap border border-zinc-800 shadow-md">
-                        {(component as any).code[activeFileIdx]?.code}
-                      </pre>
-                    </>
-                  ) : (
-                    <pre className="mt-8 text-zinc-100 text-sm w-full h-full overflow-auto whitespace-pre-wrap bg-zinc-800 p-1 rounded-md">
-                      {(component as any).code}
-                    </pre>
-                  )}
+            {/* Right: Preview box */}
+            <div className="flex-1 min-w-0 border border-zinc-200 rounded-xl bg-white p-6 flex flex-col h-full overflow-y-auto">
+              {!selectedComponent ? (
+                <div className="text-zinc-400 text-center my-16">
+                  No component selected.
                 </div>
               ) : (
-                <div className="mt-8 text-xl text-zinc-600 mx-8">
-                  Go ahead select a component , noone's watching
-                </div>
+                <>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-xl font-bold text-zinc-900">
+                      {selectedComponent.name || selectedComponent.alias}
+                    </div>
+                    <span className="font-mono text-xs text-zinc-400">
+                      ID: {selectedComponent.id}
+                    </span>
+                  </div>
+                  <div className="text-zinc-500 text-sm mb-2">
+                    {selectedComponent.description}
+                  </div>
+                  {/* Install command */}
+                  <div className="mb-4 flex items-center gap-2">
+                    <span className="bg-zinc-100 text-yellow-800 px-3 py-1 rounded font-mono text-xs select-all">
+                      npx sharedcn add{" "}
+                      {selectedComponent.name
+                        ?.replace(/\s+/g, "-")
+                        .toLowerCase() || selectedComponent.alias}
+                    </span>
+                    <button
+                      className="ml-2 px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+                      onClick={() =>
+                        navigator.clipboard.writeText(
+                          `npx sharedcn add ${
+                            selectedComponent.name
+                              ?.replace(/\s+/g, "-")
+                              .toLowerCase() || selectedComponent.alias
+                          }`
+                        )
+                      }
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  {/* Code preview */}
+                  <div className="bg-zinc-100 text-zinc-700 rounded-lg p-4 overflow-auto text-xs h-full whitespace-pre-wrap border border-zinc-100 shadow-inner">
+                    {Array.isArray(selectedComponent.code) ? (
+                      <pre>
+                        {selectedComponent.code
+                          .map((f: any) => `// ${f.filename}\n${f.code}`)
+                          .join("\n\n")}
+                      </pre>
+                    ) : (
+                      <pre>{selectedComponent.code}</pre>
+                    )}
+                  </div>
+                </>
               )}
             </div>
           </div>
@@ -456,108 +564,81 @@ export default function Page() {
                   </div>
                   <div className="flex flex-col  justify-center gap-2">
                     <p className="text-zinc-400">Files: *</p>
-                    {comp.code.map((file, idx) => (
-                      <div
-                        key={idx}
-                        className="mb-2 flex flex-row items-center gap-2"
+                    {/* Tabs row */}
+                    <div className="flex flex-row items-center gap-1 mb-2 border-b border-zinc-700 overflow-x-auto">
+                      {comp.code.map((file, idx) => (
+                        <div
+                          key={idx}
+                          className={`relative flex items-center px-4 py-1 mr-1 rounded-t-md cursor-pointer select-none transition-all text-sm font-mono
+                            ${
+                              activeFileIdx === idx
+                                ? "bg-zinc-900 border-t-2 border-x border-zinc-700 border-b-0 text-yellow-300 font-bold"
+                                : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                            }
+                          `}
+                          onClick={() => setActiveFileIdx(idx)}
+                          onDoubleClick={() => {
+                            setRenameDialog({ open: true, idx });
+                            setRenameValue(file.filename);
+                          }}
+                        >
+                          <span className="truncate max-w-[120px]">
+                            {file.filename}
+                          </span>
+                          {comp.code.length > 1 && (
+                            <button
+                              className="ml-2 text-zinc-500 hover:text-red-400 focus:outline-none"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const newFiles = comp.code.filter(
+                                  (_, i) => i !== idx
+                                );
+                                setComp({ ...comp, code: newFiles });
+                                if (activeFileIdx === idx)
+                                  setActiveFileIdx(Math.max(0, idx - 1));
+                              }}
+                              title="Remove file"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                      {/* Add file tab */}
+                      <button
+                        className="ml-2 px-2 py-1 rounded-t-md bg-zinc-800 text-zinc-400 hover:bg-zinc-700 font-bold text-lg flex items-center"
+                        onClick={() => {
+                          const newFile = {
+                            filename: `File${comp.code.length + 1}.ts`,
+                            code: "",
+                          };
+                          setComp({ ...comp, code: [...comp.code, newFile] });
+                          setActiveFileIdx(comp.code.length);
+                        }}
+                        title="Add file"
                       >
-                        <span className="font-mono text-xs text-zinc-400">
-                          {file.filename}
-                        </span>
-                        <button
-                          className="text-blue-400 text-xs px-2 py-1 rounded hover:bg-blue-900/30"
-                          onClick={() => {
-                            setEditDialog({ open: true, idx });
-                            setEditFile({
-                              filename: file.filename,
-                              code: file.code,
-                            });
-                          }}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="text-red-400 text-xs px-2 py-1 rounded hover:bg-red-900/30"
-                          onClick={() => {
-                            const newFiles = comp.code.filter(
-                              (_, i) => i !== idx
-                            );
-                            setComp({ ...comp, code: newFiles });
-                          }}
-                          disabled={comp.code.length === 1}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    ))}
-                    <button
-                      className="bg-zinc-700 text-white px-3 py-1 rounded mt-2 text-xs"
-                      onClick={() =>
-                        setComp({
-                          ...comp,
-                          code: [
-                            ...comp.code,
-                            {
-                              filename: `File${comp.code.length + 1}.ts`,
-                              code: "",
-                            },
-                          ],
-                        })
-                      }
-                    >
-                      + Add File
-                    </button>
-                    {/* File Edit Dialog */}
-                    {editDialog.open && editDialog.idx !== null && (
+                        +
+                      </button>
+                    </div>
+                    {/* Rename dialog */}
+                    {renameDialog.open && renameDialog.idx !== null && (
                       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                        <div className="bg-zinc-900 p-8 rounded-2xl shadow-2xl flex flex-col gap-4 min-w-[600px] max-w-[95vw] min-h-[500px] max-h-[90vh]">
+                        <div className="bg-zinc-900 p-8 rounded-2xl shadow-2xl flex flex-col gap-4 min-w-[350px] max-w-[95vw]">
                           <h3 className="text-xl font-bold text-white mb-2">
-                            Edit File
+                            Rename File
                           </h3>
                           <input
                             type="text"
-                            value={editFile.filename}
-                            onChange={(e) =>
-                              setEditFile({
-                                ...editFile,
-                                filename: e.target.value,
-                              })
-                            }
+                            value={renameValue}
+                            onChange={(e) => setRenameValue(e.target.value)}
                             className="w-full bg-zinc-800 rounded-md p-2 text-sm font-mono"
                             placeholder="Filename"
                           />
-                          <div className="flex-1 min-h-[350px] max-h-[60vh]">
-                            <MonacoEditor
-                              height="350px"
-                              defaultLanguage={
-                                editFile.filename.endsWith(".tsx")
-                                  ? "typescript"
-                                  : "javascript"
-                              }
-                              language={
-                                editFile.filename.endsWith(".tsx")
-                                  ? "typescript"
-                                  : "javascript"
-                              }
-                              value={editFile.code}
-                              theme="vs-dark"
-                              options={{
-                                fontSize: 14,
-                                minimap: { enabled: false },
-                                wordWrap: "on",
-                                scrollBeyondLastLine: false,
-                                automaticLayout: true,
-                              }}
-                              onChange={(val: string | undefined) =>
-                                setEditFile({ ...editFile, code: val ?? "" })
-                              }
-                            />
-                          </div>
                           <div className="flex flex-row gap-2 justify-end mt-2">
                             <button
                               className="px-4 py-2 rounded bg-zinc-700 text-white text-sm"
                               onClick={() =>
-                                setEditDialog({ open: false, idx: null })
+                                setRenameDialog({ open: false, idx: null })
                               }
                             >
                               Cancel
@@ -566,17 +647,17 @@ export default function Page() {
                               className="px-4 py-2 rounded bg-blue-600 text-white text-sm"
                               onClick={() => {
                                 if (
-                                  editDialog.idx !== null &&
-                                  editFile.filename.trim()
+                                  renameDialog.idx !== null &&
+                                  renameValue.trim()
                                 ) {
                                   const newFiles = [...comp.code];
-                                  newFiles[editDialog.idx] = {
-                                    ...editFile,
-                                    filename: editFile.filename.trim(),
+                                  newFiles[renameDialog.idx] = {
+                                    ...newFiles[renameDialog.idx],
+                                    filename: renameValue.trim(),
                                   };
                                   setComp({ ...comp, code: newFiles });
                                 }
-                                setEditDialog({ open: false, idx: null });
+                                setRenameDialog({ open: false, idx: null });
                               }}
                             >
                               Save
@@ -585,6 +666,39 @@ export default function Page() {
                         </div>
                       </div>
                     )}
+                    {/* Code editor for active file */}
+                    <div className="flex-1 min-h-[350px] max-h-[60vh]">
+                      <MonacoEditor
+                        height="350px"
+                        defaultLanguage={
+                          comp.code[activeFileIdx]?.filename.endsWith(".tsx")
+                            ? "typescript"
+                            : "javascript"
+                        }
+                        language={
+                          comp.code[activeFileIdx]?.filename.endsWith(".tsx")
+                            ? "typescript"
+                            : "javascript"
+                        }
+                        value={comp.code[activeFileIdx]?.code}
+                        theme="vs-dark"
+                        options={{
+                          fontSize: 14,
+                          minimap: { enabled: false },
+                          wordWrap: "on",
+                          scrollBeyondLastLine: false,
+                          automaticLayout: true,
+                        }}
+                        onChange={(val: string | undefined) => {
+                          const newFiles = [...comp.code];
+                          newFiles[activeFileIdx] = {
+                            ...newFiles[activeFileIdx],
+                            code: val ?? "",
+                          };
+                          setComp({ ...comp, code: newFiles });
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
                 <SheetFooter className="shrink-0 bg-gradient-to-t from-black/80 to-transparent pt-4">
@@ -614,7 +728,7 @@ export default function Page() {
                 <>
                   <input
                     type="text"
-                    className="w-48 placeholder:text-zinc-600 p-2 text-white outline-none bg-transparent"
+                    className="w-48 placeholder:text-zinc-600 p-2 text-black outline-none bg-transparent"
                     value={usernameData.username}
                     disabled
                   />
@@ -681,7 +795,6 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <div className="h-full border-l-2 border-dashed border-zinc-900 bg-zinc-800 m-12" />
       </div>
     </>
   );

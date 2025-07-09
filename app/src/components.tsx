@@ -168,6 +168,7 @@ function TransactionChecker() {
       <div className="inline-flex justify-center">
         <motion.button
           animate={state === "failed" ? "failed" : ""}
+          // @ts-ignore
           variants={shakeAnimation}
           // @ts-ignore
           onClick={() => {

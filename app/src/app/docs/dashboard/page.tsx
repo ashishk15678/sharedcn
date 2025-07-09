@@ -1,12 +1,12 @@
 export default function DashboardDocs() {
   return (
-    <div className="min-h-screen flex flex-col items-center">
-      <div className="max-w-xl w-full px-4 py-10 flex flex-col items-center">
-        <h1 className="text-2xl font-bold py-8 mb-4 text-zinc-100 w-full ">
+    <div className="w-full max-w-4xl mx-auto px-6 py-12">
+      <div className="w-full bg-white/90 rounded-2xl shadow-lg p-8 text-zinc-800 border border-zinc-200">
+        <h1 className="text-3xl font-extrabold mb-8 text-zinc-900">
           Dashboard
         </h1>
-        <div className="w-full text-zinc-300 text-sm space-y-4">
-          <ul className="list-disc ml-6 text-zinc-400">
+        <div className="w-full text-zinc-700 text-sm space-y-4">
+          <ul className="list-disc ml-6 text-zinc-500">
             <li>Sign in with Google or GitHub (BetterAuth).</li>
             <li>On first sign-in, set a unique username via onboarding.</li>
             <li>
