@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.10.1
- * Query Engine version: 9b628578b3b7cae625e8c927178f15a170e74a9c
+ * Prisma Client JS version: 6.12.0
+ * Query Engine version: 8047c96bbd92db98a2abc7c9323ce77c02c89dbc
  */
 Prisma.prismaVersion = {
-  client: "6.10.1",
-  engine: "9b628578b3b7cae625e8c927178f15a170e74a9c"
+  client: "6.12.0",
+  engine: "8047c96bbd92db98a2abc7c9323ce77c02c89dbc"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -138,9 +138,17 @@ exports.Prisma.ComponentScalarFieldEnum = {
   alias: 'alias',
   description: 'description',
   dependent: 'dependent',
-  code: 'code',
+  mainFile: 'mainFile',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FileScalarFieldEnum = {
+  id: 'id',
+  componentId: 'componentId',
+  filename: 'filename',
+  code: 'code',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SessionScalarFieldEnum = {
@@ -188,6 +196,18 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.MetricsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  componentId: 'componentId',
+  installations: 'installations',
+  uploads: 'uploads',
+  views: 'views',
+  copyClicks: 'copyClicks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -207,10 +227,12 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   User: 'User',
   Component: 'Component',
+  File: 'File',
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
-  Feedback: 'Feedback'
+  Feedback: 'Feedback',
+  Metrics: 'Metrics'
 };
 
 /**

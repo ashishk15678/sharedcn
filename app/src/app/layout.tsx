@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ReactGA from "react-ga4";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const queryClient = new QueryClient();
 
@@ -15,7 +16,7 @@ function GlobalBreadcrumbs() {
   const parts = pathname.split("/").filter(Boolean);
   let path = "";
   return (
-    <nav className="text-xs text-zinc-400 absolute flex items-center space-x-1 select-none px-4 pt-4">
+    <nav className="text-xs text-zinc-400 absolute bottom-1 right-1 flex items-center space-x-1 select-none px-4 pt-4">
       <Link
         href="/"
         className="hover:underline text-zinc-500 hover:text-zinc-300"
@@ -69,12 +70,19 @@ export default function RootLayout({
         content="Share your components effortlessly , in the easiest manner. It helps people using only cli , and that is it."
       ></meta>
       <body className={""}>
-        <QueryClientProvider client={queryClient}>
-          <GlobalBreadcrumbs />
-          {children}
-          <Toaster position="top-right" richColors />
-        </QueryClientProvider>
-        <Analytics />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryClientProvider client={queryClient}>
+            {children}
+            <GlobalBreadcrumbs />
+            <Toaster position="top-right" richColors />
+          </QueryClientProvider>
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   );

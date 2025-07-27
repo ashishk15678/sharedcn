@@ -15,7 +15,6 @@ import { Mail, Twitter, Github, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { Menu } from "lucide-react";
-
 function useTiltCard() {
   const ref = useRef(null);
   // ... same as useTilt from utils, but inline for this file ...
@@ -334,31 +333,15 @@ export default function HomePage() {
           <div className="flex-1" onClick={() => setMobileMenuOpen(false)} />
         </div>
       )}
+
       {/* Main content: add responsive classes to all flex/grid layouts */}
       <div className="w-full flex flex-col items-center justify-center">
         <div className="max-w-4xl mx-auto border-x-2 border-dashed border-zinc-300 bg-white w-full">
           {/* Hero Section */}
           <section className="relative py-32 mt-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
             <div className="max-w-4xl mx-auto text-center relative">
-              {/* Floating Badges - positioned like in the original */}
-              <div className="absolute -top-10 left-20 hidden lg:block">
-                <Badge className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm">
-                  Public and open to all
-                </Badge>
-              </div>
-              <div className="absolute top-20 right-32 hidden lg:block">
-                <Badge className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
-                  Easy to use
-                </Badge>
-              </div>
-              <div className="absolute top-40 left-32 hidden md:block">
-                <Badge className="bg-green-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
-                  cli based
-                </Badge>
-              </div>
-
               <h1 className="text-4xl md:text-7xl font-extrabold mb-4 text-black leading-tight">
-                Share your components/code snippets
+                Share your components and code snippets
               </h1>
               <h2 className="text-4xl md:text-7xl font-light text-gray-400 italic mb-16 leading-tight">
                 the easy way.
@@ -719,12 +702,14 @@ export default function HomePage() {
                 <p className="text-4xl font-normal text-zinc-600 italic">
                   Join now where everybody already is
                 </p>
-                <button
-                  className="p-4 w-full bg-gradient-to-r from-violet-700 via-blue-500 to-purple-600 hover:shadow-sm shadow-xl shadow-violet-400 text-white text-2xl rounded-2xl flex flex-row items-center justify-center mt-8 italic
+                <Link prefetch href={"/login"}>
+                  <button
+                    className="p-4 w-full bg-gradient-to-r from-violet-700 via-blue-500 to-purple-600 hover:shadow-sm shadow-xl shadow-violet-400 text-white text-2xl rounded-2xl flex flex-row items-center justify-center mt-8 italic
                 hover:not-italic transition-all duration-300 gap-x-6 hover:gap-x-8 font-bold"
-                >
-                  Create your component now <MoveRightIcon size={30} />
-                </button>
+                  >
+                    Create your component now <MoveRightIcon size={30} />
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ["framer-motion", "lucide-react"],
+    viewTransition: true,
   },
   staticPageGenerationTimeout: 120,
   compiler: {
