@@ -9,10 +9,13 @@ import {
   ChevronRight,
   LogOut,
   User,
+  PlaySquare,
+  Laptop,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
+import Loader from "./loading";
 
 // Define the type for our navigation links, supporting nesting for SubMenuItem
 interface NavLinkItem {
@@ -80,6 +83,12 @@ export default function DashboardLayout({
       icon: <Settings size={20} />,
       link: "/settings",
     },
+    {
+      id: 3,
+      name: "Playground",
+      icon: <Laptop size={20} />,
+      link: "/playground",
+    },
   ];
 
   // Data for components sub-menu
@@ -143,9 +152,9 @@ export default function DashboardLayout({
   return (
     <div className="flex flex-1 min-h-screen bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
       {/* Sidebar Container */}
-      <div className="hidden lg:w-18 hover:w-56 border-r border-zinc-200 dark:border-zinc-800 px-2 py-4 transition-all group h-screen md:flex md:flex-col relative">
+      <div className="hidden absolute z-1  lg:w-18 hover:w-56 border-r dark:bg-zinc-900 bg-white border-zinc-200 dark:border-zinc-800 px-2 py-4 transition-all group h-screen md:flex md:flex-col ">
         {/* Top-level Nav Links (Home, Settings) */}
-        <div className="flex flex-col gap-y-1 w-full items-start mb-4">
+        <div className="flex flex-col gap-y-1 w-full items-start mb-4 ">
           {topNavLinks.map((nav) => {
             const isActive = pathname === nav.link;
             return (
@@ -156,7 +165,7 @@ export default function DashboardLayout({
                   relative w-full flex items-center p-2 cursor-pointer rounded-md transition-all duration-200 group
                   ${
                     isActive
-                      ? "bg-zinc-100 text-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 font-semibold"
+                      ? "bg-gradient-to-r from-zinc-100 via-zinc-100/50 to-zinc-100 text-zinc-800 dark:from-zinc-800 dark:via-zinc-900 dark:to-zinc-800  dark:shadow-zinc-800  dark:text-zinc-200"
                       : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                   }
                 `}
@@ -270,8 +279,10 @@ export default function DashboardLayout({
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto">{children}</div>
+      <Suspense fallback={<Loader />}>
+        {/* Main Content */}
+        <div className="flex-1 overflow-auto ml-18">{children}</div>
+      </Suspense>
 
       {/* Theme Toggle */}
       <div className="absolute z-99 top-2 right-2">
