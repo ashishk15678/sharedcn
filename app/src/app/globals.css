@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=Bitcount+Prop+Double:wght,ELSH@448,59.7&family=Bitcount:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -200,3 +201,74 @@
 .x-shake {
   animation: shake-x 0.5s;
 }
+
+.font-bitcount {
+  font-family: "Bitcount", system-ui;
+    font-optical-sizing: auto;
+    font-weight:400;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 0,
+      "CRSV" 0.5,
+      "ELSH" 0,
+      "ELXP" 0;
+}
+
+
+
+.interactive-parent:hover .button-interactive {
+  animation:
+      /* animation-name | duration | delay | fill-mode */
+      height-anim 200ms 0ms forwards,
+      width-anim 200ms 200ms forwards;
+  }
+@keyframes height-anim {
+  0%{
+    height: 0;
+    background-color: var(--color-amber-200); }
+
+  100%{
+    padding-top: 2rem;
+    background-color: var(--color-amber-200);
+  }
+}
+@keyframes width-anim {
+  0% {
+    height: 0;
+    background-color:var(--color-amber-200);
+  }
+
+  100% {
+    padding-right: 10rem;
+    background-color:var(--color-amber-200);
+  }
+}
+
+@keyframes scroll-left {
+  from {
+    transform: translateX(0%);
+  }
+
+  to {
+    transform: translateX(-100%);
+    /* Adjust for content width */
+  }
+}
+
+.scrolling-text {
+  animation: scroll-left 30s linear infinite;
+  /* Adjust duration and timing */
+  white-space: nowrap;
+  /* Prevent text wrapping */
+  overflow: hidden;
+  /* Hide overflowing content */
+}
+
+/* .scrolling-text:hover{ */
+  /* animation: scroll-left 20s linear infinite; */
+  /* Adjust duration and timing */
+  /* white-space: nowrap; */
+  /* Prevent text wrapping */
+  /* overflow: hidden; */
+  /* Hide overflowing content */
+/* } */

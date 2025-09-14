@@ -8,15 +8,18 @@ import {
   Component,
   ChevronRight,
   LogOut,
-  User,
   PlaySquare,
   Laptop,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState, useRef, useEffect, Suspense } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useRef, useEffect, Suspense, useMemo } from "react";
 import Loader from "./loading";
-
+import { components } from "@/components";
+import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
+import { User } from "better-auth";
+import Image from "next/image";
 // Define the type for our navigation links, supporting nesting for SubMenuItem
 interface NavLinkItem {
   id: number;
@@ -25,36 +28,35 @@ interface NavLinkItem {
   link: string;
 }
 
-// SubMenuItem Component (for rendering individual items within the Components section)
-interface SubMenuItemProps {
-  item: NavLinkItem;
+const SubMenuItem: React.FC<{
+  item: (typeof components)[0];
   pathname: string;
-}
-
-const SubMenuItem: React.FC<SubMenuItemProps> = ({ item, pathname }) => {
-  const isActive = pathname === item.link;
-
+}> = ({ item, pathname }) => {
+  const isActive = pathname === `/${item.title.split(" ").join("-")}`;
+  // console.log({ pathname });
   return (
     <Link
-      href={item.link}
+      href={"/component/" + item.title.split(" ").join("-")}
       key={item.id}
       className={`
         relative w-full flex items-center p-2 cursor-pointer rounded-md transition-all duration-200
         ${
           isActive
-            ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 font-semibold" // Active sub-link highlight
+            ? "bg-emerald-100 text-emerald-800 dark:bg-zinc-900/80 dark:text-emerald-200 font-semibold" // Active sub-link highlight
             : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800" // Inactive sub-link
         }
       `}
     >
-      <div className="flex-shrink-0 w-8 flex items-center justify-center">
-        {item.icon ? (
-          item.icon
+      {/* <div className="flex-shrink-0 w-8 flex items-center justify-center">
+        {item.description ? (
+          item.description
         ) : (
           <span className="w-1 h-1 rounded-full bg-current mr-2"></span>
         )}
-      </div>
-      <p className="text-sm whitespace-nowrap">{item.name}</p>
+      </div> */}
+      <p className="text-sm whitespace-nowrap">
+        {item.title.split(" ").join("-")}
+      </p>
     </Link>
   );
 };
@@ -68,6 +70,19 @@ export default function DashboardLayout({
   const [isComponentsOpen, setIsComponentsOpen] = useState(false);
   const scrollableRef = useRef<HTMLDivElement>(null);
   const [scrollableHeight, setScrollableHeight] = useState("0px");
+  const [session, setSession] = useState<User | undefined>(undefined);
+  const router = useRouter();
+  useEffect(() => {
+    (async function () {
+      const session = await authClient.getSession();
+
+      if (!session.data?.session || session == undefined) {
+        router.push("/login");
+      }
+      setSession(session.data?.user);
+      console.log({ session });
+    })();
+  }, []);
 
   // Top-level navigation links (Home, Settings)
   const topNavLinks = [
@@ -149,10 +164,18 @@ export default function DashboardLayout({
   // You'll need to fine-tune this with your actual CSS
   const scrollableComponentsMaxHeight = `calc(100vh - ${fixedElementsHeight}px)`;
 
+  if (session == null) {
+    return (
+      <div className="flex items-center justify-center h-screen w-screen animate-pulse text-xl">
+        Loading...
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-1 min-h-screen bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
       {/* Sidebar Container */}
-      <div className="hidden absolute z-1  lg:w-18 hover:w-56 border-r dark:bg-zinc-900 bg-white border-zinc-200 dark:border-zinc-800 px-2 py-4 transition-all group h-screen md:flex md:flex-col ">
+      <div className="hidden absolute z-1  md:w-18 hover:w-56 border-r dark:bg-zinc-900 bg-white border-zinc-200 dark:border-zinc-800 px-2 py-4 transition-all group h-screen md:flex md:flex-col ">
         {/* Top-level Nav Links (Home, Settings) */}
         <div className="flex flex-col gap-y-1 w-full items-start mb-4 ">
           {topNavLinks.map((nav) => {
@@ -233,7 +256,7 @@ export default function DashboardLayout({
                 className="overflow-y-auto pr-2"
                 style={{ maxHeight: scrollableComponentsMaxHeight }}
               >
-                {componentLinks.map((item) => (
+                {components.map((item) => (
                   <SubMenuItem key={item.id} item={item} pathname={pathname} />
                 ))}
               </div>
@@ -255,10 +278,27 @@ export default function DashboardLayout({
             `}
           >
             <div className="flex-shrink-0 w-8 flex items-center justify-center">
-              <User size={20} />
+              {session == undefined || session == null ? (
+                <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-600  animate-pulse" />
+              ) : (
+                <Image
+                  src={session?.image || ""}
+                  height={20}
+                  width={20}
+                  alt=""
+                  className="rounded-full "
+                />
+              )}{" "}
             </div>
-            <p className="absolute left-10 text-md whitespace-nowrap opacity-0 group-hover:opacity-100 group-hover:block transition-opacity duration-200 pointer-events-none">
-              User Profile
+            <p className="absolute flex flex-col left-10 py-2 text-md whitespace-nowrap opacity-0 group-hover:opacity-100 group-hover:block transition-opacity duration-200 pointer-events-none">
+              {session !== undefined ? (
+                session.name
+              ) : (
+                <span className="animate-pulse text-sm"> Loading ... </span>
+              )}
+              {session !== undefined && (
+                <p className="text-xs -mt-2">{session.email}</p>
+              )}{" "}
             </p>
           </Link>
 

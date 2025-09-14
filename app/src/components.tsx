@@ -3,7 +3,9 @@ import {
   AlertCircle,
   CheckCircle,
   DeleteIcon,
+  Download,
   Grid,
+  Grid3x2,
   Home,
   Link,
   List,
@@ -13,11 +15,19 @@ import {
   Package,
   Settings,
   User,
+  UserIcon,
   View,
   X,
   XCircle,
 } from "lucide-react";
-import { Suspense, useState, useEffect, useCallback, useRef } from "react";
+import {
+  Suspense,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+} from "react";
 import { cn } from "./lib/utils";
 import Image from "next/image";
 import PremiumPlanSelector from "./components/premium";
@@ -1326,7 +1336,7 @@ const lol = works,
     id: 6,
     title: "Fluid Menu Animation",
     description: "A fluid menu animation",
-    tags: ["Animation", "Other", "Peerlist"],
+    tags: ["Animation", "Other"],
     component: (
       <Suspense
         fallback={
@@ -1396,7 +1406,7 @@ const lol = works,
     id: 7,
     title: "Animated Button",
     description: "A Transaction Checker",
-    tags: ["Animation", "Other", "Peerlist"],
+    tags: ["Animation", "Other"],
     component: (
       <Suspense
         fallback={
@@ -1412,7 +1422,7 @@ const lol = works,
     id: 8,
     title: "Animated Toggle",
     description: "A animated toggle button",
-    tags: ["Animation", "Other", "Peerlist"],
+    tags: ["Animation", "Other"],
     component: (
       <Suspense>
         <AnimatedToggle />
@@ -1424,7 +1434,7 @@ const lol = works,
     id: 9,
     title: "Animated Checkbox",
     description: "A animated checkbox button",
-    tags: ["Animation", "Other", "Peerlist"],
+    tags: ["Animation", "Other"],
     component: (
       <Suspense
         fallback={
@@ -1440,7 +1450,7 @@ const lol = works,
     id: 10,
     title: "Collectibles",
     description: "A collectibles component",
-    tags: ["Animation", "Other", "Peerlist"],
+    tags: ["Animation", "Other"],
     component: (
       <Suspense>
         <Collectibles />
@@ -1516,6 +1526,255 @@ const lol = works,
     component: <AppleButton />,
     code: `Apple button`,
   },
+  {
+    id: 17,
+    title: "Gradient card",
+    description: "A beautiful gradient card , by @axadkhaleel on X",
+    tags: ["card"],
+    component: (
+      <>
+        <div className="bg-zinc-100 dark:bg-black border-2 border-zinc-100 shadow-lg rounded-lg dark:border-zinc-900/80 pl-12 pt-4 pb-24 relative overflow-hidden">
+          <Image
+            src={"/purple-gradient.png"}
+            width={400}
+            height={200}
+            alt=""
+            className="absolute z-1 -top-0 -left-20 dark:opacity-30 opacity-50 blur-xl rotate-100"
+          />
+          <div className="p-4 border-y-1 border-l-1 border-zinc-300 dark:border-zinc-700 rounded-lg flex-col ">
+            <div className="flex gap-x-4 items-center justify-start">
+              <p className="text-xl">Teams</p>
+              <div className="flex space-x-2 items-center justify-center dark:text-zinc-400 text-sm">
+                <button className="px-2 py-0.5 text-zinc-200 bg-zinc-500 dark:bg-zinc-700 rounded-lg">
+                  Team
+                </button>
+                <button className="px-2 py-0.5 text-zinc-200 bg-zinc-500  dark:bg-zinc-600 rounded-lg">
+                  In progress{" "}
+                </button>
+                <button className="px-2 py-0.5 text-zinc-200 bg-zinc-500 dark:bg-zinc-700 rounded-lg">
+                  Blocked{" "}
+                </button>
+                <button className="px-2 py-0.5 text-zinc-200 bg-zinc-500 dark:bg-zinc-700  rounded-lg">
+                  Upcoming{" "}
+                </button>
+              </div>
+            </div>
+            <div className="mt-4 flex flex-col w-full p-2 space-y-2">
+              <button className="ring ring-zinc-200 dark:ring-zinc-700 rounded-lg py-2 flex flex-row items-center justify-between p-4">
+                <UserIcon size={30} />
+                <div className="flex flex-col">
+                  <span className="text-lg">Joseph Norman</span>
+                  <span className="text-sm">Some random description</span>
+                </div>
+              </button>
+              <button className="ring ring-zinc-200 dark:ring-zinc-700 rounded-lg py-2 flex flex-row items-center justify-between p-4">
+                <UserIcon size={30} />
+                <div className="flex flex-col">
+                  <span className="text-lg">Joseph Norman</span>
+                  <span className="text-sm">Some random description</span>
+                </div>
+              </button>
+            </div>
+            <div className="absolute bottom-0 left-0 p-4 pt-10 dark:bg-black bg-zinc-100 flex flex-col">
+              <span className="text-lg dark:text-zinc-100 text-zinc-900 font-bold">
+                Teamwide Progress Visiblility
+              </span>
+
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+                Always know what's done , what's blocked, and what's next. Give
+                your team clarity without adding another meeting.
+              </p>
+            </div>
+          </div>
+        </div>
+      </>
+    ),
+    code: ``,
+  },
+  {
+    id: 18,
+    title: "yellow top down gradient",
+    description: "A beautiful yellow gradient by @marcelkargul on X",
+    tags: ["background", "gradient"],
+    component: (
+      <>
+        <div className=" min-h-screen min-w-md w-full h-full ">
+          <Image
+            src={"/mesh-219.png"}
+            height={1024}
+            width={1024}
+            className="w-full h-full  "
+            alt=""
+          />
+        </div>
+      </>
+    ),
+    code: ``,
+  },
+  {
+    id: 19,
+    title: "Interactive dot grid",
+    description: "",
+    tags: ["card"],
+    component: (
+      <div className="max-h-96 max-w-md w-full h-full">
+        {" "}
+        <DotGrid />
+      </div>
+    ),
+  },
+  {
+    id: 20,
+    title: "Interactive buttons",
+    description: "",
+    tags: ["button"],
+    component: (
+      <div className="max-h-96 max-w-md w-full h-full flex flex-row justify-center space-x-40 items-center">
+        <button className=" relative interactive-parent font-bold group  text-amber-500 transition-all duration-500">
+          <div className="absolute z-1 left-1 transition-all button-interactive bg-orange-500 w-10" />
+          <div className="absolute z-2 flex flex-row gap-x-2 items-center justify-center  px-4 py-1 group-hover:text-amber-600">
+            <Grid3x2
+              width={22}
+              height={16}
+              className="group-hover:scale-110 transition-all duration-200 "
+            />
+            <span className="tracking-widest ">DOWNLOAD</span>
+          </div>
+        </button>
+
+        <button className=" relative interactive-parent font-bold group  text-amber-500 transition-all duration-500">
+          <div className="absolute z-1 left-1 transition-all button-interactive bg-orange-500 w-10" />
+          <div className="absolute z-2 flex flex-row gap-x-2 items-center justify-center  px-4 py-1 group-hover:text-amber-600">
+            <Grid3x2
+              width={22}
+              height={16}
+              className="group-hover:scale-110 transition-all duration-200 "
+            />
+            <span className="tracking-widest inline">BUTTON</span>
+          </div>
+        </button>
+
+        <button className=" relative interactive-parent font-bold group  text-amber-500 transition-all duration-500">
+          <div className="absolute z-1 left-1 transition-all button-interactive bg-orange-500 w-10" />
+          <div className="absolute z-2 flex flex-row gap-x-2 items-center justify-center  px-4 py-1 group-hover:text-amber-600">
+            <Grid3x2
+              width={22}
+              height={16}
+              className="group-hover:scale-110 transition-all duration-200 "
+            />
+            <span className="tracking-widest ">ABOUT_US</span>
+          </div>
+        </button>
+      </div>
+    ),
+  },
 ];
 
 // Add the HoldToDeleteButton component definition
+function DotGrid() {
+  // --- Configuration ---
+  const DOT_SIZE = 8; // The size of each dot in pixels
+  const DOT_SPACING = 8; // The space between each dot in pixels
+  const UPDATE_INTERVAL = 100; // Time in ms to update a random dot
+  const OPACITY_LEVELS = [0.1, 0.2, 0.3, 0.4, 0.5]; // Possible random opacity values
+
+  // --- Helper Function ---
+  // Picks a random item from an array
+  const getRandomItem = useMemo(
+    () => (arr) => arr[Math.floor(Math.random() * arr.length)]
+  );
+  const containerRef = useRef(null);
+
+  // State to hold the grid dimensions and the array of dots
+  const [grid, setGrid] = useState({ cols: 0, rows: 0, total: 0 });
+  const [dots, setDots] = useState([]);
+
+  // Effect to calculate grid dimensions based on the container's size
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    // Use ResizeObserver to detect size changes of the container
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        const cols = Math.floor(width / (DOT_SIZE + DOT_SPACING));
+        const rows = Math.floor(height / (DOT_SIZE + DOT_SPACING));
+        // Update grid state only if it has changed
+        setGrid((prevGrid) => {
+          if (prevGrid.cols !== cols || prevGrid.rows !== rows) {
+            return { cols, rows, total: cols * rows };
+          }
+          return prevGrid;
+        });
+      }
+    });
+
+    resizeObserver.observe(container);
+
+    // Cleanup the observer when the component unmounts
+    return () => resizeObserver.disconnect();
+  }, []); // Empty dependency array ensures this runs only once to set up the observer
+
+  // Effect to initialize the dots when the grid dimensions are set or change
+  useEffect(() => {
+    if (grid.total > 0) {
+      const initialDots = Array.from({ length: grid.total }, (_, i) => ({
+        id: i,
+        opacity: getRandomItem(OPACITY_LEVELS),
+      }));
+      setDots(initialDots);
+    }
+  }, [grid.total]);
+
+  // Effect for the slow, randomized opacity updates
+  useEffect(() => {
+    if (dots.length === 0) return;
+
+    const intervalId = setInterval(() => {
+      setDots((prevDots) => {
+        const randomIndex = Math.floor(Math.random() * prevDots.length);
+        const newDots = [...prevDots]; // Create a new array for state update
+        newDots[randomIndex] = {
+          ...newDots[randomIndex],
+          opacity: getRandomItem(OPACITY_LEVELS),
+        };
+        return newDots;
+      });
+    }, UPDATE_INTERVAL);
+
+    // Cleanup the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, [dots.length]);
+
+  return (
+    // This is the container that is observed for size changes.
+    // It's styled as a card. Its parent can control its size.
+    <div
+      ref={containerRef}
+      className="relative w-full h-full p-2 dark:bg-zinc-800/50 bg-zinc-100 backdrop-blur-sm rounded-xl shadow-lg flex items-center justify-center overflow-hidden border dark:border-gray-700 border-zinc-100"
+    >
+      <div
+        className="grid"
+        style={{
+          gridTemplateColumns: `repeat(${grid.cols}, 1fr)`,
+          gap: `${DOT_SPACING}px`,
+        }}
+      >
+        {dots.map((dot) => (
+          <motion.div
+            key={dot.id}
+            className="bg-zinc-400 rounded-full"
+            style={{
+              width: `${DOT_SIZE}px`,
+              height: `${DOT_SIZE}px`,
+            }}
+            animate={{ opacity: dot.opacity }}
+            whileHover={{ opacity: 1, scale: 1.5 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}

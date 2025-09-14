@@ -11,6 +11,7 @@ export async function GET(req: NextRequest) {
     orderBy: { createdAt: "desc" },
     include: {
       metrics: true,
+      files: true,
     },
   });
   return NextResponse.json(components);

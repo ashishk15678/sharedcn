@@ -8,6 +8,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ReactGA from "react-ga4";
 import { ThemeProvider } from "@/components/theme-provider";
+import { GlobalLoadingIndicator } from "./loading";
 
 const queryClient = new QueryClient();
 
