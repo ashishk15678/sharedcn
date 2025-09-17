@@ -17,9 +17,6 @@ import { useRef } from "react";
 import { Menu } from "lucide-react";
 function useTiltCard() {
   const ref = useRef(null);
-  // ... same as useTilt from utils, but inline for this file ...
-  // (or import from utils if you prefer)
-  // ...
   return ref;
 }
 
