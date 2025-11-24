@@ -80,7 +80,7 @@ function ContactCard({
         "relative flex flex-col items-center justify-center px-8 py-6 rounded-2xl ring-2 shadow-md transition-all duration-300 group cursor-pointer select-text min-w-[220px] w-full",
         `bg-white/80 ring-zinc-200 text-${c.base}`,
         `hover:${c.hoverBg} hover:${c.ring} hover:${c.shadowHover} hover:${c.hoverText}`,
-        preferred && "border-2 border-zinc-400 hover:border-pink-400"
+        preferred && "border-2 border-zinc-400 hover:border-pink-400",
       )}
       style={{ textDecoration: "none" }}
     >
@@ -88,7 +88,7 @@ function ContactCard({
         {/* Icon with color transition */}
         <span
           className={cn(
-            `transition-colors duration-200 group-hover:${c.icon} ${c.base}`
+            `transition-colors duration-200 group-hover:${c.icon} ${c.base}`,
           )}
         >
           {icon}
@@ -96,7 +96,7 @@ function ContactCard({
         <span
           className={cn(
             "mt-1 font-semibold transition-colors duration-200",
-            `group-hover:${c.hoverText} ${c.base}`
+            `group-hover:${c.hoverText} ${c.base}`,
           )}
         >
           {value}
@@ -114,7 +114,7 @@ function ContactCard({
 
 export default function HomePage() {
   const [navState, setNavState] = useState<"expanded" | "collapsed">(
-    "expanded"
+    "expanded",
   );
   const [lastScroll, setLastScroll] = useState(0);
   const [showcase, setShowcase] = useState<any[]>([]);
@@ -140,7 +140,7 @@ export default function HomePage() {
       setUsernameStatus("loading");
       setUsernameMsg("");
       const res = await fetch(
-        `/api/username/check?username=${encodeURIComponent(username)}`
+        `/api/username/check?username=${encodeURIComponent(username)}`,
       );
       if (!res.ok) {
         setUsernameStatus("error");
@@ -156,7 +156,7 @@ export default function HomePage() {
         setUsernameMsg("taken");
       }
     }, 500),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -196,17 +196,17 @@ export default function HomePage() {
     tags: Array.isArray(comp.dependent)
       ? comp.dependent
       : typeof comp.dependent === "string"
-      ? comp.dependent
-          .split(",")
-          .map((d: string) => d.trim())
-          .filter(Boolean)
-      : [],
+        ? comp.dependent
+            .split(",")
+            .map((d: string) => d.trim())
+            .filter(Boolean)
+        : [],
     component: null, // Optionally render a preview if you have one
     code: Array.isArray(comp.code)
       ? comp.code.map((f: any) => `// ${f.filename}\n${f.code}`).join("\n\n")
       : typeof comp.code === "string"
-      ? comp.code
-      : "",
+        ? comp.code
+        : "",
   }));
 
   function handleUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -233,7 +233,7 @@ export default function HomePage() {
       >
         <div
           className={`bg-white/40 backdrop-blur-2xl rounded-2xl  border border-gray-100 flex justify-between items-center px-4 md:px-6 py-2 transition-all duration-500 pointer-events-auto
-            ${navState === "expanded" ? "h-16" : "h-12"}`}
+            ${navState === "expanded" ? "h-1A5" : "h-12"}`}
           style={{ width: "100%" }}
         >
           <div className="flex items-center space-x-2">
@@ -491,7 +491,7 @@ export default function HomePage() {
                                 selectedShowcaseIdx
                               ].title
                                 .replace(/\s+/g, "-")
-                                .toLowerCase()}`
+                                .toLowerCase()}`,
                             )
                           }
                         >
@@ -786,7 +786,7 @@ function BentoTabs() {
     <div
       className={cn(
         "w-full p-4 transition-all duration-300 rounded-2xl",
-        tab == "cli" ? "bg-orange-100" : "bg-green-100"
+        tab == "cli" ? "bg-orange-100" : "bg-green-100",
       )}
     >
       {/* Animated Bento Grid */}

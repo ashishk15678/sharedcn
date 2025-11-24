@@ -34,7 +34,7 @@ export async function DELETE(req: NextRequest) {
   } catch {
     return NextResponse.json(
       { error: "Not found or unauthorized" },
-      { status: 404 }
+      { status: 404 },
     );
   }
 }
@@ -55,7 +55,7 @@ export async function PATCH(req: NextRequest) {
   if (!Array.isArray(files) || files.length === 0 || !mainFile) {
     return NextResponse.json(
       { error: "files and mainFile required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
   if (
@@ -63,18 +63,18 @@ export async function PATCH(req: NextRequest) {
       (f: any) =>
         f.filename &&
         typeof f.code === "string" &&
-        allowed.some((ext) => f.filename.endsWith(ext))
+        allowed.some((ext) => f.filename.endsWith(ext)),
     )
   ) {
     return NextResponse.json(
       { error: "Invalid files or file types" },
-      { status: 400 }
+      { status: 400 },
     );
   }
   if (!files.find((f: any) => f.filename === mainFile)) {
     return NextResponse.json(
       { error: "mainFile not present in files" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

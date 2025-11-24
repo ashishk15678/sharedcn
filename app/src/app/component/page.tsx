@@ -19,7 +19,7 @@ export default function Page() {
       tag: tag,
       // Filter the main array to get components for the current tag
       components: components.filter((component) =>
-        component.tags.includes(tag)
+        component.tags.includes(tag),
       ),
     }));
   }, []);
@@ -60,7 +60,7 @@ export default function Page() {
                       window.history.pushState(
                         {},
                         "",
-                        `/component/${comp.title.split(" ").join("-")}`
+                        `/component/${comp.title.split(" ").join("-")}`,
                       );
                     }}
                     className="ring relative flex items-center flex-shrink-0 justify-center ring-zinc-100 group dark:ring-zinc-700 rounded-lg h-40 w-60 overflow-hidden p-2"

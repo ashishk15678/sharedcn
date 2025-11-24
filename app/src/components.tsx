@@ -1,3 +1,4 @@
+"use client";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   AlertCircle,
@@ -158,7 +159,7 @@ function FluidMenuAnimation() {
 function TransactionChecker() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [state, setState] = useState<"success" | "failed" | "analyzing">(
-    "analyzing"
+    "analyzing",
   );
 
   const shakeAnimation = {
@@ -192,18 +193,18 @@ function TransactionChecker() {
             state === "analyzing"
               ? "w-[280px]"
               : state === "success"
-              ? "w-[220px]"
-              : "w-[240px]",
+                ? "w-[220px]"
+                : "w-[240px]",
             state === "analyzing"
               ? "bg-blue-100"
               : state === "success"
-              ? "bg-green-100"
-              : "bg-red-100",
+                ? "bg-green-100"
+                : "bg-red-100",
             state === "analyzing"
               ? "text-blue-600"
               : state === "success"
-              ? "text-green-600"
-              : "text-red-600"
+                ? "text-green-600"
+                : "text-red-600",
           )}
         >
           <motion.div
@@ -228,8 +229,8 @@ function TransactionChecker() {
               {state === "analyzing"
                 ? "Analyzing Transaction"
                 : state === "success"
-                ? "Success"
-                : "Failed"}
+                  ? "Success"
+                  : "Failed"}
             </span>
           </motion.div>
         </motion.button>
@@ -300,7 +301,7 @@ function AnimatedToggle() {
         <div
           className={cn(
             "flex flex-row items-center justify-center h-full",
-            toggled == "free" ? "p-0 " : "p-2 w-full"
+            toggled == "free" ? "p-0 " : "p-2 w-full",
           )}
         >
           <button
@@ -310,21 +311,21 @@ function AnimatedToggle() {
                  toggled === "year"
                    ? "text-black py-2 text-lg font-bold"
                    : toggled === "month"
-                   ? "text-white py-2 text-lg"
-                   : "text-black "
+                     ? "text-white py-2 text-lg"
+                     : "text-black "
                }`}
           >
             Year
           </button>
           <button
             onClick={() => setToggled("month")}
-            className={`w-full  text-center z-10 rounded-full transition-all duration-300 
+            className={`w-full  text-center z-10 rounded-full transition-all duration-300
               ${
                 toggled === "month"
                   ? "text-black py-2 text-lg font-bold"
                   : toggled === "year"
-                  ? "text-white py-2 text-lg"
-                  : "text-black ml-4"
+                    ? "text-white py-2 text-lg"
+                    : "text-black ml-4"
               }`}
           >
             Month
@@ -552,8 +553,8 @@ function Collectibles() {
     view === "list"
       ? "grid-cols-1"
       : view === "card"
-      ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
-      : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4";
+        ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+        : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4";
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -563,7 +564,7 @@ function Collectibles() {
           <button
             key={mode}
             onClick={() => setView(mode)}
-            className={`px-4 py-2 border rounded transition-colors 
+            className={`px-4 py-2 border rounded transition-colors
               ${
                 view === mode
                   ? "bg-blue-600 text-white border-blue-600"
@@ -604,14 +605,14 @@ function ClickableItem() {
       </div>
 
       <div
-        className="rotate-x-45 rounded-xl  rotate-z-30 w-30 h-30 bg-zinc-100 group-hover:bg-gradient-to-r group-hover:from-zinc-100 group-hover:to-zinc-200 
+        className="rotate-x-45 rounded-xl  rotate-z-30 w-30 h-30 bg-zinc-100 group-hover:bg-gradient-to-r group-hover:from-zinc-100 group-hover:to-zinc-200
       group-hover:text-zinc-700 z-1 absolute top-0  top-2 transition-all duration-300
       hover:top-4 ring-2 ring-zinc-300 shadow-2xl shadow-zinc-700
       flex items-center justify-center p-2
       "
       >
         <div
-          className="rounded-full h-full w-full bg-[radial-gradient(circle_at_bottom,_var(--tw-gradient-stops))] 
+          className="rounded-full h-full w-full bg-[radial-gradient(circle_at_bottom,_var(--tw-gradient-stops))]
         from-zinc-300 via-zinc-100 to-zinc-400 text-md flex items-center justify-center  "
         >
           <span className="text-zinc-600">Press [T]</span>
@@ -729,7 +730,7 @@ function ClothButton() {
       >
         {/* <div className="border border-dashed border-white rounded-4xl">
           <div
-            className="w-full h-full group-hover:bg-blue-700 
+            className="w-full h-full group-hover:bg-blue-700
             [background-image:url('https://i.pinimg.com/736x/56/0d/3c/560d3ce4cc4b86bbfd5ee8958b462034.jpg')] transition-all duration-300 text-xl rounded-4xl px-8 py-4
             backdrop-blur-sm text-transparent bg-cover relative"
             draggable={false}
@@ -743,7 +744,7 @@ function ClothButton() {
             </span>
           </div>
 
-       
+
           <div
             className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-gradient-to-r from-transparent via-white/40 to-transparent"
             style={{
@@ -763,7 +764,7 @@ function ClothButton() {
         </div> */}
         <div className="relative z-10 overflow-hidden">
           <div
-            className="w-full h-full group-hover:bg-blue-700 
+            className="w-full h-full group-hover:bg-blue-700
             [background-image:url('https://i.pinimg.com/736x/56/0d/3c/560d3ce4cc4b86bbfd5ee8958b462034.jpg')] transition-all duration-300 text-xl rounded-4xl px-8 py-4
             backdrop-blur-sm text-transparent bg-cover relative"
             draggable={false}
@@ -949,7 +950,7 @@ export function AppleButton() {
   useEffect(() => {
     const timer = setInterval(() => {
       setRipples((prev) =>
-        prev.filter((ripple) => ripple.id < rippleId.current - 5)
+        prev.filter((ripple) => ripple.id < rippleId.current - 5),
       );
     }, 1000);
     return () => clearInterval(timer);
@@ -978,7 +979,7 @@ export function AppleButton() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
         {/* Outer glow effect */}
         <div
-          className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 
+          className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20
             blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         />
 
@@ -1102,10 +1103,10 @@ export function GtaMasking() {
 
     // Get both images
     const firstImage = container.querySelector(
-      "img:not(#second-img)"
+      "img:not(#second-img)",
     ) as HTMLImageElement;
     const secondImage = container.querySelector(
-      "#second-img"
+      "#second-img",
     ) as HTMLImageElement;
 
     if (firstImage) {
@@ -1681,7 +1682,7 @@ function DotGrid() {
   // --- Helper Function ---
   // Picks a random item from an array
   const getRandomItem = useMemo(
-    () => (arr) => arr[Math.floor(Math.random() * arr.length)]
+    () => (arr) => arr[Math.floor(Math.random() * arr.length)],
   );
   const containerRef = useRef(null);
 
