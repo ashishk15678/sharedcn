@@ -39,7 +39,11 @@ export default async function SignInPage() {
           className="w-full"
         />
 
-        <Separator decorative={false} />
+        <Separator
+          decorative={true}
+          className="bg-black/50 text-black/50"
+          text={"Or use Email to register"}
+        />
 
         <RegisterForm />
       </div>

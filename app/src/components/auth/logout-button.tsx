@@ -18,9 +18,7 @@ export function LogoutButton() {
       <div className="flex-shrink-0 w-8 flex items-center justify-center">
         <LogOutIcon size={20} />
       </div>
-      <p className="absolute left-10 text-md whitespace-nowrap opacity-0 group-hover:opacity-100 group-hover:block transition-opacity duration-200 pointer-events-none">
-        Logout
-      </p>
+      <p className="absolute left-10 text-md ">Logout</p>
     </button>
   );
 }

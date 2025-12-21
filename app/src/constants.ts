@@ -6,3 +6,4 @@ export const schema = {
 
 export const APP_NAME = "Sharedcn";
 export const APP_IMAGE = "/shadcn-logo.png";
+export const USER_IMAGE_FALLBACK = "/user-image-fallback.png";

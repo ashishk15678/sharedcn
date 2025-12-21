@@ -1,4 +1,6 @@
 "use client";
+import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
@@ -25,16 +27,17 @@ export function CodeEditor({
   onChange: (code: string) => void;
 }) {
   const language = inferLanguage(filename);
+  const { theme } = useTheme();
   return (
-    <div className="border border-zinc-200 rounded-xl overflow-hidden">
+    <div className="border border-border  overflow-hidden w-full h-full">
       <MonacoEditor
-        height="360px"
+        height="100%"
         language={language}
-        theme="vs-dark"
+        theme={cn(theme == "light" ? "vs-light" : "vs-dark")}
         value={value}
         options={{
           fontSize: 14,
-          minimap: { enabled: false },
+          minimap: { enabled: true },
           wordWrap: "on",
           scrollBeyondLastLine: false,
           automaticLayout: true,

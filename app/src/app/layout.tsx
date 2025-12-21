@@ -7,6 +7,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { AnalyticsComponent } from "@/components/analytics-component";
 import { GlobalBreadcrumbs } from "@/components/global-bread-crumbs";
 import { TRPCReactProvider } from "@/trpc/client";
+import { APP_IMAGE } from "@/constants";
 
 export default function RootLayout({
   children,
@@ -17,24 +18,19 @@ export default function RootLayout({
     <TRPCReactProvider>
       <HydrateClient>
         <html lang="en">
-          <link rel="icon" href="/logo.png"></link>
+          <link rel="icon" href={APP_IMAGE}></link>
           <title>SharedCN</title>
           <meta
             name="description"
             content="Share your components effortlessly , in the easiest manner. It helps people using only cli , and that is it."
           ></meta>
-          <body className={""}>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
-            >
+          <body>
+            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
               <ErrorBoundary fallback={<>Some error occured</>}>
                 {children}
               </ErrorBoundary>
               <GlobalBreadcrumbs />
-              <Toaster position="top-right" richColors />
+              <Toaster />
             </ThemeProvider>
             <AnalyticsComponent />
           </body>

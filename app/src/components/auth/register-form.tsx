@@ -74,11 +74,15 @@ export function RegisterForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-bold">Name</FormLabel>
+                <FormLabel className="font-bold text-black/50">Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="John doe" type="text" {...field} />
+                  <Input
+                    placeholder="John doe"
+                    type="text"
+                    {...field}
+                    className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
+                  />
                 </FormControl>
-                <FormDescription>This is your account name.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -90,17 +94,15 @@ export function RegisterForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-bold">Email</FormLabel>
+                <FormLabel className="font-bold text-black/50">Email</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="you@example.com"
                     type="email"
+                    className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>
-                  This is your account email address.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -112,12 +114,15 @@ export function RegisterForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-bold">Password</FormLabel>
+                <FormLabel className="font-bold text-black/50">
+                  Password
+                </FormLabel>
                 <FormControl>
                   {/* Note: Use type="password" for sensitive fields */}
                   <Input
                     placeholder="Enter your password"
                     type="password"
+                    className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
                     {...field}
                   />
                 </FormControl>
@@ -132,11 +137,14 @@ export function RegisterForm() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-bold">Confirm Password</FormLabel>
+                <FormLabel className="font-bold text-black/50">
+                  Confirm Password
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Confirm your password"
                     type="password"
+                    className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
                     {...field}
                   />
                 </FormControl>
@@ -147,7 +155,7 @@ export function RegisterForm() {
 
           <Button
             type="submit"
-            className="rounded-3xl ring-2 ring-zinc-300 bg-zinc-100 mt-4"
+            className="rounded-3xl ring-2 ring-zinc-300 bg-zinc-100 mt-4 text-black/50 hover:text-black/80"
             variant={"outline"}
             disabled={form.formState.isSubmitting}
           >
@@ -157,7 +165,7 @@ export function RegisterForm() {
       </Form>
       <div className="w-full flex justify-end">
         <Link href={"/login"} prefetch>
-          <Button variant={"link"} className="cursor-pointer">
+          <Button variant={"link"} className="cursor-pointer text-black/60">
             Already have an account ?
           </Button>
         </Link>
@@ -191,7 +199,7 @@ export function RegisterUsingProvider({
       }
       {...props}
     >
-      Sign up with {title} {Icon}
+      {Icon} Sign up with {title}
     </button>
   );
 }

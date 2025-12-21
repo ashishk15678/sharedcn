@@ -14,6 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { Star } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { trpc } from "@/trpc/client";
 
 function getStars(rating: number, setRating?: (n: number) => void) {
   // 5 stars, allow quarter increments
@@ -75,53 +76,65 @@ function getStars(rating: number, setRating?: (n: number) => void) {
 }
 
 export default function FeedbacksPage() {
-  const [feedbacks, setFeedbacks] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(4);
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const gridRef = useRef<HTMLDivElement>(null);
   const [positions, setPositions] = useState<{
     [id: string]: { x: number; y: number };
   }>({});
 
-  useEffect(() => {
-    fetch("/api/user/feedback")
-      .then((r) => r.json())
-      .then(setFeedbacks)
-      .finally(() => setLoading(false));
-    fetch("/api/token", { method: "POST" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => setUser(d?.token ? d : null));
-  }, []);
-
-  async function submitFeedback() {
-    setSubmitting(true);
-    setError("");
-    const res = await fetch("/api/user/feedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content, rating, isAnonymous }),
-    });
-    if (res.ok) {
+  const {
+    data: feedbacks = [],
+    isLoading: loading,
+    refetch: refetchFeedbacks,
+  } = trpc.user.feedback.list.useQuery();
+  const getTokenMutation = trpc.user.getToken.useMutation();
+  const createFeedbackMutation = trpc.user.feedback.create.useMutation({
+    onSuccess: () => {
       setDialogOpen(false);
       setContent("");
       setRating(4);
       setIsAnonymous(false);
-      setFeedbacks([await res.json(), ...feedbacks]);
-    } else {
-      const err = await res.json();
-      setError(err.error || "Failed to submit feedback");
+      refetchFeedbacks();
+    },
+  });
+
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    getTokenMutation.mutate(undefined, {
+      onSuccess: (data) => {
+        if (data?.token) {
+          setUser({ token: data.token });
+        }
+      },
+    });
+  }, []);
+
+  async function submitFeedback() {
+    setError("");
+    try {
+      await createFeedbackMutation.mutateAsync({
+        content,
+        rating,
+        isAnonymous,
+      });
+    } catch (err: any) {
+      setError(err.message || "Failed to submit feedback");
     }
-    setSubmitting(false);
   }
 
+  const submitting = createFeedbackMutation.isPending;
+
   const canSubmit =
-    content.length > 3 && rating >= 1 && rating <= 4 && (user || isAnonymous);
+    content.length > 3 &&
+    rating >= 1 &&
+    rating <= 4 &&
+    (user || isAnonymous) &&
+    !submitting;
 
   return (
     <div className="min-h-screen bg-zinc-50">

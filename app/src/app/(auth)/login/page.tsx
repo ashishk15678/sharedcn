@@ -36,7 +36,7 @@ export default async function SignInPage() {
           className="w-full"
         />
 
-        <Separator decorative={false} />
+        <Separator decorative={true} className="" text="Continue with email" />
 
         <LoginForm />
       </div>

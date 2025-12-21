@@ -1,13 +1,13 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
 import { BuilderHeader } from "./components/BuilderHeader";
 import { FileExplorer, type BuilderFile } from "./components/FileExplorer";
 import { CodeEditor } from "./components/CodeEditor";
 import { PreviewPane } from "./components/PreviewPane";
 import { buildBundle } from "./bundler";
 import { Button } from "@/components/ui/button";
+import { trpc } from "@/trpc/client";
 
 export default function BuilderPage() {
   const params = useSearchParams();
@@ -16,13 +16,7 @@ export default function BuilderPage() {
   const [aiMode, setAiMode] = useState(false);
   const [bundle, setBundle] = useState("");
 
-  const { data: components } = useQuery({
-    queryKey: ["components"],
-    queryFn: async () => {
-      const r = await fetch("/api/components");
-      return r.json();
-    },
-  });
+  const { data: components } = trpc.components.list.useQuery();
 
   const current = useMemo(() => {
     if (!components || components.length === 0) return null;
@@ -57,36 +51,36 @@ export default function BuilderPage() {
     setBundle(b);
   }
 
+  const updateComponentMutation = trpc.components.update.useMutation();
+  const generateAIMutation = trpc.ai.generate.useMutation();
+
   async function onSave() {
     if (!current) return;
-    const res = await fetch(`/api/components/${current.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    try {
+      await updateComponentMutation.mutateAsync({
+        id: current.id,
         files: files.map((f) => ({ filename: f.path, code: f.code })),
         mainFile: current.mainFile,
-      }),
-    });
-    if (!res.ok) {
-      console.error("save failed");
+      });
+    } catch (err) {
+      console.error("save failed", err);
     }
   }
 
   async function onGenerate(prompt: string) {
-    const res = await fetch("/api/ai/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt, files }),
-    });
-    const data = await res.json();
-    if (data?.files) {
-      const merged = [...files];
-      for (const nf of data.files) {
-        const idx = merged.findIndex((f) => f.path === nf.filename);
-        if (idx >= 0) merged[idx] = { path: nf.filename, code: nf.code };
-        else merged.push({ path: nf.filename, code: nf.code });
+    try {
+      const data = await generateAIMutation.mutateAsync({ prompt, files });
+      if (data?.files) {
+        const merged = [...files];
+        for (const nf of data.files) {
+          const idx = merged.findIndex((f) => f.path === nf.filename);
+          if (idx >= 0) merged[idx] = { path: nf.filename, code: nf.code };
+          else merged.push({ path: nf.filename, code: nf.code });
+        }
+        setFiles(merged);
       }
-      setFiles(merged);
+    } catch (err) {
+      console.error("generate failed", err);
     }
   }
 

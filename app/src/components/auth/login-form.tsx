@@ -64,11 +64,12 @@ export function LoginForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-bold">Email</FormLabel>
+                <FormLabel className="font-bold text-black/50">Email</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="you@example.com"
                     type="email"
+                    className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
                     {...field}
                   />
                 </FormControl>
@@ -86,12 +87,15 @@ export function LoginForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-bold">Password</FormLabel>
+                <FormLabel className="font-bold text-black/50">
+                  Password
+                </FormLabel>
                 <FormControl>
                   {/* Note: Use type="password" for sensitive fields */}
                   <Input
                     placeholder="Enter your password"
                     type="password"
+                    className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
                     {...field}
                   />
                 </FormControl>
@@ -102,7 +106,7 @@ export function LoginForm() {
 
           <Button
             type="submit"
-            className="rounded-3xl ring-2 ring-zinc-300 bg-zinc-100 mt-4"
+            className="rounded-3xl ring-2 ring-zinc-300 bg-zinc-100 mt-4 text-black/50 hover:text-black/80"
             variant={"outline"}
             disabled={form.formState.isSubmitting}
           >
@@ -112,7 +116,7 @@ export function LoginForm() {
       </Form>
       <div className="w-full flex justify-end">
         <Link href={"/register"} prefetch>
-          <Button variant={"link"} className="cursor-pointer">
+          <Button variant={"link"} className="cursor-pointer text-black/50">
             Don{"'"}t have an account ?
           </Button>
         </Link>
