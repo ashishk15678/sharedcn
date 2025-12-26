@@ -24,6 +24,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type Component = $Result.DefaultSelection<Prisma.$ComponentPayload>
 /**
+ * Model File
+ * 
+ */
+export type File = $Result.DefaultSelection<Prisma.$FilePayload>
+/**
  * Model Session
  * 
  */
@@ -38,6 +43,16 @@ export type Account = $Result.DefaultSelection<Prisma.$AccountPayload>
  * 
  */
 export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
+/**
+ * Model Feedback
+ * 
+ */
+export type Feedback = $Result.DefaultSelection<Prisma.$FeedbackPayload>
+/**
+ * Model Metrics
+ * 
+ */
+export type Metrics = $Result.DefaultSelection<Prisma.$MetricsPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -55,7 +70,7 @@ export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
  */
 export class PrismaClient<
   ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
-  U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
+  const U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
   ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
 > {
   [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
@@ -87,13 +102,6 @@ export class PrismaClient<
    * Disconnect from the database
    */
   $disconnect(): $Utils.JsPromise<void>;
-
-  /**
-   * Add a middleware
-   * @deprecated since 4.16.0. For new code, prefer client extensions instead.
-   * @see https://pris.ly/d/extensions
-   */
-  $use(cb: Prisma.Middleware): void
 
 /**
    * Executes a prepared raw query and returns the number of affected rows.
@@ -185,6 +193,16 @@ export class PrismaClient<
   get component(): Prisma.ComponentDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.file`: Exposes CRUD operations for the **File** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Files
+    * const files = await prisma.file.findMany()
+    * ```
+    */
+  get file(): Prisma.FileDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.session`: Exposes CRUD operations for the **Session** model.
     * Example usage:
     * ```ts
@@ -213,6 +231,26 @@ export class PrismaClient<
     * ```
     */
   get verification(): Prisma.VerificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.feedback`: Exposes CRUD operations for the **Feedback** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Feedbacks
+    * const feedbacks = await prisma.feedback.findMany()
+    * ```
+    */
+  get feedback(): Prisma.FeedbackDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.metrics`: Exposes CRUD operations for the **Metrics** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Metrics
+    * const metrics = await prisma.metrics.findMany()
+    * ```
+    */
+  get metrics(): Prisma.MetricsDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -271,8 +309,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.10.1
-   * Query Engine version: 9b628578b3b7cae625e8c927178f15a170e74a9c
+   * Prisma Client JS version: 6.16.2
+   * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
    */
   export type PrismaVersion = {
     client: string
@@ -655,9 +693,12 @@ export namespace Prisma {
   export const ModelName: {
     User: 'User',
     Component: 'Component',
+    File: 'File',
     Session: 'Session',
     Account: 'Account',
-    Verification: 'Verification'
+    Verification: 'Verification',
+    Feedback: 'Feedback',
+    Metrics: 'Metrics'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -676,7 +717,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "component" | "session" | "account" | "verification"
+      modelProps: "user" | "component" | "file" | "session" | "account" | "verification" | "feedback" | "metrics"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -825,6 +866,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ComponentCountArgs<ExtArgs>
             result: $Utils.Optional<ComponentCountAggregateOutputType> | number
+          }
+        }
+      }
+      File: {
+        payload: Prisma.$FilePayload<ExtArgs>
+        fields: Prisma.FileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FilePayload>
+          }
+          findFirst: {
+            args: Prisma.FileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FilePayload>
+          }
+          findMany: {
+            args: Prisma.FileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FilePayload>[]
+          }
+          create: {
+            args: Prisma.FileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FilePayload>
+          }
+          createMany: {
+            args: Prisma.FileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FilePayload>[]
+          }
+          delete: {
+            args: Prisma.FileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FilePayload>
+          }
+          update: {
+            args: Prisma.FileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FilePayload>
+          }
+          deleteMany: {
+            args: Prisma.FileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FilePayload>[]
+          }
+          upsert: {
+            args: Prisma.FileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FilePayload>
+          }
+          aggregate: {
+            args: Prisma.FileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFile>
+          }
+          groupBy: {
+            args: Prisma.FileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FileCountArgs<ExtArgs>
+            result: $Utils.Optional<FileCountAggregateOutputType> | number
           }
         }
       }
@@ -1050,6 +1165,154 @@ export namespace Prisma {
           }
         }
       }
+      Feedback: {
+        payload: Prisma.$FeedbackPayload<ExtArgs>
+        fields: Prisma.FeedbackFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FeedbackFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeedbackPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FeedbackFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeedbackPayload>
+          }
+          findFirst: {
+            args: Prisma.FeedbackFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeedbackPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FeedbackFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeedbackPayload>
+          }
+          findMany: {
+            args: Prisma.FeedbackFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeedbackPayload>[]
+          }
+          create: {
+            args: Prisma.FeedbackCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeedbackPayload>
+          }
+          createMany: {
+            args: Prisma.FeedbackCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FeedbackCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeedbackPayload>[]
+          }
+          delete: {
+            args: Prisma.FeedbackDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeedbackPayload>
+          }
+          update: {
+            args: Prisma.FeedbackUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeedbackPayload>
+          }
+          deleteMany: {
+            args: Prisma.FeedbackDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FeedbackUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FeedbackUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeedbackPayload>[]
+          }
+          upsert: {
+            args: Prisma.FeedbackUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeedbackPayload>
+          }
+          aggregate: {
+            args: Prisma.FeedbackAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFeedback>
+          }
+          groupBy: {
+            args: Prisma.FeedbackGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FeedbackGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FeedbackCountArgs<ExtArgs>
+            result: $Utils.Optional<FeedbackCountAggregateOutputType> | number
+          }
+        }
+      }
+      Metrics: {
+        payload: Prisma.$MetricsPayload<ExtArgs>
+        fields: Prisma.MetricsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MetricsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MetricsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MetricsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MetricsPayload>
+          }
+          findFirst: {
+            args: Prisma.MetricsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MetricsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MetricsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MetricsPayload>
+          }
+          findMany: {
+            args: Prisma.MetricsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MetricsPayload>[]
+          }
+          create: {
+            args: Prisma.MetricsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MetricsPayload>
+          }
+          createMany: {
+            args: Prisma.MetricsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MetricsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MetricsPayload>[]
+          }
+          delete: {
+            args: Prisma.MetricsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MetricsPayload>
+          }
+          update: {
+            args: Prisma.MetricsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MetricsPayload>
+          }
+          deleteMany: {
+            args: Prisma.MetricsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MetricsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MetricsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MetricsPayload>[]
+          }
+          upsert: {
+            args: Prisma.MetricsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MetricsPayload>
+          }
+          aggregate: {
+            args: Prisma.MetricsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMetrics>
+          }
+          groupBy: {
+            args: Prisma.MetricsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MetricsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MetricsCountArgs<ExtArgs>
+            result: $Utils.Optional<MetricsCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1093,16 +1356,24 @@ export namespace Prisma {
     /**
      * @example
      * ```
-     * // Defaults to stdout
+     * // Shorthand for `emit: 'stdout'`
      * log: ['query', 'info', 'warn', 'error']
      * 
-     * // Emit as events
+     * // Emit as events only
      * log: [
-     *   { emit: 'stdout', level: 'query' },
-     *   { emit: 'stdout', level: 'info' },
-     *   { emit: 'stdout', level: 'warn' }
-     *   { emit: 'stdout', level: 'error' }
+     *   { emit: 'event', level: 'query' },
+     *   { emit: 'event', level: 'info' },
+     *   { emit: 'event', level: 'warn' }
+     *   { emit: 'event', level: 'error' }
      * ]
+     * 
+     * / Emit as events and log to stdout
+     * og: [
+     *  { emit: 'stdout', level: 'query' },
+     *  { emit: 'stdout', level: 'info' },
+     *  { emit: 'stdout', level: 'warn' }
+     *  { emit: 'stdout', level: 'error' }
+     * 
      * ```
      * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
      */
@@ -1117,6 +1388,10 @@ export namespace Prisma {
       timeout?: number
       isolationLevel?: Prisma.TransactionIsolationLevel
     }
+    /**
+     * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-planetscale`
+     */
+    adapter?: runtime.SqlDriverAdapterFactory | null
     /**
      * Global configuration for omitting model fields by default.
      * 
@@ -1136,9 +1411,12 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     user?: UserOmit
     component?: ComponentOmit
+    file?: FileOmit
     session?: SessionOmit
     account?: AccountOmit
     verification?: VerificationOmit
+    feedback?: FeedbackOmit
+    metrics?: MetricsOmit
   }
 
   /* Types for Logging */
@@ -1148,10 +1426,15 @@ export namespace Prisma {
     emit: 'stdout' | 'event'
   }
 
-  export type GetLogType<T extends LogLevel | LogDefinition> = T extends LogDefinition ? T['emit'] extends 'event' ? T['level'] : never : never
-  export type GetEvents<T extends any> = T extends Array<LogLevel | LogDefinition> ?
-    GetLogType<T[0]> | GetLogType<T[1]> | GetLogType<T[2]> | GetLogType<T[3]>
-    : never
+  export type CheckIsLogLevel<T> = T extends LogLevel ? T : never;
+
+  export type GetLogType<T> = CheckIsLogLevel<
+    T extends LogDefinition ? T['level'] : T
+  >;
+
+  export type GetEvents<T extends any[]> = T extends Array<LogLevel | LogDefinition>
+    ? GetLogType<T[number]>
+    : never;
 
   export type QueryEvent = {
     timestamp: Date
@@ -1192,25 +1475,6 @@ export namespace Prisma {
     | 'findRaw'
     | 'groupBy'
 
-  /**
-   * These options are being passed into the middleware as "params"
-   */
-  export type MiddlewareParams = {
-    model?: ModelName
-    action: PrismaAction
-    args: any
-    dataPath: string[]
-    runInTransaction: boolean
-  }
-
-  /**
-   * The `T` type makes sure, that the `return proceed` is not forgotten in the middleware implementation
-   */
-  export type Middleware<T = any> = (
-    params: MiddlewareParams,
-    next: (params: MiddlewareParams) => $Utils.JsPromise<T>,
-  ) => $Utils.JsPromise<T>
-
   // tested in getLogLevel.test.ts
   export function getLogLevel(log: Array<LogLevel | LogDefinition>): LogLevel | undefined;
 
@@ -1236,12 +1500,16 @@ export namespace Prisma {
     components: number
     sessions: number
     accounts: number
+    feedbacks: number
+    metrics: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     components?: boolean | UserCountOutputTypeCountComponentsArgs
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
+    feedbacks?: boolean | UserCountOutputTypeCountFeedbacksArgs
+    metrics?: boolean | UserCountOutputTypeCountMetricsArgs
   }
 
   // Custom InputTypes
@@ -1274,6 +1542,60 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AccountWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountFeedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FeedbackWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountMetricsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MetricsWhereInput
+  }
+
+
+  /**
+   * Count Type ComponentCountOutputType
+   */
+
+  export type ComponentCountOutputType = {
+    files: number
+    metrics: number
+  }
+
+  export type ComponentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    files?: boolean | ComponentCountOutputTypeCountFilesArgs
+    metrics?: boolean | ComponentCountOutputTypeCountMetricsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ComponentCountOutputType without action
+   */
+  export type ComponentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComponentCountOutputType
+     */
+    select?: ComponentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ComponentCountOutputType without action
+   */
+  export type ComponentCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FileWhereInput
+  }
+
+  /**
+   * ComponentCountOutputType without action
+   */
+  export type ComponentCountOutputTypeCountMetricsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MetricsWhereInput
   }
 
 
@@ -1480,6 +1802,8 @@ export namespace Prisma {
     components?: boolean | User$componentsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
+    feedbacks?: boolean | User$feedbacksArgs<ExtArgs>
+    metrics?: boolean | User$metricsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1524,6 +1848,8 @@ export namespace Prisma {
     components?: boolean | User$componentsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
+    feedbacks?: boolean | User$feedbacksArgs<ExtArgs>
+    metrics?: boolean | User$metricsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1535,6 +1861,8 @@ export namespace Prisma {
       components: Prisma.$ComponentPayload<ExtArgs>[]
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
+      feedbacks: Prisma.$FeedbackPayload<ExtArgs>[]
+      metrics: Prisma.$MetricsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1943,6 +2271,8 @@ export namespace Prisma {
     components<T extends User$componentsArgs<ExtArgs> = {}>(args?: Subset<T, User$componentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComponentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    feedbacks<T extends User$feedbacksArgs<ExtArgs> = {}>(args?: Subset<T, User$feedbacksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    metrics<T extends User$metricsArgs<ExtArgs> = {}>(args?: Subset<T, User$metricsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2441,6 +2771,54 @@ export namespace Prisma {
   }
 
   /**
+   * User.feedbacks
+   */
+  export type User$feedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    where?: FeedbackWhereInput
+    orderBy?: FeedbackOrderByWithRelationInput | FeedbackOrderByWithRelationInput[]
+    cursor?: FeedbackWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FeedbackScalarFieldEnum | FeedbackScalarFieldEnum[]
+  }
+
+  /**
+   * User.metrics
+   */
+  export type User$metricsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsInclude<ExtArgs> | null
+    where?: MetricsWhereInput
+    orderBy?: MetricsOrderByWithRelationInput | MetricsOrderByWithRelationInput[]
+    cursor?: MetricsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MetricsScalarFieldEnum | MetricsScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2475,6 +2853,7 @@ export namespace Prisma {
     alias: string | null
     description: string | null
     dependent: string | null
+    mainFile: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2485,6 +2864,7 @@ export namespace Prisma {
     alias: string | null
     description: string | null
     dependent: string | null
+    mainFile: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2495,7 +2875,7 @@ export namespace Prisma {
     alias: number
     description: number
     dependent: number
-    code: number
+    mainFile: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2508,6 +2888,7 @@ export namespace Prisma {
     alias?: true
     description?: true
     dependent?: true
+    mainFile?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2518,6 +2899,7 @@ export namespace Prisma {
     alias?: true
     description?: true
     dependent?: true
+    mainFile?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2528,7 +2910,7 @@ export namespace Prisma {
     alias?: true
     description?: true
     dependent?: true
-    code?: true
+    mainFile?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2612,7 +2994,7 @@ export namespace Prisma {
     alias: string
     description: string
     dependent: string | null
-    code: JsonValue[]
+    mainFile: string
     createdAt: Date
     updatedAt: Date
     _count: ComponentCountAggregateOutputType | null
@@ -2640,10 +3022,13 @@ export namespace Prisma {
     alias?: boolean
     description?: boolean
     dependent?: boolean
-    code?: boolean
+    mainFile?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
+    files?: boolean | Component$filesArgs<ExtArgs>
+    metrics?: boolean | Component$metricsArgs<ExtArgs>
+    _count?: boolean | ComponentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["component"]>
 
   export type ComponentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2652,7 +3037,7 @@ export namespace Prisma {
     alias?: boolean
     description?: boolean
     dependent?: boolean
-    code?: boolean
+    mainFile?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2664,7 +3049,7 @@ export namespace Prisma {
     alias?: boolean
     description?: boolean
     dependent?: boolean
-    code?: boolean
+    mainFile?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2676,14 +3061,17 @@ export namespace Prisma {
     alias?: boolean
     description?: boolean
     dependent?: boolean
-    code?: boolean
+    mainFile?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ComponentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "alias" | "description" | "dependent" | "code" | "createdAt" | "updatedAt", ExtArgs["result"]["component"]>
+  export type ComponentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "alias" | "description" | "dependent" | "mainFile" | "createdAt" | "updatedAt", ExtArgs["result"]["component"]>
   export type ComponentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
+    files?: boolean | Component$filesArgs<ExtArgs>
+    metrics?: boolean | Component$metricsArgs<ExtArgs>
+    _count?: boolean | ComponentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ComponentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2696,6 +3084,8 @@ export namespace Prisma {
     name: "Component"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
+      files: Prisma.$FilePayload<ExtArgs>[]
+      metrics: Prisma.$MetricsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2703,7 +3093,7 @@ export namespace Prisma {
       alias: string
       description: string
       dependent: string | null
-      code: Prisma.JsonValue[]
+      mainFile: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["component"]>
@@ -3101,6 +3491,8 @@ export namespace Prisma {
   export interface Prisma__ComponentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    files<T extends Component$filesArgs<ExtArgs> = {}>(args?: Subset<T, Component$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    metrics<T extends Component$metricsArgs<ExtArgs> = {}>(args?: Subset<T, Component$metricsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3135,7 +3527,7 @@ export namespace Prisma {
     readonly alias: FieldRef<"Component", 'String'>
     readonly description: FieldRef<"Component", 'String'>
     readonly dependent: FieldRef<"Component", 'String'>
-    readonly code: FieldRef<"Component", 'Json[]'>
+    readonly mainFile: FieldRef<"Component", 'String'>
     readonly createdAt: FieldRef<"Component", 'DateTime'>
     readonly updatedAt: FieldRef<"Component", 'DateTime'>
   }
@@ -3534,6 +3926,54 @@ export namespace Prisma {
   }
 
   /**
+   * Component.files
+   */
+  export type Component$filesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    where?: FileWhereInput
+    orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[]
+    cursor?: FileWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FileScalarFieldEnum | FileScalarFieldEnum[]
+  }
+
+  /**
+   * Component.metrics
+   */
+  export type Component$metricsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsInclude<ExtArgs> | null
+    where?: MetricsWhereInput
+    orderBy?: MetricsOrderByWithRelationInput | MetricsOrderByWithRelationInput[]
+    cursor?: MetricsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MetricsScalarFieldEnum | MetricsScalarFieldEnum[]
+  }
+
+  /**
    * Component without action
    */
   export type ComponentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3549,6 +3989,1064 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ComponentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model File
+   */
+
+  export type AggregateFile = {
+    _count: FileCountAggregateOutputType | null
+    _min: FileMinAggregateOutputType | null
+    _max: FileMaxAggregateOutputType | null
+  }
+
+  export type FileMinAggregateOutputType = {
+    id: string | null
+    componentId: string | null
+    filename: string | null
+    code: string | null
+    createdAt: Date | null
+  }
+
+  export type FileMaxAggregateOutputType = {
+    id: string | null
+    componentId: string | null
+    filename: string | null
+    code: string | null
+    createdAt: Date | null
+  }
+
+  export type FileCountAggregateOutputType = {
+    id: number
+    componentId: number
+    filename: number
+    code: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type FileMinAggregateInputType = {
+    id?: true
+    componentId?: true
+    filename?: true
+    code?: true
+    createdAt?: true
+  }
+
+  export type FileMaxAggregateInputType = {
+    id?: true
+    componentId?: true
+    filename?: true
+    code?: true
+    createdAt?: true
+  }
+
+  export type FileCountAggregateInputType = {
+    id?: true
+    componentId?: true
+    filename?: true
+    code?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type FileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which File to aggregate.
+     */
+    where?: FileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Files to fetch.
+     */
+    orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Files from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Files.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Files
+    **/
+    _count?: true | FileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FileMaxAggregateInputType
+  }
+
+  export type GetFileAggregateType<T extends FileAggregateArgs> = {
+        [P in keyof T & keyof AggregateFile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFile[P]>
+      : GetScalarType<T[P], AggregateFile[P]>
+  }
+
+
+
+
+  export type FileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FileWhereInput
+    orderBy?: FileOrderByWithAggregationInput | FileOrderByWithAggregationInput[]
+    by: FileScalarFieldEnum[] | FileScalarFieldEnum
+    having?: FileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FileCountAggregateInputType | true
+    _min?: FileMinAggregateInputType
+    _max?: FileMaxAggregateInputType
+  }
+
+  export type FileGroupByOutputType = {
+    id: string
+    componentId: string
+    filename: string
+    code: string
+    createdAt: Date
+    _count: FileCountAggregateOutputType | null
+    _min: FileMinAggregateOutputType | null
+    _max: FileMaxAggregateOutputType | null
+  }
+
+  type GetFileGroupByPayload<T extends FileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FileGroupByOutputType[P]>
+            : GetScalarType<T[P], FileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    componentId?: boolean
+    filename?: boolean
+    code?: boolean
+    createdAt?: boolean
+    component?: boolean | ComponentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["file"]>
+
+  export type FileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    componentId?: boolean
+    filename?: boolean
+    code?: boolean
+    createdAt?: boolean
+    component?: boolean | ComponentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["file"]>
+
+  export type FileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    componentId?: boolean
+    filename?: boolean
+    code?: boolean
+    createdAt?: boolean
+    component?: boolean | ComponentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["file"]>
+
+  export type FileSelectScalar = {
+    id?: boolean
+    componentId?: boolean
+    filename?: boolean
+    code?: boolean
+    createdAt?: boolean
+  }
+
+  export type FileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "componentId" | "filename" | "code" | "createdAt", ExtArgs["result"]["file"]>
+  export type FileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    component?: boolean | ComponentDefaultArgs<ExtArgs>
+  }
+  export type FileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    component?: boolean | ComponentDefaultArgs<ExtArgs>
+  }
+  export type FileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    component?: boolean | ComponentDefaultArgs<ExtArgs>
+  }
+
+  export type $FilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "File"
+    objects: {
+      component: Prisma.$ComponentPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      componentId: string
+      filename: string
+      code: string
+      createdAt: Date
+    }, ExtArgs["result"]["file"]>
+    composites: {}
+  }
+
+  type FileGetPayload<S extends boolean | null | undefined | FileDefaultArgs> = $Result.GetResult<Prisma.$FilePayload, S>
+
+  type FileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FileCountAggregateInputType | true
+    }
+
+  export interface FileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['File'], meta: { name: 'File' } }
+    /**
+     * Find zero or one File that matches the filter.
+     * @param {FileFindUniqueArgs} args - Arguments to find a File
+     * @example
+     * // Get one File
+     * const file = await prisma.file.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FileFindUniqueArgs>(args: SelectSubset<T, FileFindUniqueArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one File that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FileFindUniqueOrThrowArgs} args - Arguments to find a File
+     * @example
+     * // Get one File
+     * const file = await prisma.file.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FileFindUniqueOrThrowArgs>(args: SelectSubset<T, FileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first File that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileFindFirstArgs} args - Arguments to find a File
+     * @example
+     * // Get one File
+     * const file = await prisma.file.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FileFindFirstArgs>(args?: SelectSubset<T, FileFindFirstArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first File that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileFindFirstOrThrowArgs} args - Arguments to find a File
+     * @example
+     * // Get one File
+     * const file = await prisma.file.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FileFindFirstOrThrowArgs>(args?: SelectSubset<T, FileFindFirstOrThrowArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Files that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Files
+     * const files = await prisma.file.findMany()
+     * 
+     * // Get first 10 Files
+     * const files = await prisma.file.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const fileWithIdOnly = await prisma.file.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FileFindManyArgs>(args?: SelectSubset<T, FileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a File.
+     * @param {FileCreateArgs} args - Arguments to create a File.
+     * @example
+     * // Create one File
+     * const File = await prisma.file.create({
+     *   data: {
+     *     // ... data to create a File
+     *   }
+     * })
+     * 
+     */
+    create<T extends FileCreateArgs>(args: SelectSubset<T, FileCreateArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Files.
+     * @param {FileCreateManyArgs} args - Arguments to create many Files.
+     * @example
+     * // Create many Files
+     * const file = await prisma.file.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FileCreateManyArgs>(args?: SelectSubset<T, FileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Files and returns the data saved in the database.
+     * @param {FileCreateManyAndReturnArgs} args - Arguments to create many Files.
+     * @example
+     * // Create many Files
+     * const file = await prisma.file.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Files and only return the `id`
+     * const fileWithIdOnly = await prisma.file.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FileCreateManyAndReturnArgs>(args?: SelectSubset<T, FileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a File.
+     * @param {FileDeleteArgs} args - Arguments to delete one File.
+     * @example
+     * // Delete one File
+     * const File = await prisma.file.delete({
+     *   where: {
+     *     // ... filter to delete one File
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FileDeleteArgs>(args: SelectSubset<T, FileDeleteArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one File.
+     * @param {FileUpdateArgs} args - Arguments to update one File.
+     * @example
+     * // Update one File
+     * const file = await prisma.file.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FileUpdateArgs>(args: SelectSubset<T, FileUpdateArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Files.
+     * @param {FileDeleteManyArgs} args - Arguments to filter Files to delete.
+     * @example
+     * // Delete a few Files
+     * const { count } = await prisma.file.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FileDeleteManyArgs>(args?: SelectSubset<T, FileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Files.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Files
+     * const file = await prisma.file.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FileUpdateManyArgs>(args: SelectSubset<T, FileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Files and returns the data updated in the database.
+     * @param {FileUpdateManyAndReturnArgs} args - Arguments to update many Files.
+     * @example
+     * // Update many Files
+     * const file = await prisma.file.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Files and only return the `id`
+     * const fileWithIdOnly = await prisma.file.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FileUpdateManyAndReturnArgs>(args: SelectSubset<T, FileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one File.
+     * @param {FileUpsertArgs} args - Arguments to update or create a File.
+     * @example
+     * // Update or create a File
+     * const file = await prisma.file.upsert({
+     *   create: {
+     *     // ... data to create a File
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the File we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FileUpsertArgs>(args: SelectSubset<T, FileUpsertArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Files.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileCountArgs} args - Arguments to filter Files to count.
+     * @example
+     * // Count the number of Files
+     * const count = await prisma.file.count({
+     *   where: {
+     *     // ... the filter for the Files we want to count
+     *   }
+     * })
+    **/
+    count<T extends FileCountArgs>(
+      args?: Subset<T, FileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a File.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FileAggregateArgs>(args: Subset<T, FileAggregateArgs>): Prisma.PrismaPromise<GetFileAggregateType<T>>
+
+    /**
+     * Group by File.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FileGroupByArgs['orderBy'] }
+        : { orderBy?: FileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the File model
+   */
+  readonly fields: FileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for File.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    component<T extends ComponentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ComponentDefaultArgs<ExtArgs>>): Prisma__ComponentClient<$Result.GetResult<Prisma.$ComponentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the File model
+   */
+  interface FileFieldRefs {
+    readonly id: FieldRef<"File", 'String'>
+    readonly componentId: FieldRef<"File", 'String'>
+    readonly filename: FieldRef<"File", 'String'>
+    readonly code: FieldRef<"File", 'String'>
+    readonly createdAt: FieldRef<"File", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * File findUnique
+   */
+  export type FileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    /**
+     * Filter, which File to fetch.
+     */
+    where: FileWhereUniqueInput
+  }
+
+  /**
+   * File findUniqueOrThrow
+   */
+  export type FileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    /**
+     * Filter, which File to fetch.
+     */
+    where: FileWhereUniqueInput
+  }
+
+  /**
+   * File findFirst
+   */
+  export type FileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    /**
+     * Filter, which File to fetch.
+     */
+    where?: FileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Files to fetch.
+     */
+    orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Files.
+     */
+    cursor?: FileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Files from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Files.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Files.
+     */
+    distinct?: FileScalarFieldEnum | FileScalarFieldEnum[]
+  }
+
+  /**
+   * File findFirstOrThrow
+   */
+  export type FileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    /**
+     * Filter, which File to fetch.
+     */
+    where?: FileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Files to fetch.
+     */
+    orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Files.
+     */
+    cursor?: FileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Files from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Files.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Files.
+     */
+    distinct?: FileScalarFieldEnum | FileScalarFieldEnum[]
+  }
+
+  /**
+   * File findMany
+   */
+  export type FileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    /**
+     * Filter, which Files to fetch.
+     */
+    where?: FileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Files to fetch.
+     */
+    orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Files.
+     */
+    cursor?: FileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Files from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Files.
+     */
+    skip?: number
+    distinct?: FileScalarFieldEnum | FileScalarFieldEnum[]
+  }
+
+  /**
+   * File create
+   */
+  export type FileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    /**
+     * The data needed to create a File.
+     */
+    data: XOR<FileCreateInput, FileUncheckedCreateInput>
+  }
+
+  /**
+   * File createMany
+   */
+  export type FileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Files.
+     */
+    data: FileCreateManyInput | FileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * File createManyAndReturn
+   */
+  export type FileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * The data used to create many Files.
+     */
+    data: FileCreateManyInput | FileCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * File update
+   */
+  export type FileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    /**
+     * The data needed to update a File.
+     */
+    data: XOR<FileUpdateInput, FileUncheckedUpdateInput>
+    /**
+     * Choose, which File to update.
+     */
+    where: FileWhereUniqueInput
+  }
+
+  /**
+   * File updateMany
+   */
+  export type FileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Files.
+     */
+    data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyInput>
+    /**
+     * Filter which Files to update
+     */
+    where?: FileWhereInput
+    /**
+     * Limit how many Files to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * File updateManyAndReturn
+   */
+  export type FileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * The data used to update Files.
+     */
+    data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyInput>
+    /**
+     * Filter which Files to update
+     */
+    where?: FileWhereInput
+    /**
+     * Limit how many Files to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * File upsert
+   */
+  export type FileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    /**
+     * The filter to search for the File to update in case it exists.
+     */
+    where: FileWhereUniqueInput
+    /**
+     * In case the File found by the `where` argument doesn't exist, create a new File with this data.
+     */
+    create: XOR<FileCreateInput, FileUncheckedCreateInput>
+    /**
+     * In case the File was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FileUpdateInput, FileUncheckedUpdateInput>
+  }
+
+  /**
+   * File delete
+   */
+  export type FileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    /**
+     * Filter which File to delete.
+     */
+    where: FileWhereUniqueInput
+  }
+
+  /**
+   * File deleteMany
+   */
+  export type FileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Files to delete
+     */
+    where?: FileWhereInput
+    /**
+     * Limit how many Files to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * File without action
+   */
+  export type FileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
   }
 
 
@@ -6820,6 +8318,2294 @@ export namespace Prisma {
 
 
   /**
+   * Model Feedback
+   */
+
+  export type AggregateFeedback = {
+    _count: FeedbackCountAggregateOutputType | null
+    _avg: FeedbackAvgAggregateOutputType | null
+    _sum: FeedbackSumAggregateOutputType | null
+    _min: FeedbackMinAggregateOutputType | null
+    _max: FeedbackMaxAggregateOutputType | null
+  }
+
+  export type FeedbackAvgAggregateOutputType = {
+    rating: number | null
+  }
+
+  export type FeedbackSumAggregateOutputType = {
+    rating: number | null
+  }
+
+  export type FeedbackMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    content: string | null
+    rating: number | null
+    isAnonymous: boolean | null
+    createdAt: Date | null
+  }
+
+  export type FeedbackMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    content: string | null
+    rating: number | null
+    isAnonymous: boolean | null
+    createdAt: Date | null
+  }
+
+  export type FeedbackCountAggregateOutputType = {
+    id: number
+    userId: number
+    content: number
+    rating: number
+    isAnonymous: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type FeedbackAvgAggregateInputType = {
+    rating?: true
+  }
+
+  export type FeedbackSumAggregateInputType = {
+    rating?: true
+  }
+
+  export type FeedbackMinAggregateInputType = {
+    id?: true
+    userId?: true
+    content?: true
+    rating?: true
+    isAnonymous?: true
+    createdAt?: true
+  }
+
+  export type FeedbackMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    content?: true
+    rating?: true
+    isAnonymous?: true
+    createdAt?: true
+  }
+
+  export type FeedbackCountAggregateInputType = {
+    id?: true
+    userId?: true
+    content?: true
+    rating?: true
+    isAnonymous?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type FeedbackAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Feedback to aggregate.
+     */
+    where?: FeedbackWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Feedbacks to fetch.
+     */
+    orderBy?: FeedbackOrderByWithRelationInput | FeedbackOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FeedbackWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Feedbacks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Feedbacks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Feedbacks
+    **/
+    _count?: true | FeedbackCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FeedbackAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FeedbackSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FeedbackMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FeedbackMaxAggregateInputType
+  }
+
+  export type GetFeedbackAggregateType<T extends FeedbackAggregateArgs> = {
+        [P in keyof T & keyof AggregateFeedback]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFeedback[P]>
+      : GetScalarType<T[P], AggregateFeedback[P]>
+  }
+
+
+
+
+  export type FeedbackGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FeedbackWhereInput
+    orderBy?: FeedbackOrderByWithAggregationInput | FeedbackOrderByWithAggregationInput[]
+    by: FeedbackScalarFieldEnum[] | FeedbackScalarFieldEnum
+    having?: FeedbackScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FeedbackCountAggregateInputType | true
+    _avg?: FeedbackAvgAggregateInputType
+    _sum?: FeedbackSumAggregateInputType
+    _min?: FeedbackMinAggregateInputType
+    _max?: FeedbackMaxAggregateInputType
+  }
+
+  export type FeedbackGroupByOutputType = {
+    id: string
+    userId: string | null
+    content: string
+    rating: number
+    isAnonymous: boolean
+    createdAt: Date
+    _count: FeedbackCountAggregateOutputType | null
+    _avg: FeedbackAvgAggregateOutputType | null
+    _sum: FeedbackSumAggregateOutputType | null
+    _min: FeedbackMinAggregateOutputType | null
+    _max: FeedbackMaxAggregateOutputType | null
+  }
+
+  type GetFeedbackGroupByPayload<T extends FeedbackGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FeedbackGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FeedbackGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FeedbackGroupByOutputType[P]>
+            : GetScalarType<T[P], FeedbackGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FeedbackSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    content?: boolean
+    rating?: boolean
+    isAnonymous?: boolean
+    createdAt?: boolean
+    user?: boolean | Feedback$userArgs<ExtArgs>
+  }, ExtArgs["result"]["feedback"]>
+
+  export type FeedbackSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    content?: boolean
+    rating?: boolean
+    isAnonymous?: boolean
+    createdAt?: boolean
+    user?: boolean | Feedback$userArgs<ExtArgs>
+  }, ExtArgs["result"]["feedback"]>
+
+  export type FeedbackSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    content?: boolean
+    rating?: boolean
+    isAnonymous?: boolean
+    createdAt?: boolean
+    user?: boolean | Feedback$userArgs<ExtArgs>
+  }, ExtArgs["result"]["feedback"]>
+
+  export type FeedbackSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    content?: boolean
+    rating?: boolean
+    isAnonymous?: boolean
+    createdAt?: boolean
+  }
+
+  export type FeedbackOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "content" | "rating" | "isAnonymous" | "createdAt", ExtArgs["result"]["feedback"]>
+  export type FeedbackInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Feedback$userArgs<ExtArgs>
+  }
+  export type FeedbackIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Feedback$userArgs<ExtArgs>
+  }
+  export type FeedbackIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Feedback$userArgs<ExtArgs>
+  }
+
+  export type $FeedbackPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Feedback"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string | null
+      content: string
+      rating: number
+      isAnonymous: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["feedback"]>
+    composites: {}
+  }
+
+  type FeedbackGetPayload<S extends boolean | null | undefined | FeedbackDefaultArgs> = $Result.GetResult<Prisma.$FeedbackPayload, S>
+
+  type FeedbackCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FeedbackFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FeedbackCountAggregateInputType | true
+    }
+
+  export interface FeedbackDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Feedback'], meta: { name: 'Feedback' } }
+    /**
+     * Find zero or one Feedback that matches the filter.
+     * @param {FeedbackFindUniqueArgs} args - Arguments to find a Feedback
+     * @example
+     * // Get one Feedback
+     * const feedback = await prisma.feedback.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FeedbackFindUniqueArgs>(args: SelectSubset<T, FeedbackFindUniqueArgs<ExtArgs>>): Prisma__FeedbackClient<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Feedback that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FeedbackFindUniqueOrThrowArgs} args - Arguments to find a Feedback
+     * @example
+     * // Get one Feedback
+     * const feedback = await prisma.feedback.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FeedbackFindUniqueOrThrowArgs>(args: SelectSubset<T, FeedbackFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FeedbackClient<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Feedback that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeedbackFindFirstArgs} args - Arguments to find a Feedback
+     * @example
+     * // Get one Feedback
+     * const feedback = await prisma.feedback.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FeedbackFindFirstArgs>(args?: SelectSubset<T, FeedbackFindFirstArgs<ExtArgs>>): Prisma__FeedbackClient<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Feedback that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeedbackFindFirstOrThrowArgs} args - Arguments to find a Feedback
+     * @example
+     * // Get one Feedback
+     * const feedback = await prisma.feedback.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FeedbackFindFirstOrThrowArgs>(args?: SelectSubset<T, FeedbackFindFirstOrThrowArgs<ExtArgs>>): Prisma__FeedbackClient<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Feedbacks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeedbackFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Feedbacks
+     * const feedbacks = await prisma.feedback.findMany()
+     * 
+     * // Get first 10 Feedbacks
+     * const feedbacks = await prisma.feedback.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const feedbackWithIdOnly = await prisma.feedback.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FeedbackFindManyArgs>(args?: SelectSubset<T, FeedbackFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Feedback.
+     * @param {FeedbackCreateArgs} args - Arguments to create a Feedback.
+     * @example
+     * // Create one Feedback
+     * const Feedback = await prisma.feedback.create({
+     *   data: {
+     *     // ... data to create a Feedback
+     *   }
+     * })
+     * 
+     */
+    create<T extends FeedbackCreateArgs>(args: SelectSubset<T, FeedbackCreateArgs<ExtArgs>>): Prisma__FeedbackClient<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Feedbacks.
+     * @param {FeedbackCreateManyArgs} args - Arguments to create many Feedbacks.
+     * @example
+     * // Create many Feedbacks
+     * const feedback = await prisma.feedback.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FeedbackCreateManyArgs>(args?: SelectSubset<T, FeedbackCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Feedbacks and returns the data saved in the database.
+     * @param {FeedbackCreateManyAndReturnArgs} args - Arguments to create many Feedbacks.
+     * @example
+     * // Create many Feedbacks
+     * const feedback = await prisma.feedback.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Feedbacks and only return the `id`
+     * const feedbackWithIdOnly = await prisma.feedback.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FeedbackCreateManyAndReturnArgs>(args?: SelectSubset<T, FeedbackCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Feedback.
+     * @param {FeedbackDeleteArgs} args - Arguments to delete one Feedback.
+     * @example
+     * // Delete one Feedback
+     * const Feedback = await prisma.feedback.delete({
+     *   where: {
+     *     // ... filter to delete one Feedback
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FeedbackDeleteArgs>(args: SelectSubset<T, FeedbackDeleteArgs<ExtArgs>>): Prisma__FeedbackClient<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Feedback.
+     * @param {FeedbackUpdateArgs} args - Arguments to update one Feedback.
+     * @example
+     * // Update one Feedback
+     * const feedback = await prisma.feedback.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FeedbackUpdateArgs>(args: SelectSubset<T, FeedbackUpdateArgs<ExtArgs>>): Prisma__FeedbackClient<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Feedbacks.
+     * @param {FeedbackDeleteManyArgs} args - Arguments to filter Feedbacks to delete.
+     * @example
+     * // Delete a few Feedbacks
+     * const { count } = await prisma.feedback.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FeedbackDeleteManyArgs>(args?: SelectSubset<T, FeedbackDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Feedbacks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeedbackUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Feedbacks
+     * const feedback = await prisma.feedback.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FeedbackUpdateManyArgs>(args: SelectSubset<T, FeedbackUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Feedbacks and returns the data updated in the database.
+     * @param {FeedbackUpdateManyAndReturnArgs} args - Arguments to update many Feedbacks.
+     * @example
+     * // Update many Feedbacks
+     * const feedback = await prisma.feedback.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Feedbacks and only return the `id`
+     * const feedbackWithIdOnly = await prisma.feedback.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FeedbackUpdateManyAndReturnArgs>(args: SelectSubset<T, FeedbackUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Feedback.
+     * @param {FeedbackUpsertArgs} args - Arguments to update or create a Feedback.
+     * @example
+     * // Update or create a Feedback
+     * const feedback = await prisma.feedback.upsert({
+     *   create: {
+     *     // ... data to create a Feedback
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Feedback we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FeedbackUpsertArgs>(args: SelectSubset<T, FeedbackUpsertArgs<ExtArgs>>): Prisma__FeedbackClient<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Feedbacks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeedbackCountArgs} args - Arguments to filter Feedbacks to count.
+     * @example
+     * // Count the number of Feedbacks
+     * const count = await prisma.feedback.count({
+     *   where: {
+     *     // ... the filter for the Feedbacks we want to count
+     *   }
+     * })
+    **/
+    count<T extends FeedbackCountArgs>(
+      args?: Subset<T, FeedbackCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FeedbackCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Feedback.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeedbackAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FeedbackAggregateArgs>(args: Subset<T, FeedbackAggregateArgs>): Prisma.PrismaPromise<GetFeedbackAggregateType<T>>
+
+    /**
+     * Group by Feedback.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeedbackGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FeedbackGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FeedbackGroupByArgs['orderBy'] }
+        : { orderBy?: FeedbackGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FeedbackGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFeedbackGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Feedback model
+   */
+  readonly fields: FeedbackFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Feedback.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FeedbackClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends Feedback$userArgs<ExtArgs> = {}>(args?: Subset<T, Feedback$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Feedback model
+   */
+  interface FeedbackFieldRefs {
+    readonly id: FieldRef<"Feedback", 'String'>
+    readonly userId: FieldRef<"Feedback", 'String'>
+    readonly content: FieldRef<"Feedback", 'String'>
+    readonly rating: FieldRef<"Feedback", 'Int'>
+    readonly isAnonymous: FieldRef<"Feedback", 'Boolean'>
+    readonly createdAt: FieldRef<"Feedback", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Feedback findUnique
+   */
+  export type FeedbackFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    /**
+     * Filter, which Feedback to fetch.
+     */
+    where: FeedbackWhereUniqueInput
+  }
+
+  /**
+   * Feedback findUniqueOrThrow
+   */
+  export type FeedbackFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    /**
+     * Filter, which Feedback to fetch.
+     */
+    where: FeedbackWhereUniqueInput
+  }
+
+  /**
+   * Feedback findFirst
+   */
+  export type FeedbackFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    /**
+     * Filter, which Feedback to fetch.
+     */
+    where?: FeedbackWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Feedbacks to fetch.
+     */
+    orderBy?: FeedbackOrderByWithRelationInput | FeedbackOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Feedbacks.
+     */
+    cursor?: FeedbackWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Feedbacks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Feedbacks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Feedbacks.
+     */
+    distinct?: FeedbackScalarFieldEnum | FeedbackScalarFieldEnum[]
+  }
+
+  /**
+   * Feedback findFirstOrThrow
+   */
+  export type FeedbackFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    /**
+     * Filter, which Feedback to fetch.
+     */
+    where?: FeedbackWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Feedbacks to fetch.
+     */
+    orderBy?: FeedbackOrderByWithRelationInput | FeedbackOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Feedbacks.
+     */
+    cursor?: FeedbackWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Feedbacks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Feedbacks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Feedbacks.
+     */
+    distinct?: FeedbackScalarFieldEnum | FeedbackScalarFieldEnum[]
+  }
+
+  /**
+   * Feedback findMany
+   */
+  export type FeedbackFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    /**
+     * Filter, which Feedbacks to fetch.
+     */
+    where?: FeedbackWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Feedbacks to fetch.
+     */
+    orderBy?: FeedbackOrderByWithRelationInput | FeedbackOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Feedbacks.
+     */
+    cursor?: FeedbackWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Feedbacks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Feedbacks.
+     */
+    skip?: number
+    distinct?: FeedbackScalarFieldEnum | FeedbackScalarFieldEnum[]
+  }
+
+  /**
+   * Feedback create
+   */
+  export type FeedbackCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Feedback.
+     */
+    data: XOR<FeedbackCreateInput, FeedbackUncheckedCreateInput>
+  }
+
+  /**
+   * Feedback createMany
+   */
+  export type FeedbackCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Feedbacks.
+     */
+    data: FeedbackCreateManyInput | FeedbackCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Feedback createManyAndReturn
+   */
+  export type FeedbackCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * The data used to create many Feedbacks.
+     */
+    data: FeedbackCreateManyInput | FeedbackCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Feedback update
+   */
+  export type FeedbackUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Feedback.
+     */
+    data: XOR<FeedbackUpdateInput, FeedbackUncheckedUpdateInput>
+    /**
+     * Choose, which Feedback to update.
+     */
+    where: FeedbackWhereUniqueInput
+  }
+
+  /**
+   * Feedback updateMany
+   */
+  export type FeedbackUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Feedbacks.
+     */
+    data: XOR<FeedbackUpdateManyMutationInput, FeedbackUncheckedUpdateManyInput>
+    /**
+     * Filter which Feedbacks to update
+     */
+    where?: FeedbackWhereInput
+    /**
+     * Limit how many Feedbacks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Feedback updateManyAndReturn
+   */
+  export type FeedbackUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * The data used to update Feedbacks.
+     */
+    data: XOR<FeedbackUpdateManyMutationInput, FeedbackUncheckedUpdateManyInput>
+    /**
+     * Filter which Feedbacks to update
+     */
+    where?: FeedbackWhereInput
+    /**
+     * Limit how many Feedbacks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Feedback upsert
+   */
+  export type FeedbackUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Feedback to update in case it exists.
+     */
+    where: FeedbackWhereUniqueInput
+    /**
+     * In case the Feedback found by the `where` argument doesn't exist, create a new Feedback with this data.
+     */
+    create: XOR<FeedbackCreateInput, FeedbackUncheckedCreateInput>
+    /**
+     * In case the Feedback was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FeedbackUpdateInput, FeedbackUncheckedUpdateInput>
+  }
+
+  /**
+   * Feedback delete
+   */
+  export type FeedbackDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    /**
+     * Filter which Feedback to delete.
+     */
+    where: FeedbackWhereUniqueInput
+  }
+
+  /**
+   * Feedback deleteMany
+   */
+  export type FeedbackDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Feedbacks to delete
+     */
+    where?: FeedbackWhereInput
+    /**
+     * Limit how many Feedbacks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Feedback.user
+   */
+  export type Feedback$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Feedback without action
+   */
+  export type FeedbackDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Feedback
+     */
+    omit?: FeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Metrics
+   */
+
+  export type AggregateMetrics = {
+    _count: MetricsCountAggregateOutputType | null
+    _avg: MetricsAvgAggregateOutputType | null
+    _sum: MetricsSumAggregateOutputType | null
+    _min: MetricsMinAggregateOutputType | null
+    _max: MetricsMaxAggregateOutputType | null
+  }
+
+  export type MetricsAvgAggregateOutputType = {
+    installations: number | null
+    uploads: number | null
+    views: number | null
+    copyClicks: number | null
+  }
+
+  export type MetricsSumAggregateOutputType = {
+    installations: number | null
+    uploads: number | null
+    views: number | null
+    copyClicks: number | null
+  }
+
+  export type MetricsMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    componentId: string | null
+    installations: number | null
+    uploads: number | null
+    views: number | null
+    copyClicks: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MetricsMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    componentId: string | null
+    installations: number | null
+    uploads: number | null
+    views: number | null
+    copyClicks: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MetricsCountAggregateOutputType = {
+    id: number
+    userId: number
+    componentId: number
+    installations: number
+    uploads: number
+    views: number
+    copyClicks: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MetricsAvgAggregateInputType = {
+    installations?: true
+    uploads?: true
+    views?: true
+    copyClicks?: true
+  }
+
+  export type MetricsSumAggregateInputType = {
+    installations?: true
+    uploads?: true
+    views?: true
+    copyClicks?: true
+  }
+
+  export type MetricsMinAggregateInputType = {
+    id?: true
+    userId?: true
+    componentId?: true
+    installations?: true
+    uploads?: true
+    views?: true
+    copyClicks?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MetricsMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    componentId?: true
+    installations?: true
+    uploads?: true
+    views?: true
+    copyClicks?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MetricsCountAggregateInputType = {
+    id?: true
+    userId?: true
+    componentId?: true
+    installations?: true
+    uploads?: true
+    views?: true
+    copyClicks?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MetricsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Metrics to aggregate.
+     */
+    where?: MetricsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Metrics to fetch.
+     */
+    orderBy?: MetricsOrderByWithRelationInput | MetricsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MetricsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Metrics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Metrics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Metrics
+    **/
+    _count?: true | MetricsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MetricsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MetricsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MetricsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MetricsMaxAggregateInputType
+  }
+
+  export type GetMetricsAggregateType<T extends MetricsAggregateArgs> = {
+        [P in keyof T & keyof AggregateMetrics]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMetrics[P]>
+      : GetScalarType<T[P], AggregateMetrics[P]>
+  }
+
+
+
+
+  export type MetricsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MetricsWhereInput
+    orderBy?: MetricsOrderByWithAggregationInput | MetricsOrderByWithAggregationInput[]
+    by: MetricsScalarFieldEnum[] | MetricsScalarFieldEnum
+    having?: MetricsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MetricsCountAggregateInputType | true
+    _avg?: MetricsAvgAggregateInputType
+    _sum?: MetricsSumAggregateInputType
+    _min?: MetricsMinAggregateInputType
+    _max?: MetricsMaxAggregateInputType
+  }
+
+  export type MetricsGroupByOutputType = {
+    id: string
+    userId: string
+    componentId: string
+    installations: number
+    uploads: number
+    views: number
+    copyClicks: number
+    createdAt: Date
+    updatedAt: Date
+    _count: MetricsCountAggregateOutputType | null
+    _avg: MetricsAvgAggregateOutputType | null
+    _sum: MetricsSumAggregateOutputType | null
+    _min: MetricsMinAggregateOutputType | null
+    _max: MetricsMaxAggregateOutputType | null
+  }
+
+  type GetMetricsGroupByPayload<T extends MetricsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MetricsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MetricsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MetricsGroupByOutputType[P]>
+            : GetScalarType<T[P], MetricsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MetricsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    componentId?: boolean
+    installations?: boolean
+    uploads?: boolean
+    views?: boolean
+    copyClicks?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    component?: boolean | ComponentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["metrics"]>
+
+  export type MetricsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    componentId?: boolean
+    installations?: boolean
+    uploads?: boolean
+    views?: boolean
+    copyClicks?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    component?: boolean | ComponentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["metrics"]>
+
+  export type MetricsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    componentId?: boolean
+    installations?: boolean
+    uploads?: boolean
+    views?: boolean
+    copyClicks?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    component?: boolean | ComponentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["metrics"]>
+
+  export type MetricsSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    componentId?: boolean
+    installations?: boolean
+    uploads?: boolean
+    views?: boolean
+    copyClicks?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type MetricsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "componentId" | "installations" | "uploads" | "views" | "copyClicks" | "createdAt" | "updatedAt", ExtArgs["result"]["metrics"]>
+  export type MetricsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    component?: boolean | ComponentDefaultArgs<ExtArgs>
+  }
+  export type MetricsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    component?: boolean | ComponentDefaultArgs<ExtArgs>
+  }
+  export type MetricsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    component?: boolean | ComponentDefaultArgs<ExtArgs>
+  }
+
+  export type $MetricsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Metrics"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      component: Prisma.$ComponentPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      componentId: string
+      installations: number
+      uploads: number
+      views: number
+      copyClicks: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["metrics"]>
+    composites: {}
+  }
+
+  type MetricsGetPayload<S extends boolean | null | undefined | MetricsDefaultArgs> = $Result.GetResult<Prisma.$MetricsPayload, S>
+
+  type MetricsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MetricsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MetricsCountAggregateInputType | true
+    }
+
+  export interface MetricsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Metrics'], meta: { name: 'Metrics' } }
+    /**
+     * Find zero or one Metrics that matches the filter.
+     * @param {MetricsFindUniqueArgs} args - Arguments to find a Metrics
+     * @example
+     * // Get one Metrics
+     * const metrics = await prisma.metrics.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MetricsFindUniqueArgs>(args: SelectSubset<T, MetricsFindUniqueArgs<ExtArgs>>): Prisma__MetricsClient<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Metrics that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MetricsFindUniqueOrThrowArgs} args - Arguments to find a Metrics
+     * @example
+     * // Get one Metrics
+     * const metrics = await prisma.metrics.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MetricsFindUniqueOrThrowArgs>(args: SelectSubset<T, MetricsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MetricsClient<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Metrics that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MetricsFindFirstArgs} args - Arguments to find a Metrics
+     * @example
+     * // Get one Metrics
+     * const metrics = await prisma.metrics.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MetricsFindFirstArgs>(args?: SelectSubset<T, MetricsFindFirstArgs<ExtArgs>>): Prisma__MetricsClient<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Metrics that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MetricsFindFirstOrThrowArgs} args - Arguments to find a Metrics
+     * @example
+     * // Get one Metrics
+     * const metrics = await prisma.metrics.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MetricsFindFirstOrThrowArgs>(args?: SelectSubset<T, MetricsFindFirstOrThrowArgs<ExtArgs>>): Prisma__MetricsClient<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Metrics that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MetricsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Metrics
+     * const metrics = await prisma.metrics.findMany()
+     * 
+     * // Get first 10 Metrics
+     * const metrics = await prisma.metrics.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const metricsWithIdOnly = await prisma.metrics.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MetricsFindManyArgs>(args?: SelectSubset<T, MetricsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Metrics.
+     * @param {MetricsCreateArgs} args - Arguments to create a Metrics.
+     * @example
+     * // Create one Metrics
+     * const Metrics = await prisma.metrics.create({
+     *   data: {
+     *     // ... data to create a Metrics
+     *   }
+     * })
+     * 
+     */
+    create<T extends MetricsCreateArgs>(args: SelectSubset<T, MetricsCreateArgs<ExtArgs>>): Prisma__MetricsClient<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Metrics.
+     * @param {MetricsCreateManyArgs} args - Arguments to create many Metrics.
+     * @example
+     * // Create many Metrics
+     * const metrics = await prisma.metrics.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MetricsCreateManyArgs>(args?: SelectSubset<T, MetricsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Metrics and returns the data saved in the database.
+     * @param {MetricsCreateManyAndReturnArgs} args - Arguments to create many Metrics.
+     * @example
+     * // Create many Metrics
+     * const metrics = await prisma.metrics.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Metrics and only return the `id`
+     * const metricsWithIdOnly = await prisma.metrics.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MetricsCreateManyAndReturnArgs>(args?: SelectSubset<T, MetricsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Metrics.
+     * @param {MetricsDeleteArgs} args - Arguments to delete one Metrics.
+     * @example
+     * // Delete one Metrics
+     * const Metrics = await prisma.metrics.delete({
+     *   where: {
+     *     // ... filter to delete one Metrics
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MetricsDeleteArgs>(args: SelectSubset<T, MetricsDeleteArgs<ExtArgs>>): Prisma__MetricsClient<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Metrics.
+     * @param {MetricsUpdateArgs} args - Arguments to update one Metrics.
+     * @example
+     * // Update one Metrics
+     * const metrics = await prisma.metrics.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MetricsUpdateArgs>(args: SelectSubset<T, MetricsUpdateArgs<ExtArgs>>): Prisma__MetricsClient<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Metrics.
+     * @param {MetricsDeleteManyArgs} args - Arguments to filter Metrics to delete.
+     * @example
+     * // Delete a few Metrics
+     * const { count } = await prisma.metrics.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MetricsDeleteManyArgs>(args?: SelectSubset<T, MetricsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Metrics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MetricsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Metrics
+     * const metrics = await prisma.metrics.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MetricsUpdateManyArgs>(args: SelectSubset<T, MetricsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Metrics and returns the data updated in the database.
+     * @param {MetricsUpdateManyAndReturnArgs} args - Arguments to update many Metrics.
+     * @example
+     * // Update many Metrics
+     * const metrics = await prisma.metrics.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Metrics and only return the `id`
+     * const metricsWithIdOnly = await prisma.metrics.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MetricsUpdateManyAndReturnArgs>(args: SelectSubset<T, MetricsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Metrics.
+     * @param {MetricsUpsertArgs} args - Arguments to update or create a Metrics.
+     * @example
+     * // Update or create a Metrics
+     * const metrics = await prisma.metrics.upsert({
+     *   create: {
+     *     // ... data to create a Metrics
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Metrics we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MetricsUpsertArgs>(args: SelectSubset<T, MetricsUpsertArgs<ExtArgs>>): Prisma__MetricsClient<$Result.GetResult<Prisma.$MetricsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Metrics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MetricsCountArgs} args - Arguments to filter Metrics to count.
+     * @example
+     * // Count the number of Metrics
+     * const count = await prisma.metrics.count({
+     *   where: {
+     *     // ... the filter for the Metrics we want to count
+     *   }
+     * })
+    **/
+    count<T extends MetricsCountArgs>(
+      args?: Subset<T, MetricsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MetricsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Metrics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MetricsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MetricsAggregateArgs>(args: Subset<T, MetricsAggregateArgs>): Prisma.PrismaPromise<GetMetricsAggregateType<T>>
+
+    /**
+     * Group by Metrics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MetricsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MetricsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MetricsGroupByArgs['orderBy'] }
+        : { orderBy?: MetricsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MetricsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMetricsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Metrics model
+   */
+  readonly fields: MetricsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Metrics.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MetricsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    component<T extends ComponentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ComponentDefaultArgs<ExtArgs>>): Prisma__ComponentClient<$Result.GetResult<Prisma.$ComponentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Metrics model
+   */
+  interface MetricsFieldRefs {
+    readonly id: FieldRef<"Metrics", 'String'>
+    readonly userId: FieldRef<"Metrics", 'String'>
+    readonly componentId: FieldRef<"Metrics", 'String'>
+    readonly installations: FieldRef<"Metrics", 'Int'>
+    readonly uploads: FieldRef<"Metrics", 'Int'>
+    readonly views: FieldRef<"Metrics", 'Int'>
+    readonly copyClicks: FieldRef<"Metrics", 'Int'>
+    readonly createdAt: FieldRef<"Metrics", 'DateTime'>
+    readonly updatedAt: FieldRef<"Metrics", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Metrics findUnique
+   */
+  export type MetricsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsInclude<ExtArgs> | null
+    /**
+     * Filter, which Metrics to fetch.
+     */
+    where: MetricsWhereUniqueInput
+  }
+
+  /**
+   * Metrics findUniqueOrThrow
+   */
+  export type MetricsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsInclude<ExtArgs> | null
+    /**
+     * Filter, which Metrics to fetch.
+     */
+    where: MetricsWhereUniqueInput
+  }
+
+  /**
+   * Metrics findFirst
+   */
+  export type MetricsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsInclude<ExtArgs> | null
+    /**
+     * Filter, which Metrics to fetch.
+     */
+    where?: MetricsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Metrics to fetch.
+     */
+    orderBy?: MetricsOrderByWithRelationInput | MetricsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Metrics.
+     */
+    cursor?: MetricsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Metrics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Metrics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Metrics.
+     */
+    distinct?: MetricsScalarFieldEnum | MetricsScalarFieldEnum[]
+  }
+
+  /**
+   * Metrics findFirstOrThrow
+   */
+  export type MetricsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsInclude<ExtArgs> | null
+    /**
+     * Filter, which Metrics to fetch.
+     */
+    where?: MetricsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Metrics to fetch.
+     */
+    orderBy?: MetricsOrderByWithRelationInput | MetricsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Metrics.
+     */
+    cursor?: MetricsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Metrics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Metrics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Metrics.
+     */
+    distinct?: MetricsScalarFieldEnum | MetricsScalarFieldEnum[]
+  }
+
+  /**
+   * Metrics findMany
+   */
+  export type MetricsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsInclude<ExtArgs> | null
+    /**
+     * Filter, which Metrics to fetch.
+     */
+    where?: MetricsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Metrics to fetch.
+     */
+    orderBy?: MetricsOrderByWithRelationInput | MetricsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Metrics.
+     */
+    cursor?: MetricsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Metrics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Metrics.
+     */
+    skip?: number
+    distinct?: MetricsScalarFieldEnum | MetricsScalarFieldEnum[]
+  }
+
+  /**
+   * Metrics create
+   */
+  export type MetricsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Metrics.
+     */
+    data: XOR<MetricsCreateInput, MetricsUncheckedCreateInput>
+  }
+
+  /**
+   * Metrics createMany
+   */
+  export type MetricsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Metrics.
+     */
+    data: MetricsCreateManyInput | MetricsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Metrics createManyAndReturn
+   */
+  export type MetricsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * The data used to create many Metrics.
+     */
+    data: MetricsCreateManyInput | MetricsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Metrics update
+   */
+  export type MetricsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Metrics.
+     */
+    data: XOR<MetricsUpdateInput, MetricsUncheckedUpdateInput>
+    /**
+     * Choose, which Metrics to update.
+     */
+    where: MetricsWhereUniqueInput
+  }
+
+  /**
+   * Metrics updateMany
+   */
+  export type MetricsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Metrics.
+     */
+    data: XOR<MetricsUpdateManyMutationInput, MetricsUncheckedUpdateManyInput>
+    /**
+     * Filter which Metrics to update
+     */
+    where?: MetricsWhereInput
+    /**
+     * Limit how many Metrics to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Metrics updateManyAndReturn
+   */
+  export type MetricsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * The data used to update Metrics.
+     */
+    data: XOR<MetricsUpdateManyMutationInput, MetricsUncheckedUpdateManyInput>
+    /**
+     * Filter which Metrics to update
+     */
+    where?: MetricsWhereInput
+    /**
+     * Limit how many Metrics to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Metrics upsert
+   */
+  export type MetricsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Metrics to update in case it exists.
+     */
+    where: MetricsWhereUniqueInput
+    /**
+     * In case the Metrics found by the `where` argument doesn't exist, create a new Metrics with this data.
+     */
+    create: XOR<MetricsCreateInput, MetricsUncheckedCreateInput>
+    /**
+     * In case the Metrics was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MetricsUpdateInput, MetricsUncheckedUpdateInput>
+  }
+
+  /**
+   * Metrics delete
+   */
+  export type MetricsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsInclude<ExtArgs> | null
+    /**
+     * Filter which Metrics to delete.
+     */
+    where: MetricsWhereUniqueInput
+  }
+
+  /**
+   * Metrics deleteMany
+   */
+  export type MetricsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Metrics to delete
+     */
+    where?: MetricsWhereInput
+    /**
+     * Limit how many Metrics to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Metrics without action
+   */
+  export type MetricsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Metrics
+     */
+    select?: MetricsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Metrics
+     */
+    omit?: MetricsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MetricsInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -6854,12 +10640,23 @@ export namespace Prisma {
     alias: 'alias',
     description: 'description',
     dependent: 'dependent',
-    code: 'code',
+    mainFile: 'mainFile',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type ComponentScalarFieldEnum = (typeof ComponentScalarFieldEnum)[keyof typeof ComponentScalarFieldEnum]
+
+
+  export const FileScalarFieldEnum: {
+    id: 'id',
+    componentId: 'componentId',
+    filename: 'filename',
+    code: 'code',
+    createdAt: 'createdAt'
+  };
+
+  export type FileScalarFieldEnum = (typeof FileScalarFieldEnum)[keyof typeof FileScalarFieldEnum]
 
 
   export const SessionScalarFieldEnum: {
@@ -6905,6 +10702,33 @@ export namespace Prisma {
   };
 
   export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+  export const FeedbackScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    content: 'content',
+    rating: 'rating',
+    isAnonymous: 'isAnonymous',
+    createdAt: 'createdAt'
+  };
+
+  export type FeedbackScalarFieldEnum = (typeof FeedbackScalarFieldEnum)[keyof typeof FeedbackScalarFieldEnum]
+
+
+  export const MetricsScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    componentId: 'componentId',
+    installations: 'installations',
+    uploads: 'uploads',
+    views: 'views',
+    copyClicks: 'copyClicks',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MetricsScalarFieldEnum = (typeof MetricsScalarFieldEnum)[keyof typeof MetricsScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -6972,20 +10796,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Json[]'
-   */
-  export type ListJsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Json'
-   */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -6996,6 +10806,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -7018,6 +10842,8 @@ export namespace Prisma {
     components?: ComponentListRelationFilter
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
+    feedbacks?: FeedbackListRelationFilter
+    metrics?: MetricsListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -7033,6 +10859,8 @@ export namespace Prisma {
     components?: ComponentOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
+    feedbacks?: FeedbackOrderByRelationAggregateInput
+    metrics?: MetricsOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -7051,6 +10879,8 @@ export namespace Prisma {
     components?: ComponentListRelationFilter
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
+    feedbacks?: FeedbackListRelationFilter
+    metrics?: MetricsListRelationFilter
   }, "id" | "email" | "authToken" | "username">
 
   export type UserOrderByWithAggregationInput = {
@@ -7092,10 +10922,12 @@ export namespace Prisma {
     alias?: StringFilter<"Component"> | string
     description?: StringFilter<"Component"> | string
     dependent?: StringNullableFilter<"Component"> | string | null
-    code?: JsonNullableListFilter<"Component">
+    mainFile?: StringFilter<"Component"> | string
     createdAt?: DateTimeFilter<"Component"> | Date | string
     updatedAt?: DateTimeFilter<"Component"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    files?: FileListRelationFilter
+    metrics?: MetricsListRelationFilter
   }
 
   export type ComponentOrderByWithRelationInput = {
@@ -7104,10 +10936,12 @@ export namespace Prisma {
     alias?: SortOrder
     description?: SortOrder
     dependent?: SortOrderInput | SortOrder
-    code?: SortOrder
+    mainFile?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
+    files?: FileOrderByRelationAggregateInput
+    metrics?: MetricsOrderByRelationAggregateInput
   }
 
   export type ComponentWhereUniqueInput = Prisma.AtLeast<{
@@ -7119,10 +10953,12 @@ export namespace Prisma {
     userId?: StringFilter<"Component"> | string
     description?: StringFilter<"Component"> | string
     dependent?: StringNullableFilter<"Component"> | string | null
-    code?: JsonNullableListFilter<"Component">
+    mainFile?: StringFilter<"Component"> | string
     createdAt?: DateTimeFilter<"Component"> | Date | string
     updatedAt?: DateTimeFilter<"Component"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    files?: FileListRelationFilter
+    metrics?: MetricsListRelationFilter
   }, "id" | "alias">
 
   export type ComponentOrderByWithAggregationInput = {
@@ -7131,7 +10967,7 @@ export namespace Prisma {
     alias?: SortOrder
     description?: SortOrder
     dependent?: SortOrderInput | SortOrder
-    code?: SortOrder
+    mainFile?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ComponentCountOrderByAggregateInput
@@ -7148,9 +10984,64 @@ export namespace Prisma {
     alias?: StringWithAggregatesFilter<"Component"> | string
     description?: StringWithAggregatesFilter<"Component"> | string
     dependent?: StringNullableWithAggregatesFilter<"Component"> | string | null
-    code?: JsonNullableListFilter<"Component">
+    mainFile?: StringWithAggregatesFilter<"Component"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Component"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Component"> | Date | string
+  }
+
+  export type FileWhereInput = {
+    AND?: FileWhereInput | FileWhereInput[]
+    OR?: FileWhereInput[]
+    NOT?: FileWhereInput | FileWhereInput[]
+    id?: StringFilter<"File"> | string
+    componentId?: StringFilter<"File"> | string
+    filename?: StringFilter<"File"> | string
+    code?: StringFilter<"File"> | string
+    createdAt?: DateTimeFilter<"File"> | Date | string
+    component?: XOR<ComponentScalarRelationFilter, ComponentWhereInput>
+  }
+
+  export type FileOrderByWithRelationInput = {
+    id?: SortOrder
+    componentId?: SortOrder
+    filename?: SortOrder
+    code?: SortOrder
+    createdAt?: SortOrder
+    component?: ComponentOrderByWithRelationInput
+  }
+
+  export type FileWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FileWhereInput | FileWhereInput[]
+    OR?: FileWhereInput[]
+    NOT?: FileWhereInput | FileWhereInput[]
+    componentId?: StringFilter<"File"> | string
+    filename?: StringFilter<"File"> | string
+    code?: StringFilter<"File"> | string
+    createdAt?: DateTimeFilter<"File"> | Date | string
+    component?: XOR<ComponentScalarRelationFilter, ComponentWhereInput>
+  }, "id">
+
+  export type FileOrderByWithAggregationInput = {
+    id?: SortOrder
+    componentId?: SortOrder
+    filename?: SortOrder
+    code?: SortOrder
+    createdAt?: SortOrder
+    _count?: FileCountOrderByAggregateInput
+    _max?: FileMaxOrderByAggregateInput
+    _min?: FileMinOrderByAggregateInput
+  }
+
+  export type FileScalarWhereWithAggregatesInput = {
+    AND?: FileScalarWhereWithAggregatesInput | FileScalarWhereWithAggregatesInput[]
+    OR?: FileScalarWhereWithAggregatesInput[]
+    NOT?: FileScalarWhereWithAggregatesInput | FileScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"File"> | string
+    componentId?: StringWithAggregatesFilter<"File"> | string
+    filename?: StringWithAggregatesFilter<"File"> | string
+    code?: StringWithAggregatesFilter<"File"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"File"> | Date | string
   }
 
   export type SessionWhereInput = {
@@ -7375,6 +11266,148 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableWithAggregatesFilter<"Verification"> | Date | string | null
   }
 
+  export type FeedbackWhereInput = {
+    AND?: FeedbackWhereInput | FeedbackWhereInput[]
+    OR?: FeedbackWhereInput[]
+    NOT?: FeedbackWhereInput | FeedbackWhereInput[]
+    id?: StringFilter<"Feedback"> | string
+    userId?: StringNullableFilter<"Feedback"> | string | null
+    content?: StringFilter<"Feedback"> | string
+    rating?: IntFilter<"Feedback"> | number
+    isAnonymous?: BoolFilter<"Feedback"> | boolean
+    createdAt?: DateTimeFilter<"Feedback"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type FeedbackOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    content?: SortOrder
+    rating?: SortOrder
+    isAnonymous?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type FeedbackWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FeedbackWhereInput | FeedbackWhereInput[]
+    OR?: FeedbackWhereInput[]
+    NOT?: FeedbackWhereInput | FeedbackWhereInput[]
+    userId?: StringNullableFilter<"Feedback"> | string | null
+    content?: StringFilter<"Feedback"> | string
+    rating?: IntFilter<"Feedback"> | number
+    isAnonymous?: BoolFilter<"Feedback"> | boolean
+    createdAt?: DateTimeFilter<"Feedback"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type FeedbackOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    content?: SortOrder
+    rating?: SortOrder
+    isAnonymous?: SortOrder
+    createdAt?: SortOrder
+    _count?: FeedbackCountOrderByAggregateInput
+    _avg?: FeedbackAvgOrderByAggregateInput
+    _max?: FeedbackMaxOrderByAggregateInput
+    _min?: FeedbackMinOrderByAggregateInput
+    _sum?: FeedbackSumOrderByAggregateInput
+  }
+
+  export type FeedbackScalarWhereWithAggregatesInput = {
+    AND?: FeedbackScalarWhereWithAggregatesInput | FeedbackScalarWhereWithAggregatesInput[]
+    OR?: FeedbackScalarWhereWithAggregatesInput[]
+    NOT?: FeedbackScalarWhereWithAggregatesInput | FeedbackScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Feedback"> | string
+    userId?: StringNullableWithAggregatesFilter<"Feedback"> | string | null
+    content?: StringWithAggregatesFilter<"Feedback"> | string
+    rating?: IntWithAggregatesFilter<"Feedback"> | number
+    isAnonymous?: BoolWithAggregatesFilter<"Feedback"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Feedback"> | Date | string
+  }
+
+  export type MetricsWhereInput = {
+    AND?: MetricsWhereInput | MetricsWhereInput[]
+    OR?: MetricsWhereInput[]
+    NOT?: MetricsWhereInput | MetricsWhereInput[]
+    id?: StringFilter<"Metrics"> | string
+    userId?: StringFilter<"Metrics"> | string
+    componentId?: StringFilter<"Metrics"> | string
+    installations?: IntFilter<"Metrics"> | number
+    uploads?: IntFilter<"Metrics"> | number
+    views?: IntFilter<"Metrics"> | number
+    copyClicks?: IntFilter<"Metrics"> | number
+    createdAt?: DateTimeFilter<"Metrics"> | Date | string
+    updatedAt?: DateTimeFilter<"Metrics"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    component?: XOR<ComponentScalarRelationFilter, ComponentWhereInput>
+  }
+
+  export type MetricsOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    componentId?: SortOrder
+    installations?: SortOrder
+    uploads?: SortOrder
+    views?: SortOrder
+    copyClicks?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    component?: ComponentOrderByWithRelationInput
+  }
+
+  export type MetricsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MetricsWhereInput | MetricsWhereInput[]
+    OR?: MetricsWhereInput[]
+    NOT?: MetricsWhereInput | MetricsWhereInput[]
+    userId?: StringFilter<"Metrics"> | string
+    componentId?: StringFilter<"Metrics"> | string
+    installations?: IntFilter<"Metrics"> | number
+    uploads?: IntFilter<"Metrics"> | number
+    views?: IntFilter<"Metrics"> | number
+    copyClicks?: IntFilter<"Metrics"> | number
+    createdAt?: DateTimeFilter<"Metrics"> | Date | string
+    updatedAt?: DateTimeFilter<"Metrics"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    component?: XOR<ComponentScalarRelationFilter, ComponentWhereInput>
+  }, "id">
+
+  export type MetricsOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    componentId?: SortOrder
+    installations?: SortOrder
+    uploads?: SortOrder
+    views?: SortOrder
+    copyClicks?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: MetricsCountOrderByAggregateInput
+    _avg?: MetricsAvgOrderByAggregateInput
+    _max?: MetricsMaxOrderByAggregateInput
+    _min?: MetricsMinOrderByAggregateInput
+    _sum?: MetricsSumOrderByAggregateInput
+  }
+
+  export type MetricsScalarWhereWithAggregatesInput = {
+    AND?: MetricsScalarWhereWithAggregatesInput | MetricsScalarWhereWithAggregatesInput[]
+    OR?: MetricsScalarWhereWithAggregatesInput[]
+    NOT?: MetricsScalarWhereWithAggregatesInput | MetricsScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Metrics"> | string
+    userId?: StringWithAggregatesFilter<"Metrics"> | string
+    componentId?: StringWithAggregatesFilter<"Metrics"> | string
+    installations?: IntWithAggregatesFilter<"Metrics"> | number
+    uploads?: IntWithAggregatesFilter<"Metrics"> | number
+    views?: IntWithAggregatesFilter<"Metrics"> | number
+    copyClicks?: IntWithAggregatesFilter<"Metrics"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"Metrics"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Metrics"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -7388,6 +11421,8 @@ export namespace Prisma {
     components?: ComponentCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    metrics?: MetricsCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -7403,6 +11438,8 @@ export namespace Prisma {
     components?: ComponentUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    metrics?: MetricsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -7418,6 +11455,8 @@ export namespace Prisma {
     components?: ComponentUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    metrics?: MetricsUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -7433,6 +11472,8 @@ export namespace Prisma {
     components?: ComponentUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    metrics?: MetricsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -7476,10 +11517,12 @@ export namespace Prisma {
     alias: string
     description: string
     dependent?: string | null
-    code?: ComponentCreatecodeInput | InputJsonValue[]
+    mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutComponentsInput
+    files?: FileCreateNestedManyWithoutComponentInput
+    metrics?: MetricsCreateNestedManyWithoutComponentInput
   }
 
   export type ComponentUncheckedCreateInput = {
@@ -7488,9 +11531,11 @@ export namespace Prisma {
     alias: string
     description: string
     dependent?: string | null
-    code?: ComponentCreatecodeInput | InputJsonValue[]
+    mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: FileUncheckedCreateNestedManyWithoutComponentInput
+    metrics?: MetricsUncheckedCreateNestedManyWithoutComponentInput
   }
 
   export type ComponentUpdateInput = {
@@ -7498,10 +11543,12 @@ export namespace Prisma {
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     dependent?: NullableStringFieldUpdateOperationsInput | string | null
-    code?: ComponentUpdatecodeInput | InputJsonValue[]
+    mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutComponentsNestedInput
+    files?: FileUpdateManyWithoutComponentNestedInput
+    metrics?: MetricsUpdateManyWithoutComponentNestedInput
   }
 
   export type ComponentUncheckedUpdateInput = {
@@ -7510,9 +11557,11 @@ export namespace Prisma {
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     dependent?: NullableStringFieldUpdateOperationsInput | string | null
-    code?: ComponentUpdatecodeInput | InputJsonValue[]
+    mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileUncheckedUpdateManyWithoutComponentNestedInput
+    metrics?: MetricsUncheckedUpdateManyWithoutComponentNestedInput
   }
 
   export type ComponentCreateManyInput = {
@@ -7521,7 +11570,7 @@ export namespace Prisma {
     alias: string
     description: string
     dependent?: string | null
-    code?: ComponentCreatecodeInput | InputJsonValue[]
+    mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -7531,7 +11580,7 @@ export namespace Prisma {
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     dependent?: NullableStringFieldUpdateOperationsInput | string | null
-    code?: ComponentUpdatecodeInput | InputJsonValue[]
+    mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7542,9 +11591,64 @@ export namespace Prisma {
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     dependent?: NullableStringFieldUpdateOperationsInput | string | null
-    code?: ComponentUpdatecodeInput | InputJsonValue[]
+    mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileCreateInput = {
+    id?: string
+    filename: string
+    code: string
+    createdAt?: Date | string
+    component: ComponentCreateNestedOneWithoutFilesInput
+  }
+
+  export type FileUncheckedCreateInput = {
+    id?: string
+    componentId: string
+    filename: string
+    code: string
+    createdAt?: Date | string
+  }
+
+  export type FileUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    component?: ComponentUpdateOneRequiredWithoutFilesNestedInput
+  }
+
+  export type FileUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    componentId?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileCreateManyInput = {
+    id?: string
+    componentId: string
+    filename: string
+    code: string
+    createdAt?: Date | string
+  }
+
+  export type FileUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    componentId?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SessionCreateInput = {
@@ -7797,6 +11901,150 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type FeedbackCreateInput = {
+    id?: string
+    content: string
+    rating: number
+    isAnonymous?: boolean
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutFeedbacksInput
+  }
+
+  export type FeedbackUncheckedCreateInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    rating: number
+    isAnonymous?: boolean
+    createdAt?: Date | string
+  }
+
+  export type FeedbackUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    isAnonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutFeedbacksNestedInput
+  }
+
+  export type FeedbackUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    isAnonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeedbackCreateManyInput = {
+    id?: string
+    userId?: string | null
+    content: string
+    rating: number
+    isAnonymous?: boolean
+    createdAt?: Date | string
+  }
+
+  export type FeedbackUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    isAnonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeedbackUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    isAnonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MetricsCreateInput = {
+    id?: string
+    installations?: number
+    uploads?: number
+    views?: number
+    copyClicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutMetricsInput
+    component: ComponentCreateNestedOneWithoutMetricsInput
+  }
+
+  export type MetricsUncheckedCreateInput = {
+    id?: string
+    userId: string
+    componentId: string
+    installations?: number
+    uploads?: number
+    views?: number
+    copyClicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MetricsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    installations?: IntFieldUpdateOperationsInput | number
+    uploads?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
+    copyClicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutMetricsNestedInput
+    component?: ComponentUpdateOneRequiredWithoutMetricsNestedInput
+  }
+
+  export type MetricsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    componentId?: StringFieldUpdateOperationsInput | string
+    installations?: IntFieldUpdateOperationsInput | number
+    uploads?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
+    copyClicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MetricsCreateManyInput = {
+    id?: string
+    userId: string
+    componentId: string
+    installations?: number
+    uploads?: number
+    views?: number
+    copyClicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MetricsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    installations?: IntFieldUpdateOperationsInput | number
+    uploads?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
+    copyClicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MetricsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    componentId?: StringFieldUpdateOperationsInput | string
+    installations?: IntFieldUpdateOperationsInput | number
+    uploads?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
+    copyClicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -7861,6 +12109,18 @@ export namespace Prisma {
     none?: AccountWhereInput
   }
 
+  export type FeedbackListRelationFilter = {
+    every?: FeedbackWhereInput
+    some?: FeedbackWhereInput
+    none?: FeedbackWhereInput
+  }
+
+  export type MetricsListRelationFilter = {
+    every?: MetricsWhereInput
+    some?: MetricsWhereInput
+    none?: MetricsWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -7875,6 +12135,14 @@ export namespace Prisma {
   }
 
   export type AccountOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FeedbackOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MetricsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -7971,24 +12239,20 @@ export namespace Prisma {
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
   }
-  export type JsonNullableListFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableListFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableListFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableListFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableListFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableListFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue[] | ListJsonFieldRefInput<$PrismaModel> | null
-    has?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    hasEvery?: InputJsonValue[] | ListJsonFieldRefInput<$PrismaModel>
-    hasSome?: InputJsonValue[] | ListJsonFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
-  }
 
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
+  }
+
+  export type FileListRelationFilter = {
+    every?: FileWhereInput
+    some?: FileWhereInput
+    none?: FileWhereInput
+  }
+
+  export type FileOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type ComponentCountOrderByAggregateInput = {
@@ -7997,7 +12261,7 @@ export namespace Prisma {
     alias?: SortOrder
     description?: SortOrder
     dependent?: SortOrder
-    code?: SortOrder
+    mainFile?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -8008,6 +12272,7 @@ export namespace Prisma {
     alias?: SortOrder
     description?: SortOrder
     dependent?: SortOrder
+    mainFile?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -8018,8 +12283,38 @@ export namespace Prisma {
     alias?: SortOrder
     description?: SortOrder
     dependent?: SortOrder
+    mainFile?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type ComponentScalarRelationFilter = {
+    is?: ComponentWhereInput
+    isNot?: ComponentWhereInput
+  }
+
+  export type FileCountOrderByAggregateInput = {
+    id?: SortOrder
+    componentId?: SortOrder
+    filename?: SortOrder
+    code?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FileMaxOrderByAggregateInput = {
+    id?: SortOrder
+    componentId?: SortOrder
+    filename?: SortOrder
+    code?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FileMinOrderByAggregateInput = {
+    id?: SortOrder
+    componentId?: SortOrder
+    filename?: SortOrder
+    code?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type SessionCountOrderByAggregateInput = {
@@ -8155,6 +12450,123 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type FeedbackCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    content?: SortOrder
+    rating?: SortOrder
+    isAnonymous?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FeedbackAvgOrderByAggregateInput = {
+    rating?: SortOrder
+  }
+
+  export type FeedbackMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    content?: SortOrder
+    rating?: SortOrder
+    isAnonymous?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FeedbackMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    content?: SortOrder
+    rating?: SortOrder
+    isAnonymous?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FeedbackSumOrderByAggregateInput = {
+    rating?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type MetricsCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    componentId?: SortOrder
+    installations?: SortOrder
+    uploads?: SortOrder
+    views?: SortOrder
+    copyClicks?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MetricsAvgOrderByAggregateInput = {
+    installations?: SortOrder
+    uploads?: SortOrder
+    views?: SortOrder
+    copyClicks?: SortOrder
+  }
+
+  export type MetricsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    componentId?: SortOrder
+    installations?: SortOrder
+    uploads?: SortOrder
+    views?: SortOrder
+    copyClicks?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MetricsMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    componentId?: SortOrder
+    installations?: SortOrder
+    uploads?: SortOrder
+    views?: SortOrder
+    copyClicks?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MetricsSumOrderByAggregateInput = {
+    installations?: SortOrder
+    uploads?: SortOrder
+    views?: SortOrder
+    copyClicks?: SortOrder
+  }
+
   export type ComponentCreateNestedManyWithoutUserInput = {
     create?: XOR<ComponentCreateWithoutUserInput, ComponentUncheckedCreateWithoutUserInput> | ComponentCreateWithoutUserInput[] | ComponentUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ComponentCreateOrConnectWithoutUserInput | ComponentCreateOrConnectWithoutUserInput[]
@@ -8176,6 +12588,20 @@ export namespace Prisma {
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
   }
 
+  export type FeedbackCreateNestedManyWithoutUserInput = {
+    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
+    createMany?: FeedbackCreateManyUserInputEnvelope
+    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+  }
+
+  export type MetricsCreateNestedManyWithoutUserInput = {
+    create?: XOR<MetricsCreateWithoutUserInput, MetricsUncheckedCreateWithoutUserInput> | MetricsCreateWithoutUserInput[] | MetricsUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: MetricsCreateOrConnectWithoutUserInput | MetricsCreateOrConnectWithoutUserInput[]
+    createMany?: MetricsCreateManyUserInputEnvelope
+    connect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+  }
+
   export type ComponentUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<ComponentCreateWithoutUserInput, ComponentUncheckedCreateWithoutUserInput> | ComponentCreateWithoutUserInput[] | ComponentUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ComponentCreateOrConnectWithoutUserInput | ComponentCreateOrConnectWithoutUserInput[]
@@ -8195,6 +12621,20 @@ export namespace Prisma {
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
     createMany?: AccountCreateManyUserInputEnvelope
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+  }
+
+  export type FeedbackUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
+    createMany?: FeedbackCreateManyUserInputEnvelope
+    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+  }
+
+  export type MetricsUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<MetricsCreateWithoutUserInput, MetricsUncheckedCreateWithoutUserInput> | MetricsCreateWithoutUserInput[] | MetricsUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: MetricsCreateOrConnectWithoutUserInput | MetricsCreateOrConnectWithoutUserInput[]
+    createMany?: MetricsCreateManyUserInputEnvelope
+    connect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -8255,6 +12695,34 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
+  export type FeedbackUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
+    upsert?: FeedbackUpsertWithWhereUniqueWithoutUserInput | FeedbackUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FeedbackCreateManyUserInputEnvelope
+    set?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    disconnect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    delete?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    update?: FeedbackUpdateWithWhereUniqueWithoutUserInput | FeedbackUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FeedbackUpdateManyWithWhereWithoutUserInput | FeedbackUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
+  }
+
+  export type MetricsUpdateManyWithoutUserNestedInput = {
+    create?: XOR<MetricsCreateWithoutUserInput, MetricsUncheckedCreateWithoutUserInput> | MetricsCreateWithoutUserInput[] | MetricsUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: MetricsCreateOrConnectWithoutUserInput | MetricsCreateOrConnectWithoutUserInput[]
+    upsert?: MetricsUpsertWithWhereUniqueWithoutUserInput | MetricsUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: MetricsCreateManyUserInputEnvelope
+    set?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    disconnect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    delete?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    connect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    update?: MetricsUpdateWithWhereUniqueWithoutUserInput | MetricsUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: MetricsUpdateManyWithWhereWithoutUserInput | MetricsUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: MetricsScalarWhereInput | MetricsScalarWhereInput[]
+  }
+
   export type ComponentUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<ComponentCreateWithoutUserInput, ComponentUncheckedCreateWithoutUserInput> | ComponentCreateWithoutUserInput[] | ComponentUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ComponentCreateOrConnectWithoutUserInput | ComponentCreateOrConnectWithoutUserInput[]
@@ -8297,8 +12765,32 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
-  export type ComponentCreatecodeInput = {
-    set: InputJsonValue[]
+  export type FeedbackUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
+    upsert?: FeedbackUpsertWithWhereUniqueWithoutUserInput | FeedbackUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FeedbackCreateManyUserInputEnvelope
+    set?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    disconnect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    delete?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    update?: FeedbackUpdateWithWhereUniqueWithoutUserInput | FeedbackUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FeedbackUpdateManyWithWhereWithoutUserInput | FeedbackUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
+  }
+
+  export type MetricsUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<MetricsCreateWithoutUserInput, MetricsUncheckedCreateWithoutUserInput> | MetricsCreateWithoutUserInput[] | MetricsUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: MetricsCreateOrConnectWithoutUserInput | MetricsCreateOrConnectWithoutUserInput[]
+    upsert?: MetricsUpsertWithWhereUniqueWithoutUserInput | MetricsUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: MetricsCreateManyUserInputEnvelope
+    set?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    disconnect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    delete?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    connect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    update?: MetricsUpdateWithWhereUniqueWithoutUserInput | MetricsUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: MetricsUpdateManyWithWhereWithoutUserInput | MetricsUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: MetricsScalarWhereInput | MetricsScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutComponentsInput = {
@@ -8307,9 +12799,32 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type ComponentUpdatecodeInput = {
-    set?: InputJsonValue[]
-    push?: InputJsonValue | InputJsonValue[]
+  export type FileCreateNestedManyWithoutComponentInput = {
+    create?: XOR<FileCreateWithoutComponentInput, FileUncheckedCreateWithoutComponentInput> | FileCreateWithoutComponentInput[] | FileUncheckedCreateWithoutComponentInput[]
+    connectOrCreate?: FileCreateOrConnectWithoutComponentInput | FileCreateOrConnectWithoutComponentInput[]
+    createMany?: FileCreateManyComponentInputEnvelope
+    connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+  }
+
+  export type MetricsCreateNestedManyWithoutComponentInput = {
+    create?: XOR<MetricsCreateWithoutComponentInput, MetricsUncheckedCreateWithoutComponentInput> | MetricsCreateWithoutComponentInput[] | MetricsUncheckedCreateWithoutComponentInput[]
+    connectOrCreate?: MetricsCreateOrConnectWithoutComponentInput | MetricsCreateOrConnectWithoutComponentInput[]
+    createMany?: MetricsCreateManyComponentInputEnvelope
+    connect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+  }
+
+  export type FileUncheckedCreateNestedManyWithoutComponentInput = {
+    create?: XOR<FileCreateWithoutComponentInput, FileUncheckedCreateWithoutComponentInput> | FileCreateWithoutComponentInput[] | FileUncheckedCreateWithoutComponentInput[]
+    connectOrCreate?: FileCreateOrConnectWithoutComponentInput | FileCreateOrConnectWithoutComponentInput[]
+    createMany?: FileCreateManyComponentInputEnvelope
+    connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+  }
+
+  export type MetricsUncheckedCreateNestedManyWithoutComponentInput = {
+    create?: XOR<MetricsCreateWithoutComponentInput, MetricsUncheckedCreateWithoutComponentInput> | MetricsCreateWithoutComponentInput[] | MetricsUncheckedCreateWithoutComponentInput[]
+    connectOrCreate?: MetricsCreateOrConnectWithoutComponentInput | MetricsCreateOrConnectWithoutComponentInput[]
+    createMany?: MetricsCreateManyComponentInputEnvelope
+    connect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
   }
 
   export type UserUpdateOneRequiredWithoutComponentsNestedInput = {
@@ -8318,6 +12833,76 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutComponentsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutComponentsInput, UserUpdateWithoutComponentsInput>, UserUncheckedUpdateWithoutComponentsInput>
+  }
+
+  export type FileUpdateManyWithoutComponentNestedInput = {
+    create?: XOR<FileCreateWithoutComponentInput, FileUncheckedCreateWithoutComponentInput> | FileCreateWithoutComponentInput[] | FileUncheckedCreateWithoutComponentInput[]
+    connectOrCreate?: FileCreateOrConnectWithoutComponentInput | FileCreateOrConnectWithoutComponentInput[]
+    upsert?: FileUpsertWithWhereUniqueWithoutComponentInput | FileUpsertWithWhereUniqueWithoutComponentInput[]
+    createMany?: FileCreateManyComponentInputEnvelope
+    set?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    disconnect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    delete?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    update?: FileUpdateWithWhereUniqueWithoutComponentInput | FileUpdateWithWhereUniqueWithoutComponentInput[]
+    updateMany?: FileUpdateManyWithWhereWithoutComponentInput | FileUpdateManyWithWhereWithoutComponentInput[]
+    deleteMany?: FileScalarWhereInput | FileScalarWhereInput[]
+  }
+
+  export type MetricsUpdateManyWithoutComponentNestedInput = {
+    create?: XOR<MetricsCreateWithoutComponentInput, MetricsUncheckedCreateWithoutComponentInput> | MetricsCreateWithoutComponentInput[] | MetricsUncheckedCreateWithoutComponentInput[]
+    connectOrCreate?: MetricsCreateOrConnectWithoutComponentInput | MetricsCreateOrConnectWithoutComponentInput[]
+    upsert?: MetricsUpsertWithWhereUniqueWithoutComponentInput | MetricsUpsertWithWhereUniqueWithoutComponentInput[]
+    createMany?: MetricsCreateManyComponentInputEnvelope
+    set?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    disconnect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    delete?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    connect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    update?: MetricsUpdateWithWhereUniqueWithoutComponentInput | MetricsUpdateWithWhereUniqueWithoutComponentInput[]
+    updateMany?: MetricsUpdateManyWithWhereWithoutComponentInput | MetricsUpdateManyWithWhereWithoutComponentInput[]
+    deleteMany?: MetricsScalarWhereInput | MetricsScalarWhereInput[]
+  }
+
+  export type FileUncheckedUpdateManyWithoutComponentNestedInput = {
+    create?: XOR<FileCreateWithoutComponentInput, FileUncheckedCreateWithoutComponentInput> | FileCreateWithoutComponentInput[] | FileUncheckedCreateWithoutComponentInput[]
+    connectOrCreate?: FileCreateOrConnectWithoutComponentInput | FileCreateOrConnectWithoutComponentInput[]
+    upsert?: FileUpsertWithWhereUniqueWithoutComponentInput | FileUpsertWithWhereUniqueWithoutComponentInput[]
+    createMany?: FileCreateManyComponentInputEnvelope
+    set?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    disconnect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    delete?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    update?: FileUpdateWithWhereUniqueWithoutComponentInput | FileUpdateWithWhereUniqueWithoutComponentInput[]
+    updateMany?: FileUpdateManyWithWhereWithoutComponentInput | FileUpdateManyWithWhereWithoutComponentInput[]
+    deleteMany?: FileScalarWhereInput | FileScalarWhereInput[]
+  }
+
+  export type MetricsUncheckedUpdateManyWithoutComponentNestedInput = {
+    create?: XOR<MetricsCreateWithoutComponentInput, MetricsUncheckedCreateWithoutComponentInput> | MetricsCreateWithoutComponentInput[] | MetricsUncheckedCreateWithoutComponentInput[]
+    connectOrCreate?: MetricsCreateOrConnectWithoutComponentInput | MetricsCreateOrConnectWithoutComponentInput[]
+    upsert?: MetricsUpsertWithWhereUniqueWithoutComponentInput | MetricsUpsertWithWhereUniqueWithoutComponentInput[]
+    createMany?: MetricsCreateManyComponentInputEnvelope
+    set?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    disconnect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    delete?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    connect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+    update?: MetricsUpdateWithWhereUniqueWithoutComponentInput | MetricsUpdateWithWhereUniqueWithoutComponentInput[]
+    updateMany?: MetricsUpdateManyWithWhereWithoutComponentInput | MetricsUpdateManyWithWhereWithoutComponentInput[]
+    deleteMany?: MetricsScalarWhereInput | MetricsScalarWhereInput[]
+  }
+
+  export type ComponentCreateNestedOneWithoutFilesInput = {
+    create?: XOR<ComponentCreateWithoutFilesInput, ComponentUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: ComponentCreateOrConnectWithoutFilesInput
+    connect?: ComponentWhereUniqueInput
+  }
+
+  export type ComponentUpdateOneRequiredWithoutFilesNestedInput = {
+    create?: XOR<ComponentCreateWithoutFilesInput, ComponentUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: ComponentCreateOrConnectWithoutFilesInput
+    upsert?: ComponentUpsertWithoutFilesInput
+    connect?: ComponentWhereUniqueInput
+    update?: XOR<XOR<ComponentUpdateToOneWithWhereWithoutFilesInput, ComponentUpdateWithoutFilesInput>, ComponentUncheckedUpdateWithoutFilesInput>
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -8350,6 +12935,58 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutAccountsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAccountsInput, UserUpdateWithoutAccountsInput>, UserUncheckedUpdateWithoutAccountsInput>
+  }
+
+  export type UserCreateNestedOneWithoutFeedbacksInput = {
+    create?: XOR<UserCreateWithoutFeedbacksInput, UserUncheckedCreateWithoutFeedbacksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFeedbacksInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUpdateOneWithoutFeedbacksNestedInput = {
+    create?: XOR<UserCreateWithoutFeedbacksInput, UserUncheckedCreateWithoutFeedbacksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFeedbacksInput
+    upsert?: UserUpsertWithoutFeedbacksInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFeedbacksInput, UserUpdateWithoutFeedbacksInput>, UserUncheckedUpdateWithoutFeedbacksInput>
+  }
+
+  export type UserCreateNestedOneWithoutMetricsInput = {
+    create?: XOR<UserCreateWithoutMetricsInput, UserUncheckedCreateWithoutMetricsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMetricsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ComponentCreateNestedOneWithoutMetricsInput = {
+    create?: XOR<ComponentCreateWithoutMetricsInput, ComponentUncheckedCreateWithoutMetricsInput>
+    connectOrCreate?: ComponentCreateOrConnectWithoutMetricsInput
+    connect?: ComponentWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutMetricsNestedInput = {
+    create?: XOR<UserCreateWithoutMetricsInput, UserUncheckedCreateWithoutMetricsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMetricsInput
+    upsert?: UserUpsertWithoutMetricsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMetricsInput, UserUpdateWithoutMetricsInput>, UserUncheckedUpdateWithoutMetricsInput>
+  }
+
+  export type ComponentUpdateOneRequiredWithoutMetricsNestedInput = {
+    create?: XOR<ComponentCreateWithoutMetricsInput, ComponentUncheckedCreateWithoutMetricsInput>
+    connectOrCreate?: ComponentCreateOrConnectWithoutMetricsInput
+    upsert?: ComponentUpsertWithoutMetricsInput
+    connect?: ComponentWhereUniqueInput
+    update?: XOR<XOR<ComponentUpdateToOneWithWhereWithoutMetricsInput, ComponentUpdateWithoutMetricsInput>, ComponentUncheckedUpdateWithoutMetricsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -8499,14 +13136,43 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type ComponentCreateWithoutUserInput = {
     id?: string
     alias: string
     description: string
     dependent?: string | null
-    code?: ComponentCreatecodeInput | InputJsonValue[]
+    mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: FileCreateNestedManyWithoutComponentInput
+    metrics?: MetricsCreateNestedManyWithoutComponentInput
   }
 
   export type ComponentUncheckedCreateWithoutUserInput = {
@@ -8514,9 +13180,11 @@ export namespace Prisma {
     alias: string
     description: string
     dependent?: string | null
-    code?: ComponentCreatecodeInput | InputJsonValue[]
+    mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: FileUncheckedCreateNestedManyWithoutComponentInput
+    metrics?: MetricsUncheckedCreateNestedManyWithoutComponentInput
   }
 
   export type ComponentCreateOrConnectWithoutUserInput = {
@@ -8599,6 +13267,64 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FeedbackCreateWithoutUserInput = {
+    id?: string
+    content: string
+    rating: number
+    isAnonymous?: boolean
+    createdAt?: Date | string
+  }
+
+  export type FeedbackUncheckedCreateWithoutUserInput = {
+    id?: string
+    content: string
+    rating: number
+    isAnonymous?: boolean
+    createdAt?: Date | string
+  }
+
+  export type FeedbackCreateOrConnectWithoutUserInput = {
+    where: FeedbackWhereUniqueInput
+    create: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput>
+  }
+
+  export type FeedbackCreateManyUserInputEnvelope = {
+    data: FeedbackCreateManyUserInput | FeedbackCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MetricsCreateWithoutUserInput = {
+    id?: string
+    installations?: number
+    uploads?: number
+    views?: number
+    copyClicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    component: ComponentCreateNestedOneWithoutMetricsInput
+  }
+
+  export type MetricsUncheckedCreateWithoutUserInput = {
+    id?: string
+    componentId: string
+    installations?: number
+    uploads?: number
+    views?: number
+    copyClicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MetricsCreateOrConnectWithoutUserInput = {
+    where: MetricsWhereUniqueInput
+    create: XOR<MetricsCreateWithoutUserInput, MetricsUncheckedCreateWithoutUserInput>
+  }
+
+  export type MetricsCreateManyUserInputEnvelope = {
+    data: MetricsCreateManyUserInput | MetricsCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ComponentUpsertWithWhereUniqueWithoutUserInput = {
     where: ComponentWhereUniqueInput
     update: XOR<ComponentUpdateWithoutUserInput, ComponentUncheckedUpdateWithoutUserInput>
@@ -8624,7 +13350,7 @@ export namespace Prisma {
     alias?: StringFilter<"Component"> | string
     description?: StringFilter<"Component"> | string
     dependent?: StringNullableFilter<"Component"> | string | null
-    code?: JsonNullableListFilter<"Component">
+    mainFile?: StringFilter<"Component"> | string
     createdAt?: DateTimeFilter<"Component"> | Date | string
     updatedAt?: DateTimeFilter<"Component"> | Date | string
   }
@@ -8694,6 +13420,65 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Account"> | Date | string
   }
 
+  export type FeedbackUpsertWithWhereUniqueWithoutUserInput = {
+    where: FeedbackWhereUniqueInput
+    update: XOR<FeedbackUpdateWithoutUserInput, FeedbackUncheckedUpdateWithoutUserInput>
+    create: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput>
+  }
+
+  export type FeedbackUpdateWithWhereUniqueWithoutUserInput = {
+    where: FeedbackWhereUniqueInput
+    data: XOR<FeedbackUpdateWithoutUserInput, FeedbackUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FeedbackUpdateManyWithWhereWithoutUserInput = {
+    where: FeedbackScalarWhereInput
+    data: XOR<FeedbackUpdateManyMutationInput, FeedbackUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type FeedbackScalarWhereInput = {
+    AND?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
+    OR?: FeedbackScalarWhereInput[]
+    NOT?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
+    id?: StringFilter<"Feedback"> | string
+    userId?: StringNullableFilter<"Feedback"> | string | null
+    content?: StringFilter<"Feedback"> | string
+    rating?: IntFilter<"Feedback"> | number
+    isAnonymous?: BoolFilter<"Feedback"> | boolean
+    createdAt?: DateTimeFilter<"Feedback"> | Date | string
+  }
+
+  export type MetricsUpsertWithWhereUniqueWithoutUserInput = {
+    where: MetricsWhereUniqueInput
+    update: XOR<MetricsUpdateWithoutUserInput, MetricsUncheckedUpdateWithoutUserInput>
+    create: XOR<MetricsCreateWithoutUserInput, MetricsUncheckedCreateWithoutUserInput>
+  }
+
+  export type MetricsUpdateWithWhereUniqueWithoutUserInput = {
+    where: MetricsWhereUniqueInput
+    data: XOR<MetricsUpdateWithoutUserInput, MetricsUncheckedUpdateWithoutUserInput>
+  }
+
+  export type MetricsUpdateManyWithWhereWithoutUserInput = {
+    where: MetricsScalarWhereInput
+    data: XOR<MetricsUpdateManyMutationInput, MetricsUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type MetricsScalarWhereInput = {
+    AND?: MetricsScalarWhereInput | MetricsScalarWhereInput[]
+    OR?: MetricsScalarWhereInput[]
+    NOT?: MetricsScalarWhereInput | MetricsScalarWhereInput[]
+    id?: StringFilter<"Metrics"> | string
+    userId?: StringFilter<"Metrics"> | string
+    componentId?: StringFilter<"Metrics"> | string
+    installations?: IntFilter<"Metrics"> | number
+    uploads?: IntFilter<"Metrics"> | number
+    views?: IntFilter<"Metrics"> | number
+    copyClicks?: IntFilter<"Metrics"> | number
+    createdAt?: DateTimeFilter<"Metrics"> | Date | string
+    updatedAt?: DateTimeFilter<"Metrics"> | Date | string
+  }
+
   export type UserCreateWithoutComponentsInput = {
     id?: string
     email: string
@@ -8706,6 +13491,8 @@ export namespace Prisma {
     emailVerified: boolean
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    metrics?: MetricsCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutComponentsInput = {
@@ -8720,11 +13507,69 @@ export namespace Prisma {
     emailVerified: boolean
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    metrics?: MetricsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutComponentsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutComponentsInput, UserUncheckedCreateWithoutComponentsInput>
+  }
+
+  export type FileCreateWithoutComponentInput = {
+    id?: string
+    filename: string
+    code: string
+    createdAt?: Date | string
+  }
+
+  export type FileUncheckedCreateWithoutComponentInput = {
+    id?: string
+    filename: string
+    code: string
+    createdAt?: Date | string
+  }
+
+  export type FileCreateOrConnectWithoutComponentInput = {
+    where: FileWhereUniqueInput
+    create: XOR<FileCreateWithoutComponentInput, FileUncheckedCreateWithoutComponentInput>
+  }
+
+  export type FileCreateManyComponentInputEnvelope = {
+    data: FileCreateManyComponentInput | FileCreateManyComponentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MetricsCreateWithoutComponentInput = {
+    id?: string
+    installations?: number
+    uploads?: number
+    views?: number
+    copyClicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutMetricsInput
+  }
+
+  export type MetricsUncheckedCreateWithoutComponentInput = {
+    id?: string
+    userId: string
+    installations?: number
+    uploads?: number
+    views?: number
+    copyClicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MetricsCreateOrConnectWithoutComponentInput = {
+    where: MetricsWhereUniqueInput
+    create: XOR<MetricsCreateWithoutComponentInput, MetricsUncheckedCreateWithoutComponentInput>
+  }
+
+  export type MetricsCreateManyComponentInputEnvelope = {
+    data: MetricsCreateManyComponentInput | MetricsCreateManyComponentInput[]
+    skipDuplicates?: boolean
   }
 
   export type UserUpsertWithoutComponentsInput = {
@@ -8750,6 +13595,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    metrics?: MetricsUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutComponentsInput = {
@@ -8764,6 +13611,115 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    metrics?: MetricsUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type FileUpsertWithWhereUniqueWithoutComponentInput = {
+    where: FileWhereUniqueInput
+    update: XOR<FileUpdateWithoutComponentInput, FileUncheckedUpdateWithoutComponentInput>
+    create: XOR<FileCreateWithoutComponentInput, FileUncheckedCreateWithoutComponentInput>
+  }
+
+  export type FileUpdateWithWhereUniqueWithoutComponentInput = {
+    where: FileWhereUniqueInput
+    data: XOR<FileUpdateWithoutComponentInput, FileUncheckedUpdateWithoutComponentInput>
+  }
+
+  export type FileUpdateManyWithWhereWithoutComponentInput = {
+    where: FileScalarWhereInput
+    data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyWithoutComponentInput>
+  }
+
+  export type FileScalarWhereInput = {
+    AND?: FileScalarWhereInput | FileScalarWhereInput[]
+    OR?: FileScalarWhereInput[]
+    NOT?: FileScalarWhereInput | FileScalarWhereInput[]
+    id?: StringFilter<"File"> | string
+    componentId?: StringFilter<"File"> | string
+    filename?: StringFilter<"File"> | string
+    code?: StringFilter<"File"> | string
+    createdAt?: DateTimeFilter<"File"> | Date | string
+  }
+
+  export type MetricsUpsertWithWhereUniqueWithoutComponentInput = {
+    where: MetricsWhereUniqueInput
+    update: XOR<MetricsUpdateWithoutComponentInput, MetricsUncheckedUpdateWithoutComponentInput>
+    create: XOR<MetricsCreateWithoutComponentInput, MetricsUncheckedCreateWithoutComponentInput>
+  }
+
+  export type MetricsUpdateWithWhereUniqueWithoutComponentInput = {
+    where: MetricsWhereUniqueInput
+    data: XOR<MetricsUpdateWithoutComponentInput, MetricsUncheckedUpdateWithoutComponentInput>
+  }
+
+  export type MetricsUpdateManyWithWhereWithoutComponentInput = {
+    where: MetricsScalarWhereInput
+    data: XOR<MetricsUpdateManyMutationInput, MetricsUncheckedUpdateManyWithoutComponentInput>
+  }
+
+  export type ComponentCreateWithoutFilesInput = {
+    id?: string
+    alias: string
+    description: string
+    dependent?: string | null
+    mainFile: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutComponentsInput
+    metrics?: MetricsCreateNestedManyWithoutComponentInput
+  }
+
+  export type ComponentUncheckedCreateWithoutFilesInput = {
+    id?: string
+    userId: string
+    alias: string
+    description: string
+    dependent?: string | null
+    mainFile: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    metrics?: MetricsUncheckedCreateNestedManyWithoutComponentInput
+  }
+
+  export type ComponentCreateOrConnectWithoutFilesInput = {
+    where: ComponentWhereUniqueInput
+    create: XOR<ComponentCreateWithoutFilesInput, ComponentUncheckedCreateWithoutFilesInput>
+  }
+
+  export type ComponentUpsertWithoutFilesInput = {
+    update: XOR<ComponentUpdateWithoutFilesInput, ComponentUncheckedUpdateWithoutFilesInput>
+    create: XOR<ComponentCreateWithoutFilesInput, ComponentUncheckedCreateWithoutFilesInput>
+    where?: ComponentWhereInput
+  }
+
+  export type ComponentUpdateToOneWithWhereWithoutFilesInput = {
+    where?: ComponentWhereInput
+    data: XOR<ComponentUpdateWithoutFilesInput, ComponentUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type ComponentUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    alias?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    mainFile?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutComponentsNestedInput
+    metrics?: MetricsUpdateManyWithoutComponentNestedInput
+  }
+
+  export type ComponentUncheckedUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    alias?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    mainFile?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metrics?: MetricsUncheckedUpdateManyWithoutComponentNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -8778,6 +13734,8 @@ export namespace Prisma {
     emailVerified: boolean
     components?: ComponentCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    metrics?: MetricsCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -8792,6 +13750,8 @@ export namespace Prisma {
     emailVerified: boolean
     components?: ComponentUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    metrics?: MetricsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -8822,6 +13782,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     components?: ComponentUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    metrics?: MetricsUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -8836,6 +13798,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     components?: ComponentUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    metrics?: MetricsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -8850,6 +13814,8 @@ export namespace Prisma {
     emailVerified: boolean
     components?: ComponentCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    metrics?: MetricsCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -8864,6 +13830,8 @@ export namespace Prisma {
     emailVerified: boolean
     components?: ComponentUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    metrics?: MetricsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -8894,6 +13862,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     components?: ComponentUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    metrics?: MetricsUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -8908,6 +13878,232 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     components?: ComponentUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    metrics?: MetricsUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutFeedbacksInput = {
+    id?: string
+    email: string
+    name?: string | null
+    image?: string | null
+    authToken?: string | null
+    username?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    emailVerified: boolean
+    components?: ComponentCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    metrics?: MetricsCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutFeedbacksInput = {
+    id?: string
+    email: string
+    name?: string | null
+    image?: string | null
+    authToken?: string | null
+    username?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    emailVerified: boolean
+    components?: ComponentUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    metrics?: MetricsUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutFeedbacksInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFeedbacksInput, UserUncheckedCreateWithoutFeedbacksInput>
+  }
+
+  export type UserUpsertWithoutFeedbacksInput = {
+    update: XOR<UserUpdateWithoutFeedbacksInput, UserUncheckedUpdateWithoutFeedbacksInput>
+    create: XOR<UserCreateWithoutFeedbacksInput, UserUncheckedCreateWithoutFeedbacksInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutFeedbacksInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutFeedbacksInput, UserUncheckedUpdateWithoutFeedbacksInput>
+  }
+
+  export type UserUpdateWithoutFeedbacksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    authToken?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    components?: ComponentUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    metrics?: MetricsUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutFeedbacksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    authToken?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    components?: ComponentUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    metrics?: MetricsUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutMetricsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    image?: string | null
+    authToken?: string | null
+    username?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    emailVerified: boolean
+    components?: ComponentCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutMetricsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    image?: string | null
+    authToken?: string | null
+    username?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    emailVerified: boolean
+    components?: ComponentUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutMetricsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMetricsInput, UserUncheckedCreateWithoutMetricsInput>
+  }
+
+  export type ComponentCreateWithoutMetricsInput = {
+    id?: string
+    alias: string
+    description: string
+    dependent?: string | null
+    mainFile: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutComponentsInput
+    files?: FileCreateNestedManyWithoutComponentInput
+  }
+
+  export type ComponentUncheckedCreateWithoutMetricsInput = {
+    id?: string
+    userId: string
+    alias: string
+    description: string
+    dependent?: string | null
+    mainFile: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    files?: FileUncheckedCreateNestedManyWithoutComponentInput
+  }
+
+  export type ComponentCreateOrConnectWithoutMetricsInput = {
+    where: ComponentWhereUniqueInput
+    create: XOR<ComponentCreateWithoutMetricsInput, ComponentUncheckedCreateWithoutMetricsInput>
+  }
+
+  export type UserUpsertWithoutMetricsInput = {
+    update: XOR<UserUpdateWithoutMetricsInput, UserUncheckedUpdateWithoutMetricsInput>
+    create: XOR<UserCreateWithoutMetricsInput, UserUncheckedCreateWithoutMetricsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutMetricsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutMetricsInput, UserUncheckedUpdateWithoutMetricsInput>
+  }
+
+  export type UserUpdateWithoutMetricsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    authToken?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    components?: ComponentUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutMetricsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    authToken?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    components?: ComponentUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ComponentUpsertWithoutMetricsInput = {
+    update: XOR<ComponentUpdateWithoutMetricsInput, ComponentUncheckedUpdateWithoutMetricsInput>
+    create: XOR<ComponentCreateWithoutMetricsInput, ComponentUncheckedCreateWithoutMetricsInput>
+    where?: ComponentWhereInput
+  }
+
+  export type ComponentUpdateToOneWithWhereWithoutMetricsInput = {
+    where?: ComponentWhereInput
+    data: XOR<ComponentUpdateWithoutMetricsInput, ComponentUncheckedUpdateWithoutMetricsInput>
+  }
+
+  export type ComponentUpdateWithoutMetricsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    alias?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    mainFile?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutComponentsNestedInput
+    files?: FileUpdateManyWithoutComponentNestedInput
+  }
+
+  export type ComponentUncheckedUpdateWithoutMetricsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    alias?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    mainFile?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileUncheckedUpdateManyWithoutComponentNestedInput
   }
 
   export type ComponentCreateManyUserInput = {
@@ -8915,7 +14111,7 @@ export namespace Prisma {
     alias: string
     description: string
     dependent?: string | null
-    code?: ComponentCreatecodeInput | InputJsonValue[]
+    mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8945,14 +14141,35 @@ export namespace Prisma {
     updatedAt: Date | string
   }
 
+  export type FeedbackCreateManyUserInput = {
+    id?: string
+    content: string
+    rating: number
+    isAnonymous?: boolean
+    createdAt?: Date | string
+  }
+
+  export type MetricsCreateManyUserInput = {
+    id?: string
+    componentId: string
+    installations?: number
+    uploads?: number
+    views?: number
+    copyClicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ComponentUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     dependent?: NullableStringFieldUpdateOperationsInput | string | null
-    code?: ComponentUpdatecodeInput | InputJsonValue[]
+    mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileUpdateManyWithoutComponentNestedInput
+    metrics?: MetricsUpdateManyWithoutComponentNestedInput
   }
 
   export type ComponentUncheckedUpdateWithoutUserInput = {
@@ -8960,9 +14177,11 @@ export namespace Prisma {
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     dependent?: NullableStringFieldUpdateOperationsInput | string | null
-    code?: ComponentUpdatecodeInput | InputJsonValue[]
+    mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileUncheckedUpdateManyWithoutComponentNestedInput
+    metrics?: MetricsUncheckedUpdateManyWithoutComponentNestedInput
   }
 
   export type ComponentUncheckedUpdateManyWithoutUserInput = {
@@ -8970,7 +14189,7 @@ export namespace Prisma {
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     dependent?: NullableStringFieldUpdateOperationsInput | string | null
-    code?: ComponentUpdatecodeInput | InputJsonValue[]
+    mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9046,6 +14265,135 @@ export namespace Prisma {
     refreshTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scope?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeedbackUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    isAnonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeedbackUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    isAnonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeedbackUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    isAnonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MetricsUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    installations?: IntFieldUpdateOperationsInput | number
+    uploads?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
+    copyClicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    component?: ComponentUpdateOneRequiredWithoutMetricsNestedInput
+  }
+
+  export type MetricsUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    componentId?: StringFieldUpdateOperationsInput | string
+    installations?: IntFieldUpdateOperationsInput | number
+    uploads?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
+    copyClicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MetricsUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    componentId?: StringFieldUpdateOperationsInput | string
+    installations?: IntFieldUpdateOperationsInput | number
+    uploads?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
+    copyClicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileCreateManyComponentInput = {
+    id?: string
+    filename: string
+    code: string
+    createdAt?: Date | string
+  }
+
+  export type MetricsCreateManyComponentInput = {
+    id?: string
+    userId: string
+    installations?: number
+    uploads?: number
+    views?: number
+    copyClicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FileUpdateWithoutComponentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileUncheckedUpdateWithoutComponentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileUncheckedUpdateManyWithoutComponentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MetricsUpdateWithoutComponentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    installations?: IntFieldUpdateOperationsInput | number
+    uploads?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
+    copyClicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutMetricsNestedInput
+  }
+
+  export type MetricsUncheckedUpdateWithoutComponentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    installations?: IntFieldUpdateOperationsInput | number
+    uploads?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
+    copyClicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MetricsUncheckedUpdateManyWithoutComponentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    installations?: IntFieldUpdateOperationsInput | number
+    uploads?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
+    copyClicks?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

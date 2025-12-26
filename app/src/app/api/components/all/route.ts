@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
-import { Prisma, PrismaClient } from "../../../../../generated/client";
+import { prisma } from "../../prisma";
 
 export async function GET() {
-  const client = new PrismaClient();
-  const data = await client.component.findMany({});
-  client.$disconnect();
+  const data = await prisma.component.findMany({
+    include: {
+      metrics: true,
+      files: true,
+    },
+  });
   return NextResponse.json(data);
 }

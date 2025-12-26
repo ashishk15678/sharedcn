@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@/../generated/client";
+import { prisma } from "../../prisma";
 import { headers } from "next/headers";
-
-const prisma = new PrismaClient();
 
 export async function OPTIONS() {
   return new NextResponse(null, {
@@ -29,24 +27,59 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json(
       { error: "Invalid request body" },
-      { status: 400, headers: corsHeaders }
+      { status: 400, headers: corsHeaders },
     );
   }
 
   // Validate input
-  const { name, description, dependent, code } = body;
-  if (name == "token-validation") {
-    const token = (await headers()).get("Authorization")?.split(" ")[1];
-    const status = await prisma.user.findUnique({
-      where: { authToken: token },
-    });
-    return NextResponse.json(
-      {
-        valid: status,
-      },
-      { status: status ? 200 : 300 }
-    );
+  const { name, description, dependent, code, token } = body;
+  if (name === "token-validation") {
+    // Accept token from body, not header
+    if (!token || typeof token !== "string") {
+      return NextResponse.json(
+        { error: "Token is required" },
+        { status: 400, headers: corsHeaders },
+      );
+    }
+    const user = await prisma.user.findUnique({ where: { authToken: token } });
+    if (user) {
+      return NextResponse.json(
+        { valid: true },
+        { status: 200, headers: corsHeaders },
+      );
+    } else {
+      return NextResponse.json(
+        { error: "Invalid token" },
+        { status: 401, headers: corsHeaders },
+      );
+    }
   }
+
+  // If body is an array, treat as fetch-by-aliases
+  if (Array.isArray(body)) {
+    // Accepts array of aliases (strings)
+    const aliases = body.filter((a) => typeof a === "string");
+    if (aliases.length === 0) {
+      return NextResponse.json(
+        { error: "No valid aliases provided." },
+        { status: 400, headers: corsHeaders },
+      );
+    }
+    // Fetch all components by alias
+    const components = await prisma.component.findMany({
+      where: { alias: { in: aliases } },
+    });
+    // Map to alias -> component
+    const compMap = new Map();
+    for (const comp of components) compMap.set(comp.alias, comp);
+    // Build response array in same order as input
+    const result = aliases.map((alias) => {
+      if (compMap.has(alias)) return compMap.get(alias);
+      return { alias, error: "doesnot exist" };
+    });
+    return NextResponse.json(result, { status: 200, headers: corsHeaders });
+  }
+
   if (
     !name ||
     typeof name !== "string" ||
@@ -57,7 +90,7 @@ export async function POST(req: NextRequest) {
       (f) =>
         typeof f === "object" &&
         typeof f.filename === "string" &&
-        typeof f.code === "string"
+        typeof f.code === "string",
     )
   ) {
     return NextResponse.json(
@@ -65,13 +98,12 @@ export async function POST(req: NextRequest) {
         error:
           "Invalid or missing fields. Required: name (string), dependent (array of strings), code (array of {filename, code} objects). Optional: description (string)",
       },
-      { status: 400, headers: corsHeaders }
+      { status: 400, headers: corsHeaders },
     );
   }
 
   // Get token from Authorization header
-  const authHeader = req.headers.get("authorization") || "";
-  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  const authHeader = (await headers()).get("authorization") || "";
 
   let user = null;
   if (token) {
@@ -106,10 +138,9 @@ export async function POST(req: NextRequest) {
   });
 
   if (component) {
-    prisma.$disconnect();
     return NextResponse.json(
       { error: `Alias '${fullAlias}' is already taken.` },
-      { status: 409, headers: corsHeaders }
+      { status: 409, headers: corsHeaders },
     );
   }
 
@@ -119,10 +150,9 @@ export async function POST(req: NextRequest) {
       alias: fullAlias,
       description: description || "",
       dependent: JSON.stringify(dependent),
-      code,
+      mainFile: code[0] || "",
       userId: user.id,
     },
   });
-  prisma.$disconnect();
   return NextResponse.json(component, { status: 201, headers: corsHeaders });
 }

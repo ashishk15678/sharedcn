@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.10.1
- * Query Engine version: 9b628578b3b7cae625e8c927178f15a170e74a9c
+ * Prisma Client JS version: 6.16.2
+ * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
  */
 Prisma.prismaVersion = {
-  client: "6.10.1",
-  engine: "9b628578b3b7cae625e8c927178f15a170e74a9c"
+  client: "6.16.2",
+  engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -138,9 +138,17 @@ exports.Prisma.ComponentScalarFieldEnum = {
   alias: 'alias',
   description: 'description',
   dependent: 'dependent',
-  code: 'code',
+  mainFile: 'mainFile',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FileScalarFieldEnum = {
+  id: 'id',
+  componentId: 'componentId',
+  filename: 'filename',
+  code: 'code',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SessionScalarFieldEnum = {
@@ -179,6 +187,27 @@ exports.Prisma.VerificationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.FeedbackScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  content: 'content',
+  rating: 'rating',
+  isAnonymous: 'isAnonymous',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.MetricsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  componentId: 'componentId',
+  installations: 'installations',
+  uploads: 'uploads',
+  views: 'views',
+  copyClicks: 'copyClicks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -198,9 +227,12 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   User: 'User',
   Component: 'Component',
+  File: 'File',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  Feedback: 'Feedback',
+  Metrics: 'Metrics'
 };
 
 /**

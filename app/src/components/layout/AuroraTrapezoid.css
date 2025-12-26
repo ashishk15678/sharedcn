@@ -1,0 +1,138 @@
+/* --- Core variables for easy tweaking --- */
+:root {
+    /* How blurry should the lights be? Higher = softer */
+    --aurora-blur: 40px;
+    /* The background color behind the lights (night sky) */
+    --aurora-bg-color: #0a0a2a;
+}
+
+/* --- The Main Container holding the shape --- */
+.aurora-container {
+    position: relative;
+    width: var(--container-width);
+    height: var(--container-height);
+    background-color: var(--aurora-bg-color);
+    overflow: hidden; /* Essential to contain blurred edges */
+
+    /* Define the Trapezoid shape based on the image provided */
+    /* Top-left, Top-right, Bottom-right (tucked in), Bottom-left (tucked in) */
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+
+    /* Optional rounded corners for smoother look */
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Shared styles for all light layers --- */
+.aurora-layer {
+    position: absolute;
+    /* We make the layers way bigger than the container so we can move them around */
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    /* The heavy blur creates the glowing gas effect */
+    filter: blur(var(--aurora-blur));
+    mix-blend-mode: screen; /* Makes colors glow when they overlap */
+    opacity: 0.7;
+}
+
+/* --- Layer 1: Blues and Purples (Deep base) --- */
+.layer-1-blue {
+    /* A complex gradient composed of vertical streaks and radial glows */
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #0000ff55 0%,
+            transparent 15%,
+            #4b008255 30%
+        ),
+        radial-gradient(circle at 50% 30%, #00d2ff 0%, transparent 60%);
+    /* Slow, sweeping movement */
+    animation: aurora-flow-1 15s infinite linear;
+    transform-origin: center bottom;
+}
+
+/* --- Layer 2: Greens and Yellows (The bright center) --- */
+.layer-2-green {
+    background:
+        repeating-linear-gradient(
+            80deg,
+            transparent 0%,
+            #00ff8866 10%,
+            transparent 20%,
+            #adff2f66 35%
+        ),
+        radial-gradient(ellipse at 60% 50%, #5aff19 0%, transparent 70%);
+    /* Slightly faster, different direction movement for "shiver" interference */
+    animation: aurora-flow-2 10s infinite ease-in-out alternate;
+    opacity: 0.6;
+}
+
+/* --- Layer 3: Reds and Oranges (The highlights) --- */
+.layer-3-red {
+    background:
+        repeating-linear-gradient(
+            100deg,
+            transparent 0%,
+            #ff005544 5%,
+            transparent 25%,
+            #ff990044 50%
+        ),
+        linear-gradient(to bottom, transparent 40%, #ff00cc 100%);
+    /* Fastest animation for subtle flickering highlights */
+    animation: aurora-flow-3 7s infinite ease-in-out;
+    opacity: 0.5;
+}
+
+/* --- Content container to hold text/children on top --- */
+.aurora-content {
+    position: relative;
+    z-index: 10; /* Ensure content is above lights */
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: sans-serif;
+}
+
+/* --- Animation Keyframes (The "Shiver") --- */
+
+/* Layer 1: Slow rotation and panning */
+@keyframes aurora-flow-1 {
+    0% {
+        transform: rotate(0deg) translate(0, 0) scale(1);
+    }
+    50% {
+        transform: rotate(2deg) translate(-5%, 2%) scale(1.1);
+    }
+    100% {
+        transform: rotate(0deg) translate(0, 0) scale(1);
+    }
+}
+
+/* Layer 2: Horizontal shifting and slight skewing */
+@keyframes aurora-flow-2 {
+    0% {
+        transform: translateX(-10%) skewX(-5deg);
+    }
+    100% {
+        transform: translateX(10%) skewX(5deg);
+    }
+}
+
+/* Layer 3: Vertical pulsing */
+@keyframes aurora-flow-3 {
+    0% {
+        transform: translateY(0) scaleX(1);
+    }
+    50% {
+        transform: translateY(-15%) scaleX(1.2);
+    }
+    100% {
+        transform: translateY(0) scaleX(1);
+    }
+}

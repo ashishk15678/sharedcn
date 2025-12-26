@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "../../../../generated/client";
+import { prisma } from "../prisma";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,8 +11,7 @@ export async function POST(req: NextRequest) {
         { status: 401 }
       );
     }
-    const client = await new PrismaClient();
-    const dbUser = await client.user.findUnique({
+    const dbUser = await prisma.user.findUnique({
       where: {
         id: user.user.id,
       },
@@ -26,11 +25,10 @@ export async function POST(req: NextRequest) {
     }
 
     if (dbUser.authToken) {
-      client.$disconnect();
       return NextResponse.json({ success: true, token: dbUser.authToken });
     }
 
-    const updatedUser = await client.user.update({
+    const updatedUser = await prisma.user.update({
       where: {
         id: user.user.id,
       },

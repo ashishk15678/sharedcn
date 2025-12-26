@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@/../generated/client";
+import { prisma } from "../prisma";
 import { auth } from "@/lib/auth";
 
 // TODO : Set prisma as global instance , probably use cursor for this
-const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   try {

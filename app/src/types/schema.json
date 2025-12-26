@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/shadcn-config-schema.json",
+  "title": "Shadcn-like Configuration Schema",
+  "description": "Schema for validating a configuration file that dictates component installation and configuration.",
+  "type": "object",
+  "properties": {
+    "components": {
+      "description": "An array of components that are available for installation.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The unique name of the component (e.g., 'button', 'card').",
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "style": {
+            "description": "The designated style for this component (e.g., 'default', 'new-york').",
+            "type": "string"
+          },
+          "path": {
+            "description": "The relative path to the component's source file.",
+            "type": "string",
+            "format": "path"
+          }
+        },
+        "required": ["name", "style", "path"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "config": {
+      "description": "Global configuration settings for the CLI or application.",
+      "type": "object",
+      "properties": {
+        "tailwind": {
+          "type": "object",
+          "description": "Settings related to Tailwind CSS configuration.",
+          "properties": {
+            "config": {
+              "description": "Path to the tailwind.config.js file.",
+              "type": "string",
+              "format": "path"
+            },
+            "css": {
+              "description": "Path to the global CSS file.",
+              "type": "string",
+              "format": "path"
+            },
+            "baseColor": {
+              "description": "The base color palette used.",
+              "type": "string",
+              "enum": ["slate", "zinc", "stone", "neutral"]
+            }
+          },
+          "required": ["config", "css", "baseColor"],
+          "additionalProperties": false
+        },
+        "rootDir": {
+          "description": "The root directory where components should be placed (e.g., 'src/components').",
+          "type": "string",
+          "format": "path"
+        },
+        "alias": {
+          "description": "The module alias used for component imports (e.g., '@/components').",
+          "type": "string"
+        }
+      },
+      "required": ["tailwind", "rootDir", "alias"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["components", "config"],
+  "additionalProperties": false
+}
