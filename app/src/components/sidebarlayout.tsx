@@ -25,9 +25,9 @@ export async function SidebarLayout({ children }: { children: ReactNode }) {
     },
     {
       id: 2,
-      name: "Settings",
-      icon: Settings,
-      link: "/settings",
+      name: "Components",
+      icon: ComponentIcon,
+      link: "/component",
     },
     {
       id: 3,
@@ -41,21 +41,21 @@ export async function SidebarLayout({ children }: { children: ReactNode }) {
       icon: LayoutDashboardIcon,
       link: "/dashboard",
     },
+
     {
       id: 5,
-      name: "Components",
-      icon: ComponentIcon,
-      link: "/component",
+      name: "Settings",
+      icon: Settings,
+      link: "/settings",
     },
   ];
   const session = (await requireAuth()).user;
   const header = await headers();
   const path = header.get("referer")?.split("/");
   const pathname = path != undefined ? "/" + path[path?.length - 1] : "/";
-  console.log({ pathname });
   return (
     <div className="flex flex-1  text-primary border-border">
-      <div className="w-1/8 border-r bg-card/30 border-zinc-200 dark:border-zinc-800 px-1 py-4 transition-all group h-full md:flex md:flex-col ">
+      <div className="w-1/8    px-1 py-4 transition-all group h-full md:flex md:flex-col ">
         <div className="flex items-start w-full  flex-col flex-shrink-0 relative px-1 gap-y-0.5">
           {topNavLinks.map((nav) => {
             const Icon = nav.icon;

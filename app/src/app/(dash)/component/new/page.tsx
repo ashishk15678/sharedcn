@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { CodeEditor } from "../../dashboard/builder/components/CodeEditor";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState, useMemo x} from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
@@ -40,6 +40,10 @@ const formSchema = z.object({
   description: z.string().min(1, "Description is required."),
   isPublic: z.boolean(),
   type: z.enum(["component", "setup"]),
+  tags: z.string().optional(),
+  dependencies: z.string().optional(),
+  registryDependencies: z.string().optional(),
+  installCommand: z.string().optional(),
 });
 
 type File = {
@@ -104,6 +108,10 @@ export default function Page() {
       description: "",
       isPublic: true,
       type: "component",
+      tags: "",
+      dependencies: "",
+      registryDependencies: "",
+      installCommand: "",
     },
     resolver: zodResolver(formSchema),
   });
@@ -126,6 +134,14 @@ export default function Page() {
       changeFiles({
         type: "add-file",
         name: "index.tsx",
+      });
+    } else if (creationType === "setup" && files.length === 0) {
+      // Maybe add a default util or config file for setup?
+      // For now keeping it empty or user decides.
+      // Actually let's prompt a relevant file.
+      changeFiles({
+        type: "add-file",
+        name: "src/utils/setup.ts",
       });
     }
   }, [creationType]);
@@ -207,7 +223,6 @@ export default function Page() {
         return;
       }
 
-      // 3. Check for default export in main file (heuristic)
       const mainFileContent =
         files.find((f) => f.fileName === mainFile)?.content || "";
       if (!mainFileContent.includes("export default")) {
@@ -216,10 +231,37 @@ export default function Page() {
     }
 
     try {
+      const tagsList = values.tags
+        ? values.tags
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean)
+        : [];
+
+      const dependenciesList = values.dependencies
+        ? values.dependencies
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean)
+        : [];
+
+      const registryList = values.registryDependencies
+        ? values.registryDependencies
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean)
+        : [];
+
       await createComponentMutation.mutateAsync({
         name: values.componentName,
         description: values.description,
-        dependent: [],
+        dependent: {
+          type: values.type,
+          tags: tagsList,
+          dependencies: dependenciesList,
+          registryDependencies: registryList,
+          installCommand: values.installCommand,
+        },
         files: files.map((f) => ({
           filename: f.fileName,
           code: f.content || "",
@@ -276,7 +318,7 @@ export default function Page() {
                           className={cn(
                             "cursor-pointer rounded-2xl border-2 px-4 py-2 transition-all hover:border-border/50 hover:bg-muted/50 ",
                             field.value === "setup"
-                              ? "border-border shadow-md "
+                              ? "border-border shadow-inner "
                               : "border-muted",
                           )}
                           onClick={() => field.onChange("setup")}
@@ -311,7 +353,7 @@ export default function Page() {
                             className={cn(
                               "cursor-pointer rounded-3xl border-2 py-2 px-4 transition-all hover:border-border/50 hover:bg-muted/50 ",
                               field.value === "component"
-                                ? "border-border  shadow-md"
+                                ? "border-border  shadow-inner"
                                 : "border-muted",
                             )}
                             onClick={() => field.onChange("component")}
@@ -413,6 +455,98 @@ export default function Page() {
                 />
 
                 <FormField
+                  name="tags"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">Tags</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="react, ui, button (comma separated)"
+                          className="focus-visible:ring-offset-0 focus-visible:ring-1 focus-visible:ring-primary transition-all"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription className="text-xs">
+                        Keywords to help others find your component.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {creationType === "setup" && (
+                  <>
+                    <FormField
+                      name="dependencies"
+                      control={form.control}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-semibold">
+                            NPM Dependencies
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="zod, react-hook-form (comma separated)"
+                              className="font-mono text-xs focus-visible:ring-offset-0 focus-visible:ring-1 focus-visible:ring-primary transition-all"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription className="text-xs">
+                            Packages to be installed.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      name="registryDependencies"
+                      control={form.control}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-semibold">
+                            Registry Dependencies
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="utils, button (comma separated)"
+                              className="font-mono text-xs focus-visible:ring-offset-0 focus-visible:ring-1 focus-visible:ring-primary transition-all"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription className="text-xs">
+                            Expected local components.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      name="installCommand"
+                      control={form.control}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-semibold">
+                            Install Command
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="npm install my-package"
+                              className="font-mono text-xs focus-visible:ring-offset-0 focus-visible:ring-1 focus-visible:ring-primary transition-all"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription className="text-xs">
+                            Custom command to run after installation.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+
+                <FormField
                   name="isPublic"
                   control={form.control}
                   render={({ field }) => (
@@ -485,103 +619,34 @@ export default function Page() {
               <div className="flex-1 flex overflow-hidden">
                 {/* File List Sidebar */}
                 <div className="w-64 bg-zinc-100 dark:bg-[#252526] border-r border-[#333] flex flex-col">
-                  <div className="flex-1 overflow-y-auto p-2 space-y-1">
-                    <AnimatePresence>
-                      {files.map((file) => (
-                        <motion.div
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, scale: 0.95 }}
-                          key={file.fileName}
-                          className={cn(
-                            "group flex items-center justify-between px-3 py-2 rounded-md cursor-pointer text-sm transition-all duration-200 border border-transparent",
-                            selectedFile.fileName === file.fileName
-                              ? "bg-zinc-200 dark:bg-[#37373d] text-white border-zinc-300 dark:border-[#444]"
-                              : "text-[#ccc] hover:bg-[#2a2d2e] hover:text-white",
-                          )}
-                          onClick={() => setSelectedFile(file)}
-                        >
-                          <div className="flex items-center gap-2 min-w-0 overflow-hidden">
-                            {file.fileName.endsWith(".tsx") ||
-                            file.fileName.endsWith(".jsx") ? (
-                              <ComponentIcon
-                                size={14}
-                                className="text-blue-400 shrink-0"
-                              />
-                            ) : file.fileName.endsWith(".css") ? (
-                              <div className="text-blue-300 font-bold text-[10px] w-3.5 text-center">
-                                #
-                              </div>
-                            ) : file.fileName.includes("/") ? (
-                              <FoldersIcon
-                                size={14}
-                                className="text-yellow-500 shrink-0"
-                              />
-                            ) : (
-                              <FileIcon
-                                size={14}
-                                className="text-zinc-500 shrink-0"
-                              />
-                            )}
-                            <span
-                              className={cn(
-                                "truncate font-mono",
-                                mainFile === file.fileName &&
-                                  "font-bold text-blue-400",
-                              )}
-                            >
-                              {file.fileName}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {mainFile !== file.fileName && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setMainFile(file.fileName);
-                                  toast.success(`Set ${file.fileName} as main`);
-                                }}
-                                className="text-zinc-500 hover:text-blue-400 p-1 rounded"
-                                title="Set as Main"
-                              >
-                                ★
-                              </button>
-                            )}
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                if (files.length > 1) {
-                                  changeFiles({
-                                    type: "delete-file",
-                                    name: file.fileName,
-                                  });
-                                  // Logic to update selection...
-                                  if (selectedFile.fileName === file.fileName) {
-                                    const remaining = files.filter(
-                                      (f) => f.fileName !== file.fileName,
-                                    );
-                                    setSelectedFile(remaining[0] || files[0]);
-                                  }
-                                  if (mainFile === file.fileName) {
-                                    const remaining = files.filter(
-                                      (f) => f.fileName !== file.fileName,
-                                    );
-                                    setMainFile(remaining[0]?.fileName || "");
-                                  }
-                                }
-                              }}
-                              className={cn(
-                                "text-zinc-500 hover:text-red-400 p-1 rounded",
-                                files.length === 1 && "hidden",
-                              )}
-                            >
-                              <TrashIcon size={12} />
-                            </button>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
+                  <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
+                    <FileTree
+                      files={files}
+                      selectedFile={selectedFile}
+                      mainFile={mainFile}
+                      onSelect={setSelectedFile}
+                      onSetMain={(name) => {
+                        setMainFile(name);
+                        toast.success(`Set ${name} as main`);
+                      }}
+                      onDelete={(name) => {
+                        if (files.length > 1) {
+                          changeFiles({ type: "delete-file", name });
+                          if (selectedFile.fileName === name) {
+                            const remaining = files.filter(
+                              (f) => f.fileName !== name,
+                            );
+                            setSelectedFile(remaining[0] || files[0]);
+                          }
+                          if (mainFile === name) {
+                            const remaining = files.filter(
+                              (f) => f.fileName !== name,
+                            );
+                            setMainFile(remaining[0]?.fileName || "");
+                          }
+                        }
+                      }}
+                    />
 
                     {creatingNewFile && (
                       <motion.div
@@ -597,12 +662,25 @@ export default function Page() {
                               ? "src/lib/utils.ts"
                               : "Button.tsx"
                           }
-                          className="w-full bg-zinc-100 dark:bg-[#1e1e1e] text-white border border-blue-500 rounded px-2 py-1 text-sm font-mono focus:outline-none"
+                          className="w-full bg-zinc-100 dark:bg-[#1e1e1e] text-zinc-900 dark:text-white border border-blue-500 rounded px-2 py-1 text-sm font-mono focus:outline-none"
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
-                              const val = e.currentTarget.value.trim();
+                              let val = e.currentTarget.value.trim();
+                              // Basic sanitization
+                              val = val.replace(/^\/+/, ""); // remove leading slash
+
+                              if (val.includes("..")) {
+                                toast.error("Invalid path");
+                                return;
+                              }
+
                               if (val) {
+                                // Check if exists
+                                if (files.find((f) => f.fileName === val)) {
+                                  toast.error("File already exists");
+                                  return;
+                                }
                                 changeFiles({ type: "add-file", name: val });
                                 setSelectedFile({ fileName: val, content: "" });
                                 setCreatingNewFile(false);
@@ -614,7 +692,7 @@ export default function Page() {
                           onBlur={() => setCreatingNewFile(false)}
                         />
                         <p className="text-[10px] text-zinc-500 mt-1 px-1">
-                          Press Enter to add
+                          Enter full path (e.g. lib/utils.ts)
                         </p>
                       </motion.div>
                     )}
@@ -656,6 +734,227 @@ export default function Page() {
           </form>
         </Form>
       </div>
+    </div>
+  );
+}
+
+type TreeNode = {
+  name: string;
+  fullPath: string;
+  type: "file" | "folder";
+  children: Record<string, TreeNode>;
+  file?: File;
+};
+
+function buildFileTree(files: File[]) {
+  const root: Record<string, TreeNode> = {};
+
+  files.forEach((file) => {
+    const parts = file.fileName.split("/");
+    let current = root;
+
+    parts.forEach((part, index) => {
+      if (!current[part]) {
+        current[part] = {
+          name: part,
+          fullPath: parts.slice(0, index + 1).join("/"),
+          type: index === parts.length - 1 ? "file" : "folder",
+          children: {},
+          file: index === parts.length - 1 ? file : undefined,
+        };
+      }
+      current = current[part].children;
+    });
+  });
+
+  return root;
+}
+
+function FileTree({
+  files,
+  selectedFile,
+  mainFile,
+  onSelect,
+  onSetMain,
+  onDelete,
+}: {
+  files: File[];
+  selectedFile: File;
+  mainFile: string;
+  onSelect: (file: File) => void;
+  onSetMain: (name: string) => void;
+  onDelete: (name: string) => void;
+}) {
+  const tree = useMemo(() => buildFileTree(files), [files]);
+
+  return (
+    <div className="flex flex-col gap-0.5">
+      <RecursiveTree
+        nodes={tree}
+        depth={0}
+        selectedFile={selectedFile}
+        mainFile={mainFile}
+        onSelect={onSelect}
+        onSetMain={onSetMain}
+        onDelete={onDelete}
+      />
+    </div>
+  );
+}
+
+function RecursiveTree({
+  nodes,
+  depth,
+  selectedFile,
+  mainFile,
+  onSelect,
+  onSetMain,
+  onDelete,
+}: {
+  nodes: Record<string, TreeNode>;
+  depth: number;
+  selectedFile: File;
+  mainFile: string;
+  onSelect: (file: File) => void;
+  onSetMain: (name: string) => void;
+  onDelete: (name: string) => void;
+}) {
+  // Sort folders first, then files
+  const sortedKeys = Object.keys(nodes).sort((a, b) => {
+    const nodeA = nodes[a];
+    const nodeB = nodes[b];
+    if (nodeA.type === nodeB.type) return a.localeCompare(b);
+    return nodeA.type === "folder" ? -1 : 1;
+  });
+
+  return (
+    <>
+      {sortedKeys.map((key) => {
+        const node = nodes[key];
+        return (
+          <FileTreeNode
+            key={node.fullPath}
+            node={node}
+            depth={depth}
+            selectedFile={selectedFile}
+            mainFile={mainFile}
+            onSelect={onSelect}
+            onSetMain={onSetMain}
+            onDelete={onDelete}
+          />
+        );
+      })}
+    </>
+  );
+}
+
+function FileTreeNode({
+  node,
+  depth,
+  selectedFile,
+  mainFile,
+  onSelect,
+  onSetMain,
+  onDelete,
+}: {
+  node: TreeNode;
+  depth: number;
+  selectedFile: File;
+  mainFile: string;
+  onSelect: (file: File) => void;
+  onSetMain: (name: string) => void;
+  onDelete: (name: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(true);
+  const isSelected =
+    node.type === "file" && selectedFile.fileName === node.fullPath;
+  const isMain = node.type === "file" && mainFile === node.fullPath;
+
+  return (
+    <div>
+      <div
+        className={cn(
+          "flex items-center gap-1.5 py-1 px-2 rounded-md cursor-pointer text-sm select-none transition-colors border border-transparent",
+          isSelected
+            ? "bg-zinc-200 dark:bg-[#37373d] text-zinc-900 dark:text-white"
+            : "text-zinc-500 dark:text-[#ccc] hover:bg-zinc-100 dark:hover:bg-[#2a2d2e] hover:text-zinc-900 dark:hover:text-white",
+        )}
+        style={{ paddingLeft: `${depth * 12 + 8}px` }}
+        onClick={() => {
+          if (node.type === "folder") {
+            setIsOpen(!isOpen);
+          } else if (node.file) {
+            onSelect(node.file);
+          }
+        }}
+      >
+        {node.type === "folder" ? (
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="text-zinc-400">
+              {isOpen ? (
+                <FoldersIcon size={14} className="text-yellow-500/80" />
+              ) : (
+                <FoldersIcon size={14} className="text-yellow-500" />
+              )}
+            </span>
+            <span className="truncate font-medium">{node.name}</span>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between flex-1 min-w-0 group">
+            <div className="flex items-center gap-1.5 min-w-0 overflow-hidden">
+              {node.name.endsWith("tsx") || node.name.endsWith("jsx") ? (
+                <ComponentIcon size={14} className="text-blue-400 shrink-0" />
+              ) : (
+                <FileIcon size={14} className="text-zinc-500 shrink-0" />
+              )}
+              <span
+                className={cn(
+                  "truncate",
+                  isMain && "font-bold text-blue-500 dark:text-blue-400",
+                )}
+              >
+                {node.name}
+              </span>
+            </div>
+
+            <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+              {!isMain && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSetMain(node.fullPath);
+                  }}
+                  className="p-1 hover:bg-zinc-300 dark:hover:bg-zinc-700 rounded text-zinc-400 hover:text-blue-500"
+                  title="Set as Main"
+                >
+                  ★
+                </button>
+              )}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(node.fullPath);
+                }}
+                className="p-1 hover:bg-zinc-300 dark:hover:bg-zinc-700 rounded text-zinc-400 hover:text-red-500"
+              >
+                <TrashIcon size={12} />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {node.type === "folder" && isOpen && (
+        <RecursiveTree
+          nodes={node.children}
+          depth={depth + 1}
+          selectedFile={selectedFile}
+          mainFile={mainFile}
+          onSelect={onSelect}
+          onSetMain={onSetMain}
+          onDelete={onDelete}
+        />
+      )}
     </div>
   );
 }

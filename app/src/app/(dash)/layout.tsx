@@ -22,7 +22,7 @@ export default async function DashboardLayout({
 
           <Suspense fallback={<Loader />}>
             {/* Main Content */}
-            <div className="flex-1 overflow-auto bg-linear-to-b from-white via-zinc-100/60 to-zinc-200 dark:from-zinc-900 dark:via-zinc-800/60 dark:to-zinc-800 h-full w-full ">
+            <div className="flex-1 overflow-auto bg-linear-to-b from-white via-zinc-100/60 to-zinc-200 dark:from-zinc-900 dark:via-zinc-800/60 dark:to-zinc-800 h-full w-full rounded-t-3xl ring ring-border ">
               {children}
             </div>
           </Suspense>

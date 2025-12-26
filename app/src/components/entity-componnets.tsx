@@ -50,7 +50,7 @@ export default function EntityPage({
       <article
         key={item.id}
         className={cn(
-          "flex h-full w-full flex-col gap-4 rounded-xl border border-zinc-200/70  backdrop-blur-lg px-3 py-2 shadow-sm transition hover:border-zinc-300 dark:border-zinc-800 ",
+          "flex h-full w-full flex-col gap-4 rounded-xl border border-zinc-200/70  backdrop-blur-lg px-3 py-2 transition hover:border-zinc-300 dark:border-zinc-800 ",
           isSetupCard && "ring-1 ring-amber-300/40 dark:ring-amber-300/20",
         )}
         style={{ aspectRatio: items.length > 3 ? "3 / 1" : undefined }}
