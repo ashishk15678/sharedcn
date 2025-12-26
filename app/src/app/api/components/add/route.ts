@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json(
       { error: "Invalid request body" },
-      { status: 400, headers: corsHeaders }
+      { status: 400, headers: corsHeaders },
     );
   }
 
@@ -38,19 +38,19 @@ export async function POST(req: NextRequest) {
     if (!token || typeof token !== "string") {
       return NextResponse.json(
         { error: "Token is required" },
-        { status: 400, headers: corsHeaders }
+        { status: 400, headers: corsHeaders },
       );
     }
     const user = await prisma.user.findUnique({ where: { authToken: token } });
     if (user) {
       return NextResponse.json(
         { valid: true },
-        { status: 200, headers: corsHeaders }
+        { status: 200, headers: corsHeaders },
       );
     } else {
       return NextResponse.json(
         { error: "Invalid token" },
-        { status: 401, headers: corsHeaders }
+        { status: 401, headers: corsHeaders },
       );
     }
   }
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     if (aliases.length === 0) {
       return NextResponse.json(
         { error: "No valid aliases provided." },
-        { status: 400, headers: corsHeaders }
+        { status: 400, headers: corsHeaders },
       );
     }
     // Fetch all components by alias
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
       (f) =>
         typeof f === "object" &&
         typeof f.filename === "string" &&
-        typeof f.code === "string"
+        typeof f.code === "string",
     )
   ) {
     return NextResponse.json(
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
         error:
           "Invalid or missing fields. Required: name (string), dependent (array of strings), code (array of {filename, code} objects). Optional: description (string)",
       },
-      { status: 400, headers: corsHeaders }
+      { status: 400, headers: corsHeaders },
     );
   }
 
@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
   if (component) {
     return NextResponse.json(
       { error: `Alias '${fullAlias}' is already taken.` },
-      { status: 409, headers: corsHeaders }
+      { status: 409, headers: corsHeaders },
     );
   }
 
@@ -150,7 +150,7 @@ export async function POST(req: NextRequest) {
       alias: fullAlias,
       description: description || "",
       dependent: JSON.stringify(dependent),
-      code,
+      mainFile: code[0] || "",
       userId: user.id,
     },
   });

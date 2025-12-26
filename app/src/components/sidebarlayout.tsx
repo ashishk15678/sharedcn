@@ -29,12 +29,7 @@ export async function SidebarLayout({ children }: { children: ReactNode }) {
       icon: ComponentIcon,
       link: "/component",
     },
-    {
-      id: 3,
-      name: "Playground",
-      icon: Laptop,
-      link: "/playground",
-    },
+
     {
       id: 4,
       name: "Dashboard",

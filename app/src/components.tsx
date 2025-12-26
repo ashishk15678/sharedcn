@@ -1682,7 +1682,8 @@ function DotGrid() {
   // --- Helper Function ---
   // Picks a random item from an array
   const getRandomItem = useMemo(
-    () => (arr) => arr[Math.floor(Math.random() * arr.length)],
+    () => (arr: any[]) => arr[Math.floor(Math.random() * arr.length)],
+    [],
   );
   const containerRef = useRef(null);
 
@@ -1722,7 +1723,7 @@ function DotGrid() {
     if (grid.total > 0) {
       const initialDots = Array.from({ length: grid.total }, (_, i) => ({
         id: i,
-        opacity: getRandomItem(OPACITY_LEVELS),
+        opacity: getRandomItem(OPACITY_LEVELS) as string,
       }));
       setDots(initialDots);
     }

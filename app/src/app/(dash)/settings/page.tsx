@@ -97,7 +97,7 @@ export default function SettingsPage() {
       if (!token) {
         const data = await tokenMutation.mutateAsync();
         setToken(data.token);
-        await navigator.clipboard.writeText(data.token);
+        await navigator.clipboard.writeText(data.token as unknown as string);
       } else {
         await navigator.clipboard.writeText(token);
       }

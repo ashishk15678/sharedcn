@@ -41,7 +41,7 @@ export default function BuilderPage() {
 
   function updateActive(code: string) {
     setFiles((prev) =>
-      prev.map((f) => (f.path === activePath ? { ...f, code } : f))
+      prev.map((f) => (f.path === activePath ? { ...f, code } : f)),
     );
   }
 
@@ -103,7 +103,7 @@ export default function BuilderPage() {
         <div className="md:col-span-1 flex flex-col gap-4">
           <div className="bg-white/80 border border-zinc-200 rounded-xl p-3 shadow-sm">
             <div className="text-sm font-semibold text-zinc-700 mb-2">
-              {current.name || current.alias}
+              {current.alias}
             </div>
             <FileExplorer
               files={files}
