@@ -4,6 +4,63 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Added marquee and custom font animations */
+@font-face {
+    font-family: "TheFont";
+    src: url("https://garet.typeforward.com/assets/fonts/shared/TFMixVF.woff2")
+        format("woff2");
+}
+
+@keyframes letter-breathe {
+    from,
+    to {
+        font-variation-settings: "wght" 100;
+    }
+    50% {
+        font-variation-settings: "wght" 900;
+    }
+}
+
+@keyframes marquee {
+    from {
+        transform: translateX(50%);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-breathe {
+    font-family: "TheFont";
+    animation: letter-breathe 3s ease-in-out infinite;
+}
+
+.animate-marquee {
+    animation: marquee 20s linear infinite;
+}
+
+.marquee-blur {
+    background-image: linear-gradient(
+        to right,
+        black,
+        1rem,
+        transparent 40%,
+        transparent 60%,
+        1rem,
+        black
+    );
+    filter: contrast(15);
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
 @theme inline {
     --animate-aurora: aurora 60s linear infinite;
     @keyframes aurora {
