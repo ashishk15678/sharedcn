@@ -95,7 +95,7 @@ export default function Page() {
   const createComponentMutation = trpc.components.create.useMutation({
     onSuccess: (data) => {
       toast.success("Created successfully!");
-      router.push(`/dashboard/builder?componentId=${data.id}`);
+      router.push(`/dashboard`);
     },
     onError: (error) => {
       toast.error(error.message || "Failed to create");
