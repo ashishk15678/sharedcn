@@ -32,7 +32,7 @@
 
 .animate-breathe {
     font-family: "TheFont";
-    animation: letter-breathe 3s ease-in-out infinite;
+    animation: letter-breathe 3s ease-in-out linear;
 }
 
 .animate-marquee {
