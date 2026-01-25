@@ -3,7 +3,7 @@ import { AuroraBackground } from "../hand-component";
 import { Button } from "./button";
 
 export const GlobaErrorBoundary = ({
-  message = "Some error occured in the page you were visiting. Rest asssured the issue is from our side , not yours.",
+  message = "An error occurred on the page you were visiting. Rest assured, the issue is on our side, not yours.",
 }: {
   message?: string;
 }) => {

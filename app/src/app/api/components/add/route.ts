@@ -2,24 +2,31 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../prisma";
 import { headers } from "next/headers";
 
-export async function OPTIONS() {
+// Security: Define allowed origins from environment or use a restrictive default
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'];
+
+function getCorsHeaders(origin: string | null) {
+  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Credentials": "true",
+  };
+}
+
+export async function OPTIONS(req: NextRequest) {
+  const origin = req.headers.get('origin');
   return new NextResponse(null, {
     status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
+    headers: getCorsHeaders(origin),
   });
 }
 
 export async function POST(req: NextRequest) {
-  // CORS headers
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-  };
+  // Security: Get CORS headers based on origin
+  const origin = req.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
 
   let body;
   try {
@@ -111,16 +118,19 @@ export async function POST(req: NextRequest) {
 
   // Fallback to public user if not found
   if (!user) {
+    const PUBLIC_USER_EMAIL = process.env.PUBLIC_USER_EMAIL || "public@ashish.services";
+    const PUBLIC_USERNAME = process.env.PUBLIC_USERNAME || "public";
+    
     user = await prisma.user.findUnique({
-      where: { email: "public@ashish.services" },
+      where: { email: PUBLIC_USER_EMAIL },
     });
     if (!user) {
       user = await prisma.user.create({
         data: {
-          email: "public@ashish.services",
+          email: PUBLIC_USER_EMAIL,
           name: "Public User",
           emailVerified: false,
-          username: "public",
+          username: PUBLIC_USERNAME,
         },
       });
     }
@@ -143,6 +153,27 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Security: Validate file extensions
+  const componentAllowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html"];
+  const setupAllowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html", ".json", ".md", ".env", ".yml", ".yaml", ".toml", ".prisma"];
+  const allowed = type === "setup" ? setupAllowed : componentAllowed;
+  
+  if (!code.every((f: any) => allowed.some((ext) => f.filename.toLowerCase().endsWith(ext)))) {
+    return NextResponse.json(
+      { error: `Invalid file types. Allowed extensions: ${allowed.join(", ")}` },
+      { status: 400, headers: corsHeaders },
+    );
+  }
+
+  // Security: Validate file sizes (prevent DOS)
+  const MAX_FILE_SIZE = 500000; // 500KB per file
+  if (code.some((f: any) => f.code.length > MAX_FILE_SIZE)) {
+    return NextResponse.json(
+      { error: "File size too large. Maximum 500KB per file." },
+      { status: 400, headers: corsHeaders },
+    );
+  }
+
   // Create the new component with new schema fields
   component = await prisma.component.create({
     data: {
@@ -158,7 +189,7 @@ export async function POST(req: NextRequest) {
       mainFile: code[0]?.filename || "index.tsx",
       userId: user.id,
       files: {
-        create: code.map((f: any) => ({
+        create: code.map((f: { filename: string; code: string }) => ({
           filename: f.filename,
           code: f.code,
         })),
