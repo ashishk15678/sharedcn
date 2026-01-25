@@ -1,7 +1,7 @@
 "use client";
 import { components } from "@/components";
 import { Button } from "@/components/ui/button";
-import { ChevronLeftIcon } from "lucide-react";
+import { ChevronLeftIcon, Copy } from "lucide-react";
 import Error from "next/error";
 import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
@@ -22,7 +22,6 @@ export default function Page() {
   if (!component || component == undefined) {
     return notFound();
   }
-
   return (
     <div className="h-full w-full flex items-center justify-center ">
       <div className="max-w-3xl w-full h-full">
@@ -55,6 +54,22 @@ export default function Page() {
         </div>
         <div className="pt-16 w-full flex items-center justify-center ">
           {component.component}
+        </div>
+        <div
+          className="inner-shadow  bg-background overflow-auto py-4 px-6 rounded-sm relative
+          mt-16"
+        >
+          {" "}
+          <button
+            className="absolute right-2 top-2 "
+            onClick={() => {
+              window.navigator.clipboard.writeText(component.code || "");
+            }}
+          >
+            {" "}
+            <Copy size={18} />{" "}
+          </button>
+          <pre>{component.code}</pre>
         </div>
       </div>
     </div>

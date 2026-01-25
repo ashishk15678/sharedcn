@@ -30,8 +30,8 @@ export default function Page() {
         <ThemeToggle />
       </div>
 
-      <div className=" container md:max-w-5xl lg:max-w-5xl  p-4">
-        <p className="text-2xl font-bold font-sans"> Components showcase :</p>
+      <div className="max-w-7xl w-full  p-6">
+        <p className="text-3xl font-bold font-sans"> Components showcase :</p>
 
         <div className="w-full   space-x-4 mt-8">
           {uniqueTags.map((tag) => (
@@ -64,7 +64,7 @@ export default function Page() {
           {groupedComponents.map((tag) => (
             <section className=" py-2" id={tag.tag}>
               <span className="text-xl font-bold ml-4">{tag.tag}</span>
-              <div className="flex flex-row p-2 overflow-x-auto hide-scrollbar space-x-8 scrolling-text overflow-hidden">
+              <div className="flex flex-row p-2 overflow-x-auto hide-scrollbar space-x-8 overflow-hidden">
                 {tag.components.map((comp) => (
                   <Link
                     href={`/component/${comp.title.split(" ").join("-")}`}
