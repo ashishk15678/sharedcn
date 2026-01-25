@@ -2852,7 +2852,9 @@ export namespace Prisma {
     userId: string | null
     alias: string | null
     description: string | null
-    dependent: string | null
+    type: string | null
+    installCommand: string | null
+    isPublic: boolean | null
     mainFile: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2863,7 +2865,9 @@ export namespace Prisma {
     userId: string | null
     alias: string | null
     description: string | null
-    dependent: string | null
+    type: string | null
+    installCommand: string | null
+    isPublic: boolean | null
     mainFile: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2874,7 +2878,13 @@ export namespace Prisma {
     userId: number
     alias: number
     description: number
-    dependent: number
+    type: number
+    tags: number
+    dependencies: number
+    devDependencies: number
+    registryDependencies: number
+    installCommand: number
+    isPublic: number
     mainFile: number
     createdAt: number
     updatedAt: number
@@ -2887,7 +2897,9 @@ export namespace Prisma {
     userId?: true
     alias?: true
     description?: true
-    dependent?: true
+    type?: true
+    installCommand?: true
+    isPublic?: true
     mainFile?: true
     createdAt?: true
     updatedAt?: true
@@ -2898,7 +2910,9 @@ export namespace Prisma {
     userId?: true
     alias?: true
     description?: true
-    dependent?: true
+    type?: true
+    installCommand?: true
+    isPublic?: true
     mainFile?: true
     createdAt?: true
     updatedAt?: true
@@ -2909,7 +2923,13 @@ export namespace Prisma {
     userId?: true
     alias?: true
     description?: true
-    dependent?: true
+    type?: true
+    tags?: true
+    dependencies?: true
+    devDependencies?: true
+    registryDependencies?: true
+    installCommand?: true
+    isPublic?: true
     mainFile?: true
     createdAt?: true
     updatedAt?: true
@@ -2993,7 +3013,13 @@ export namespace Prisma {
     userId: string
     alias: string
     description: string
-    dependent: string | null
+    type: string
+    tags: string[]
+    dependencies: string[]
+    devDependencies: string[]
+    registryDependencies: string[]
+    installCommand: string | null
+    isPublic: boolean
     mainFile: string
     createdAt: Date
     updatedAt: Date
@@ -3021,7 +3047,13 @@ export namespace Prisma {
     userId?: boolean
     alias?: boolean
     description?: boolean
-    dependent?: boolean
+    type?: boolean
+    tags?: boolean
+    dependencies?: boolean
+    devDependencies?: boolean
+    registryDependencies?: boolean
+    installCommand?: boolean
+    isPublic?: boolean
     mainFile?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3036,7 +3068,13 @@ export namespace Prisma {
     userId?: boolean
     alias?: boolean
     description?: boolean
-    dependent?: boolean
+    type?: boolean
+    tags?: boolean
+    dependencies?: boolean
+    devDependencies?: boolean
+    registryDependencies?: boolean
+    installCommand?: boolean
+    isPublic?: boolean
     mainFile?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3048,7 +3086,13 @@ export namespace Prisma {
     userId?: boolean
     alias?: boolean
     description?: boolean
-    dependent?: boolean
+    type?: boolean
+    tags?: boolean
+    dependencies?: boolean
+    devDependencies?: boolean
+    registryDependencies?: boolean
+    installCommand?: boolean
+    isPublic?: boolean
     mainFile?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3060,13 +3104,19 @@ export namespace Prisma {
     userId?: boolean
     alias?: boolean
     description?: boolean
-    dependent?: boolean
+    type?: boolean
+    tags?: boolean
+    dependencies?: boolean
+    devDependencies?: boolean
+    registryDependencies?: boolean
+    installCommand?: boolean
+    isPublic?: boolean
     mainFile?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ComponentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "alias" | "description" | "dependent" | "mainFile" | "createdAt" | "updatedAt", ExtArgs["result"]["component"]>
+  export type ComponentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "alias" | "description" | "type" | "tags" | "dependencies" | "devDependencies" | "registryDependencies" | "installCommand" | "isPublic" | "mainFile" | "createdAt" | "updatedAt", ExtArgs["result"]["component"]>
   export type ComponentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     files?: boolean | Component$filesArgs<ExtArgs>
@@ -3092,7 +3142,13 @@ export namespace Prisma {
       userId: string
       alias: string
       description: string
-      dependent: string | null
+      type: string
+      tags: string[]
+      dependencies: string[]
+      devDependencies: string[]
+      registryDependencies: string[]
+      installCommand: string | null
+      isPublic: boolean
       mainFile: string
       createdAt: Date
       updatedAt: Date
@@ -3526,7 +3582,13 @@ export namespace Prisma {
     readonly userId: FieldRef<"Component", 'String'>
     readonly alias: FieldRef<"Component", 'String'>
     readonly description: FieldRef<"Component", 'String'>
-    readonly dependent: FieldRef<"Component", 'String'>
+    readonly type: FieldRef<"Component", 'String'>
+    readonly tags: FieldRef<"Component", 'String[]'>
+    readonly dependencies: FieldRef<"Component", 'String[]'>
+    readonly devDependencies: FieldRef<"Component", 'String[]'>
+    readonly registryDependencies: FieldRef<"Component", 'String[]'>
+    readonly installCommand: FieldRef<"Component", 'String'>
+    readonly isPublic: FieldRef<"Component", 'Boolean'>
     readonly mainFile: FieldRef<"Component", 'String'>
     readonly createdAt: FieldRef<"Component", 'DateTime'>
     readonly updatedAt: FieldRef<"Component", 'DateTime'>
@@ -10639,7 +10701,13 @@ export namespace Prisma {
     userId: 'userId',
     alias: 'alias',
     description: 'description',
-    dependent: 'dependent',
+    type: 'type',
+    tags: 'tags',
+    dependencies: 'dependencies',
+    devDependencies: 'devDependencies',
+    registryDependencies: 'registryDependencies',
+    installCommand: 'installCommand',
+    isPublic: 'isPublic',
     mainFile: 'mainFile',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -10921,7 +10989,13 @@ export namespace Prisma {
     userId?: StringFilter<"Component"> | string
     alias?: StringFilter<"Component"> | string
     description?: StringFilter<"Component"> | string
-    dependent?: StringNullableFilter<"Component"> | string | null
+    type?: StringFilter<"Component"> | string
+    tags?: StringNullableListFilter<"Component">
+    dependencies?: StringNullableListFilter<"Component">
+    devDependencies?: StringNullableListFilter<"Component">
+    registryDependencies?: StringNullableListFilter<"Component">
+    installCommand?: StringNullableFilter<"Component"> | string | null
+    isPublic?: BoolFilter<"Component"> | boolean
     mainFile?: StringFilter<"Component"> | string
     createdAt?: DateTimeFilter<"Component"> | Date | string
     updatedAt?: DateTimeFilter<"Component"> | Date | string
@@ -10935,7 +11009,13 @@ export namespace Prisma {
     userId?: SortOrder
     alias?: SortOrder
     description?: SortOrder
-    dependent?: SortOrderInput | SortOrder
+    type?: SortOrder
+    tags?: SortOrder
+    dependencies?: SortOrder
+    devDependencies?: SortOrder
+    registryDependencies?: SortOrder
+    installCommand?: SortOrderInput | SortOrder
+    isPublic?: SortOrder
     mainFile?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10952,7 +11032,13 @@ export namespace Prisma {
     NOT?: ComponentWhereInput | ComponentWhereInput[]
     userId?: StringFilter<"Component"> | string
     description?: StringFilter<"Component"> | string
-    dependent?: StringNullableFilter<"Component"> | string | null
+    type?: StringFilter<"Component"> | string
+    tags?: StringNullableListFilter<"Component">
+    dependencies?: StringNullableListFilter<"Component">
+    devDependencies?: StringNullableListFilter<"Component">
+    registryDependencies?: StringNullableListFilter<"Component">
+    installCommand?: StringNullableFilter<"Component"> | string | null
+    isPublic?: BoolFilter<"Component"> | boolean
     mainFile?: StringFilter<"Component"> | string
     createdAt?: DateTimeFilter<"Component"> | Date | string
     updatedAt?: DateTimeFilter<"Component"> | Date | string
@@ -10966,7 +11052,13 @@ export namespace Prisma {
     userId?: SortOrder
     alias?: SortOrder
     description?: SortOrder
-    dependent?: SortOrderInput | SortOrder
+    type?: SortOrder
+    tags?: SortOrder
+    dependencies?: SortOrder
+    devDependencies?: SortOrder
+    registryDependencies?: SortOrder
+    installCommand?: SortOrderInput | SortOrder
+    isPublic?: SortOrder
     mainFile?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10983,7 +11075,13 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"Component"> | string
     alias?: StringWithAggregatesFilter<"Component"> | string
     description?: StringWithAggregatesFilter<"Component"> | string
-    dependent?: StringNullableWithAggregatesFilter<"Component"> | string | null
+    type?: StringWithAggregatesFilter<"Component"> | string
+    tags?: StringNullableListFilter<"Component">
+    dependencies?: StringNullableListFilter<"Component">
+    devDependencies?: StringNullableListFilter<"Component">
+    registryDependencies?: StringNullableListFilter<"Component">
+    installCommand?: StringNullableWithAggregatesFilter<"Component"> | string | null
+    isPublic?: BoolWithAggregatesFilter<"Component"> | boolean
     mainFile?: StringWithAggregatesFilter<"Component"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Component"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Component"> | Date | string
@@ -11516,7 +11614,13 @@ export namespace Prisma {
     id?: string
     alias: string
     description: string
-    dependent?: string | null
+    type?: string
+    tags?: ComponentCreatetagsInput | string[]
+    dependencies?: ComponentCreatedependenciesInput | string[]
+    devDependencies?: ComponentCreatedevDependenciesInput | string[]
+    registryDependencies?: ComponentCreateregistryDependenciesInput | string[]
+    installCommand?: string | null
+    isPublic?: boolean
     mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11530,7 +11634,13 @@ export namespace Prisma {
     userId: string
     alias: string
     description: string
-    dependent?: string | null
+    type?: string
+    tags?: ComponentCreatetagsInput | string[]
+    dependencies?: ComponentCreatedependenciesInput | string[]
+    devDependencies?: ComponentCreatedevDependenciesInput | string[]
+    registryDependencies?: ComponentCreateregistryDependenciesInput | string[]
+    installCommand?: string | null
+    isPublic?: boolean
     mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11542,7 +11652,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    tags?: ComponentUpdatetagsInput | string[]
+    dependencies?: ComponentUpdatedependenciesInput | string[]
+    devDependencies?: ComponentUpdatedevDependenciesInput | string[]
+    registryDependencies?: ComponentUpdateregistryDependenciesInput | string[]
+    installCommand?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11556,7 +11672,13 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    tags?: ComponentUpdatetagsInput | string[]
+    dependencies?: ComponentUpdatedependenciesInput | string[]
+    devDependencies?: ComponentUpdatedevDependenciesInput | string[]
+    registryDependencies?: ComponentUpdateregistryDependenciesInput | string[]
+    installCommand?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11569,7 +11691,13 @@ export namespace Prisma {
     userId: string
     alias: string
     description: string
-    dependent?: string | null
+    type?: string
+    tags?: ComponentCreatetagsInput | string[]
+    dependencies?: ComponentCreatedependenciesInput | string[]
+    devDependencies?: ComponentCreatedevDependenciesInput | string[]
+    registryDependencies?: ComponentCreateregistryDependenciesInput | string[]
+    installCommand?: string | null
+    isPublic?: boolean
     mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11579,7 +11707,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    tags?: ComponentUpdatetagsInput | string[]
+    dependencies?: ComponentUpdatedependenciesInput | string[]
+    devDependencies?: ComponentUpdatedevDependenciesInput | string[]
+    registryDependencies?: ComponentUpdateregistryDependenciesInput | string[]
+    installCommand?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11590,7 +11724,13 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    tags?: ComponentUpdatetagsInput | string[]
+    dependencies?: ComponentUpdatedependenciesInput | string[]
+    devDependencies?: ComponentUpdatedevDependenciesInput | string[]
+    registryDependencies?: ComponentUpdateregistryDependenciesInput | string[]
+    installCommand?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12240,6 +12380,14 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
@@ -12260,7 +12408,13 @@ export namespace Prisma {
     userId?: SortOrder
     alias?: SortOrder
     description?: SortOrder
-    dependent?: SortOrder
+    type?: SortOrder
+    tags?: SortOrder
+    dependencies?: SortOrder
+    devDependencies?: SortOrder
+    registryDependencies?: SortOrder
+    installCommand?: SortOrder
+    isPublic?: SortOrder
     mainFile?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -12271,7 +12425,9 @@ export namespace Prisma {
     userId?: SortOrder
     alias?: SortOrder
     description?: SortOrder
-    dependent?: SortOrder
+    type?: SortOrder
+    installCommand?: SortOrder
+    isPublic?: SortOrder
     mainFile?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -12282,7 +12438,9 @@ export namespace Prisma {
     userId?: SortOrder
     alias?: SortOrder
     description?: SortOrder
-    dependent?: SortOrder
+    type?: SortOrder
+    installCommand?: SortOrder
+    isPublic?: SortOrder
     mainFile?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -12793,6 +12951,22 @@ export namespace Prisma {
     deleteMany?: MetricsScalarWhereInput | MetricsScalarWhereInput[]
   }
 
+  export type ComponentCreatetagsInput = {
+    set: string[]
+  }
+
+  export type ComponentCreatedependenciesInput = {
+    set: string[]
+  }
+
+  export type ComponentCreatedevDependenciesInput = {
+    set: string[]
+  }
+
+  export type ComponentCreateregistryDependenciesInput = {
+    set: string[]
+  }
+
   export type UserCreateNestedOneWithoutComponentsInput = {
     create?: XOR<UserCreateWithoutComponentsInput, UserUncheckedCreateWithoutComponentsInput>
     connectOrCreate?: UserCreateOrConnectWithoutComponentsInput
@@ -12825,6 +12999,26 @@ export namespace Prisma {
     connectOrCreate?: MetricsCreateOrConnectWithoutComponentInput | MetricsCreateOrConnectWithoutComponentInput[]
     createMany?: MetricsCreateManyComponentInputEnvelope
     connect?: MetricsWhereUniqueInput | MetricsWhereUniqueInput[]
+  }
+
+  export type ComponentUpdatetagsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ComponentUpdatedependenciesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ComponentUpdatedevDependenciesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ComponentUpdateregistryDependenciesInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type UserUpdateOneRequiredWithoutComponentsNestedInput = {
@@ -13167,7 +13361,13 @@ export namespace Prisma {
     id?: string
     alias: string
     description: string
-    dependent?: string | null
+    type?: string
+    tags?: ComponentCreatetagsInput | string[]
+    dependencies?: ComponentCreatedependenciesInput | string[]
+    devDependencies?: ComponentCreatedevDependenciesInput | string[]
+    registryDependencies?: ComponentCreateregistryDependenciesInput | string[]
+    installCommand?: string | null
+    isPublic?: boolean
     mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13179,7 +13379,13 @@ export namespace Prisma {
     id?: string
     alias: string
     description: string
-    dependent?: string | null
+    type?: string
+    tags?: ComponentCreatetagsInput | string[]
+    dependencies?: ComponentCreatedependenciesInput | string[]
+    devDependencies?: ComponentCreatedevDependenciesInput | string[]
+    registryDependencies?: ComponentCreateregistryDependenciesInput | string[]
+    installCommand?: string | null
+    isPublic?: boolean
     mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13349,7 +13555,13 @@ export namespace Prisma {
     userId?: StringFilter<"Component"> | string
     alias?: StringFilter<"Component"> | string
     description?: StringFilter<"Component"> | string
-    dependent?: StringNullableFilter<"Component"> | string | null
+    type?: StringFilter<"Component"> | string
+    tags?: StringNullableListFilter<"Component">
+    dependencies?: StringNullableListFilter<"Component">
+    devDependencies?: StringNullableListFilter<"Component">
+    registryDependencies?: StringNullableListFilter<"Component">
+    installCommand?: StringNullableFilter<"Component"> | string | null
+    isPublic?: BoolFilter<"Component"> | boolean
     mainFile?: StringFilter<"Component"> | string
     createdAt?: DateTimeFilter<"Component"> | Date | string
     updatedAt?: DateTimeFilter<"Component"> | Date | string
@@ -13662,7 +13874,13 @@ export namespace Prisma {
     id?: string
     alias: string
     description: string
-    dependent?: string | null
+    type?: string
+    tags?: ComponentCreatetagsInput | string[]
+    dependencies?: ComponentCreatedependenciesInput | string[]
+    devDependencies?: ComponentCreatedevDependenciesInput | string[]
+    registryDependencies?: ComponentCreateregistryDependenciesInput | string[]
+    installCommand?: string | null
+    isPublic?: boolean
     mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13675,7 +13893,13 @@ export namespace Prisma {
     userId: string
     alias: string
     description: string
-    dependent?: string | null
+    type?: string
+    tags?: ComponentCreatetagsInput | string[]
+    dependencies?: ComponentCreatedependenciesInput | string[]
+    devDependencies?: ComponentCreatedevDependenciesInput | string[]
+    registryDependencies?: ComponentCreateregistryDependenciesInput | string[]
+    installCommand?: string | null
+    isPublic?: boolean
     mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13702,7 +13926,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    tags?: ComponentUpdatetagsInput | string[]
+    dependencies?: ComponentUpdatedependenciesInput | string[]
+    devDependencies?: ComponentUpdatedevDependenciesInput | string[]
+    registryDependencies?: ComponentUpdateregistryDependenciesInput | string[]
+    installCommand?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13715,7 +13945,13 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    tags?: ComponentUpdatetagsInput | string[]
+    dependencies?: ComponentUpdatedependenciesInput | string[]
+    devDependencies?: ComponentUpdatedevDependenciesInput | string[]
+    registryDependencies?: ComponentUpdateregistryDependenciesInput | string[]
+    installCommand?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14003,7 +14239,13 @@ export namespace Prisma {
     id?: string
     alias: string
     description: string
-    dependent?: string | null
+    type?: string
+    tags?: ComponentCreatetagsInput | string[]
+    dependencies?: ComponentCreatedependenciesInput | string[]
+    devDependencies?: ComponentCreatedevDependenciesInput | string[]
+    registryDependencies?: ComponentCreateregistryDependenciesInput | string[]
+    installCommand?: string | null
+    isPublic?: boolean
     mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14016,7 +14258,13 @@ export namespace Prisma {
     userId: string
     alias: string
     description: string
-    dependent?: string | null
+    type?: string
+    tags?: ComponentCreatetagsInput | string[]
+    dependencies?: ComponentCreatedependenciesInput | string[]
+    devDependencies?: ComponentCreatedevDependenciesInput | string[]
+    registryDependencies?: ComponentCreateregistryDependenciesInput | string[]
+    installCommand?: string | null
+    isPublic?: boolean
     mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14086,7 +14334,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    tags?: ComponentUpdatetagsInput | string[]
+    dependencies?: ComponentUpdatedependenciesInput | string[]
+    devDependencies?: ComponentUpdatedevDependenciesInput | string[]
+    registryDependencies?: ComponentUpdateregistryDependenciesInput | string[]
+    installCommand?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14099,7 +14353,13 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    tags?: ComponentUpdatetagsInput | string[]
+    dependencies?: ComponentUpdatedependenciesInput | string[]
+    devDependencies?: ComponentUpdatedevDependenciesInput | string[]
+    registryDependencies?: ComponentUpdateregistryDependenciesInput | string[]
+    installCommand?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14110,7 +14370,13 @@ export namespace Prisma {
     id?: string
     alias: string
     description: string
-    dependent?: string | null
+    type?: string
+    tags?: ComponentCreatetagsInput | string[]
+    dependencies?: ComponentCreatedependenciesInput | string[]
+    devDependencies?: ComponentCreatedevDependenciesInput | string[]
+    registryDependencies?: ComponentCreateregistryDependenciesInput | string[]
+    installCommand?: string | null
+    isPublic?: boolean
     mainFile: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14164,7 +14430,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    tags?: ComponentUpdatetagsInput | string[]
+    dependencies?: ComponentUpdatedependenciesInput | string[]
+    devDependencies?: ComponentUpdatedevDependenciesInput | string[]
+    registryDependencies?: ComponentUpdateregistryDependenciesInput | string[]
+    installCommand?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14176,7 +14448,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    tags?: ComponentUpdatetagsInput | string[]
+    dependencies?: ComponentUpdatedependenciesInput | string[]
+    devDependencies?: ComponentUpdatedevDependenciesInput | string[]
+    registryDependencies?: ComponentUpdateregistryDependenciesInput | string[]
+    installCommand?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14188,7 +14466,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     alias?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    dependent?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    tags?: ComponentUpdatetagsInput | string[]
+    dependencies?: ComponentUpdatedependenciesInput | string[]
+    devDependencies?: ComponentUpdatedevDependenciesInput | string[]
+    registryDependencies?: ComponentUpdateregistryDependenciesInput | string[]
+    installCommand?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     mainFile?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

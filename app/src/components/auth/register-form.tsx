@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Input } from "../ui/input";
+import { Input, InputWithPassword } from "../ui/input";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -119,7 +119,7 @@ export function RegisterForm() {
                 </FormLabel>
                 <FormControl>
                   {/* Note: Use type="password" for sensitive fields */}
-                  <Input
+                  <InputWithPassword
                     placeholder="Enter your password"
                     type="password"
                     className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
@@ -141,7 +141,7 @@ export function RegisterForm() {
                   Confirm Password
                 </FormLabel>
                 <FormControl>
-                  <Input
+                  <InputWithPassword
                     placeholder="Confirm your password"
                     type="password"
                     className="ring ring-zinc-300/50 text-black/50 rounded-2xl"

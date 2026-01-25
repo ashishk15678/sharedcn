@@ -14,30 +14,13 @@ interface ComponentCardProps {
 
 export function ComponentCard({ item }: ComponentCardProps) {
   const { previewCode, tags, extras, isSetupCard } = useMemo(() => {
-    // Parse Meta
-    let meta: any = {};
-    try {
-        if (typeof item.dependent === 'string') {
-             meta = JSON.parse(item.dependent);
-             if (Array.isArray(meta)) meta = { tags: meta };
-        } else if (typeof item.dependent === 'object') {
-            meta = item.dependent;
-        }
-    } catch {
-        // basic fallback for comma lists if any
-        if (typeof item.dependent === 'string') {
-            meta = {
-                tags: item.dependent.split(',').map(s => s.trim()).filter(Boolean)
-            };
-        }
-    }
+    // Use new schema fields directly
+    const tags = item.tags || [];
+    const extras = item.dependencies || [];
     
-    const tags = (meta.tags || []) as string[];
-    const extras = (meta.dependencies || meta.packages) as string[] | undefined;
-    
-    // Determine Type
+    // Determine Type using new type field
     const isSetupCard = 
-        meta.type === "setup" || 
+        item.type === "setup" || 
         tags.some(t => t.toLowerCase().includes("setup")) || 
         item.alias?.toLowerCase().includes("setup");
 

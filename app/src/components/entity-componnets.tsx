@@ -9,7 +9,6 @@ import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/trpc/client";
 import type { AppRouter } from "@/trpc/routers/_app";
-import AuroraTrapezoid from "./layout/aurora-comp";
 
 type ComponentEntity =
   inferRouterOutputs<AppRouter>["components"]["list"][number];
@@ -41,9 +40,9 @@ export default function EntityPage({
 
   const renderCard = (item: ComponentEntity) => {
     const preview = buildPreview(item);
-    const meta = parseDependentMeta(item.dependent);
-    const tags = (meta.tags || []) as string[];
-    const extras = meta.packages as string[] | undefined;
+    // Use new schema fields directly instead of parsing deprecated dependent
+    const tags = item.tags || [];
+    const extras = item.dependencies || [];
     const isSetupCard = isSetup(item);
 
     return (
@@ -311,9 +310,12 @@ function parseDependentMeta(value: any): DependentMeta {
 }
 
 function isSetup(component: ComponentEntity) {
-  const meta = parseDependentMeta(component.dependent);
-  if (meta.type === "setup") return true;
-  if (meta.tags?.some((tag) => tag.toLowerCase().includes("setup"))) {
+  // Use the new type field directly
+  if (component.type === "setup") return true;
+  // Fallback for legacy data: check tags
+  if (
+    component.tags?.some((tag: string) => tag.toLowerCase().includes("setup"))
+  ) {
     return true;
   }
   return component.alias?.toLowerCase().includes("setup") ?? false;

@@ -49,9 +49,9 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "No id provided" }, { status: 400 });
 
   const body = await req.json();
-  const { files, mainFile, description, dependent, name } = body || {};
+  const { files, mainFile, description, type, tags, dependencies, devDependencies, registryDependencies, installCommand, isPublic, name } = body || {};
 
-  const allowed = [".js", ".ts", ".jsx", ".tsx", ".css"];
+  const allowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html", ".json", ".md", ".env"];
   if (!Array.isArray(files) || files.length === 0 || !mainFile) {
     return NextResponse.json(
       { error: "files and mainFile required" },
@@ -63,7 +63,7 @@ export async function PATCH(req: NextRequest) {
       (f: any) =>
         f.filename &&
         typeof f.code === "string" &&
-        allowed.some((ext) => f.filename.endsWith(ext)),
+        (allowed.some((ext) => f.filename.endsWith(ext)) || f.filename.includes("."))
     )
   ) {
     return NextResponse.json(
@@ -84,14 +84,19 @@ export async function PATCH(req: NextRequest) {
   if (!component)
     return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  // Update component metadata
+  // Update component metadata with new schema fields
   await prisma.component.update({
     where: { id },
     data: {
       mainFile,
       description: description ?? component.description,
-      dependent: dependent ?? component.dependent,
-      alias: component.alias, // unchanged
+      type: type ?? component.type,
+      tags: tags ?? component.tags,
+      dependencies: dependencies ?? component.dependencies,
+      devDependencies: devDependencies ?? component.devDependencies,
+      registryDependencies: registryDependencies ?? component.registryDependencies,
+      installCommand: installCommand !== undefined ? installCommand : component.installCommand,
+      isPublic: isPublic ?? component.isPublic,
     },
   });
 

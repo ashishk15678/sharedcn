@@ -48,7 +48,13 @@ export const appRouter = createTRPCRouter({
         z.object({
           name: z.string(),
           description: z.string(),
-          dependent: z.any().optional(),
+          type: z.enum(["component", "setup"]).default("component"),
+          tags: z.array(z.string()).optional(),
+          dependencies: z.array(z.string()).optional(),
+          devDependencies: z.array(z.string()).optional(),
+          registryDependencies: z.array(z.string()).optional(),
+          installCommand: z.string().optional(),
+          isPublic: z.boolean().default(true),
           files: z.array(
             z.object({
               filename: z.string(),
@@ -59,15 +65,19 @@ export const appRouter = createTRPCRouter({
         }),
       )
       .mutation(async ({ ctx, input }) => {
-        const allowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html"];
+        // File extension validation - more permissive for setups
+        const componentAllowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html"];
+        const setupAllowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html", ".json", ".md", ".env", ".yml", ".yaml", ".toml", ".prisma"];
+        const allowed = input.type === "setup" ? setupAllowed : componentAllowed;
+        
         if (
           !input.files.every((f) =>
-            allowed.some((ext) => f.filename.endsWith(ext)),
+            allowed.some((ext) => f.filename.endsWith(ext)) || f.filename.includes(".")
           )
         ) {
           throw new TRPCError({
             code: "BAD_REQUEST",
-            message: "Only js, ts, jsx, tsx, css, html files allowed.",
+            message: `Invalid file types. For ${input.type}s, allowed extensions are: ${allowed.join(", ")}`,
           });
         }
 
@@ -79,9 +89,18 @@ export const appRouter = createTRPCRouter({
           });
         }
 
-        const alias = input.name.trim().toLowerCase().replace(/\s+/g, "-");
+        // Get username for alias
+        const user = await ctx.prisma.user.findUnique({
+          where: { id: ctx.userId },
+          select: { username: true },
+        });
+        
+        const username = user?.username || "user";
+        const normalized = input.name.trim().toLowerCase().replace(/\s+/g, "-");
+        const alias = `@${username}/${normalized}`;
+        
         const exists = await ctx.prisma.component.findFirst({
-          where: { alias, userId: ctx.userId },
+          where: { alias },
         });
         if (exists) {
           throw new TRPCError({
@@ -95,7 +114,13 @@ export const appRouter = createTRPCRouter({
             alias,
             userId: ctx.userId,
             description: input.description,
-            dependent: "",
+            type: input.type,
+            tags: input.tags || [],
+            dependencies: input.dependencies || [],
+            devDependencies: input.devDependencies || [],
+            registryDependencies: input.registryDependencies || [],
+            installCommand: input.installCommand || null,
+            isPublic: input.isPublic,
             mainFile: input.mainFile,
             files: {
               create: input.files.map((f) => ({
@@ -124,7 +149,13 @@ export const appRouter = createTRPCRouter({
             .optional(),
           mainFile: z.string().optional(),
           description: z.string().optional(),
-          dependent: z.any().optional(),
+          type: z.enum(["component", "setup"]).optional(),
+          tags: z.array(z.string()).optional(),
+          dependencies: z.array(z.string()).optional(),
+          devDependencies: z.array(z.string()).optional(),
+          registryDependencies: z.array(z.string()).optional(),
+          installCommand: z.string().nullable().optional(),
+          isPublic: z.boolean().optional(),
         }),
       )
       .mutation(async ({ ctx, input }) => {
@@ -135,11 +166,16 @@ export const appRouter = createTRPCRouter({
           throw new TRPCError({ code: "NOT_FOUND" });
         }
 
-        const allowed = [".js", ".ts", ".jsx", ".tsx", ".css"];
+        // File extension validation - more permissive for setups
+        const isSetup = input.type === "setup" || component.type === "setup";
+        const componentAllowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html"];
+        const setupAllowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html", ".json", ".md", ".env", ".yml", ".yaml", ".toml", ".prisma"];
+        const allowed = isSetup ? setupAllowed : componentAllowed;
+        
         if (input.files) {
           if (
             !input.files.every((f) =>
-              allowed.some((ext) => f.filename.endsWith(ext)),
+              allowed.some((ext) => f.filename.endsWith(ext)) || f.filename.includes(".")
             )
           ) {
             throw new TRPCError({
@@ -163,7 +199,13 @@ export const appRouter = createTRPCRouter({
           data: {
             mainFile: input.mainFile ?? component.mainFile,
             description: input.description ?? component.description,
-            dependent: input.dependent ?? component.dependent,
+            type: input.type ?? component.type,
+            tags: input.tags ?? component.tags,
+            dependencies: input.dependencies ?? component.dependencies,
+            devDependencies: input.devDependencies ?? component.devDependencies,
+            registryDependencies: input.registryDependencies ?? component.registryDependencies,
+            installCommand: input.installCommand !== undefined ? input.installCommand : component.installCommand,
+            isPublic: input.isPublic ?? component.isPublic,
           },
         });
 
@@ -258,7 +300,12 @@ export const appRouter = createTRPCRouter({
         z.object({
           name: z.string(),
           description: z.string().optional(),
-          dependent: z.array(z.string()).optional(),
+          type: z.enum(["component", "setup"]).default("component"),
+          tags: z.array(z.string()).optional(),
+          dependencies: z.array(z.string()).optional(),
+          devDependencies: z.array(z.string()).optional(),
+          registryDependencies: z.array(z.string()).optional(),
+          installCommand: z.string().optional(),
           code: z.array(
             z.object({
               filename: z.string(),
@@ -317,7 +364,13 @@ export const appRouter = createTRPCRouter({
           data: {
             alias: fullAlias,
             description: input.description || "",
-            dependent: JSON.stringify(input.dependent || []),
+            type: input.type,
+            tags: input.tags || [],
+            dependencies: input.dependencies || [],
+            devDependencies: input.devDependencies || [],
+            registryDependencies: input.registryDependencies || [],
+            installCommand: input.installCommand || null,
+            isPublic: true,
             mainFile,
             userId: user.id,
             files: {

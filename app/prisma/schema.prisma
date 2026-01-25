@@ -31,17 +31,23 @@ model User {
 }
 
 model Component {
-  id          String    @id @default(cuid())
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String
-  alias       String    @unique
-  description String
-  dependent   String?
-  files       File[]
-  mainFile    String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  metrics     Metrics[]
+  id                   String    @id @default(cuid())
+  user                 User      @relation(fields: [userId], references: [id])
+  userId               String
+  alias                String    @unique
+  description          String
+  type                 String    @default("component") // "component" | "setup"
+  tags                 String[]  @default([])
+  dependencies         String[]  @default([])  // npm packages
+  devDependencies      String[]  @default([])  // npm dev packages  
+  registryDependencies String[]  @default([])  // other sharedcn components
+  installCommand       String?                 // custom post-install command
+  isPublic             Boolean   @default(true)
+  files                File[]
+  mainFile             String
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  metrics              Metrics[]
 }
 
 model File {

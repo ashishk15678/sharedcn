@@ -10,6 +10,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // throw new Error();
   await requireAuth();
   return (
     <>

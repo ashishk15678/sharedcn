@@ -21,14 +21,14 @@ export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({ headers: req.headers });
   if (!session)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const { name, description, dependent, files, mainFile } = await req.json();
+  const { name, description, type, tags, dependencies, devDependencies, registryDependencies, installCommand, isPublic, files, mainFile } = await req.json();
   if (
     !name ||
     !description ||
     !Array.isArray(files) ||
     files.length === 0 ||
     !mainFile ||
-    !files.every((f) => f.filename && typeof f.code === "string")
+    !files.every((f: any) => f.filename && typeof f.code === "string")
   )
     return NextResponse.json(
       {
@@ -37,27 +37,40 @@ export async function POST(req: NextRequest) {
       },
       { status: 400 }
     );
-  // Only allow js, ts, jsx, tsx, css files
-  const allowed = [".js", ".ts", ".jsx", ".tsx", ".css"];
-  if (!files.every((f) => allowed.some((ext) => f.filename.endsWith(ext)))) {
+  
+  // Allow more file types for setups
+  const isSetup = type === "setup";
+  const componentAllowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html"];
+  const setupAllowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html", ".json", ".md", ".env", ".yml", ".yaml", ".toml", ".prisma"];
+  const allowed = isSetup ? setupAllowed : componentAllowed;
+  
+  if (!files.every((f: any) => allowed.some((ext) => f.filename.endsWith(ext)) || f.filename.includes("."))) {
     return NextResponse.json(
-      { error: "Only js, ts, jsx, tsx, css files allowed." },
+      { error: `Invalid file types for ${isSetup ? 'setup' : 'component'}.` },
       { status: 400 }
     );
   }
+  
   // Main file must exist in files
-  const main = files.find((f) => f.filename === mainFile);
+  const main = files.find((f: any) => f.filename === mainFile);
   if (!main) {
     return NextResponse.json(
       { error: "Main file not found in files." },
       { status: 400 }
     );
   }
-  // TODO: Validate main file has default export (Babel parse)
-  // Alias is the name, must be unique for this user
-  const alias = name.trim().toLowerCase().replace(/\s+/g, "-");
+  
+  // Get username for alias
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { username: true },
+  });
+  const username = user?.username || "user";
+  const normalized = name.trim().toLowerCase().replace(/\s+/g, "-");
+  const alias = `@${username}/${normalized}`;
+  
   const exists = await prisma.component.findFirst({
-    where: { alias, userId: session.user.id },
+    where: { alias },
   });
   if (exists) {
     return NextResponse.json(
@@ -65,16 +78,23 @@ export async function POST(req: NextRequest) {
       { status: 409 }
     );
   }
-  // Create component and files
+  
+  // Create component and files with new schema
   const component = await prisma.component.create({
     data: {
       alias,
       userId: session.user.id,
       description,
-      dependent,
+      type: type || "component",
+      tags: tags || [],
+      dependencies: dependencies || [],
+      devDependencies: devDependencies || [],
+      registryDependencies: registryDependencies || [],
+      installCommand: installCommand || null,
+      isPublic: isPublic !== false,
       mainFile,
       files: {
-        create: files.map((f) => ({ filename: f.filename, code: f.code })),
+        create: files.map((f: any) => ({ filename: f.filename, code: f.code })),
       },
     },
     include: { files: true },

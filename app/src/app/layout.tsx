@@ -8,7 +8,7 @@ import { AnalyticsComponent } from "@/components/analytics-component";
 import { GlobalBreadcrumbs } from "@/components/global-bread-crumbs";
 import { TRPCReactProvider } from "@/trpc/client";
 import { APP_IMAGE } from "@/constants";
-
+import { GlobaErrorBoundary } from "@/components/ui/Global-Error-Comp";
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,7 +26,7 @@ export default function RootLayout({
           ></meta>
           <body>
             <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-              <ErrorBoundary fallback={<>Some error occured</>}>
+              <ErrorBoundary fallback={<GlobaErrorBoundary />}>
                 {children}
               </ErrorBoundary>
               <GlobalBreadcrumbs />

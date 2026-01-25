@@ -41,7 +41,7 @@ export default async function SignInPage() {
 
         <Separator
           decorative={true}
-          className="bg-black/50 text-black/50"
+          className=""
           text={"Or use Email to register"}
         />
 

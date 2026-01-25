@@ -31,8 +31,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Validate input
-  const { name, description, dependent, code, token } = body;
+  // Validate input - accept new schema fields
+  const { name, description, type, tags, dependencies, devDependencies, registryDependencies, installCommand, code, token } = body;
   if (name === "token-validation") {
     // Accept token from body, not header
     if (!token || typeof token !== "string") {
@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
     // Fetch all components by alias
     const components = await prisma.component.findMany({
       where: { alias: { in: aliases } },
+      include: { files: true },
     });
     // Map to alias -> component
     const compMap = new Map();
@@ -83,8 +84,6 @@ export async function POST(req: NextRequest) {
   if (
     !name ||
     typeof name !== "string" ||
-    !Array.isArray(dependent) ||
-    !dependent.every((d) => typeof d === "string") ||
     !Array.isArray(code) ||
     !code.every(
       (f) =>
@@ -96,7 +95,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error:
-          "Invalid or missing fields. Required: name (string), dependent (array of strings), code (array of {filename, code} objects). Optional: description (string)",
+          "Invalid or missing fields. Required: name (string), code (array of {filename, code} objects). Optional: description, type, tags, dependencies, devDependencies, registryDependencies, installCommand",
       },
       { status: 400, headers: corsHeaders },
     );
@@ -144,15 +143,28 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Create the new component
+  // Create the new component with new schema fields
   component = await prisma.component.create({
     data: {
       alias: fullAlias,
       description: description || "",
-      dependent: JSON.stringify(dependent),
-      mainFile: code[0] || "",
+      type: type || "component",
+      tags: tags || [],
+      dependencies: dependencies || [],
+      devDependencies: devDependencies || [],
+      registryDependencies: registryDependencies || [],
+      installCommand: installCommand || null,
+      isPublic: true,
+      mainFile: code[0]?.filename || "index.tsx",
       userId: user.id,
+      files: {
+        create: code.map((f: any) => ({
+          filename: f.filename,
+          code: f.code,
+        })),
+      },
     },
+    include: { files: true },
   });
   return NextResponse.json(component, { status: 201, headers: corsHeaders });
 }
