@@ -29,7 +29,8 @@ const AVAILABLE_IMPORTS: Record<string, any> = {
 export function LivePreview({ code }: { code: string }) {
   const [Component, setComponent] = useState<React.ComponentType | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  // TODO: Replace Function constructor with iframe-based sandboxing for production
+  // const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
     if (!code) {
@@ -71,9 +72,10 @@ export function LivePreview({ code }: { code: string }) {
       const module = { exports };
 
       // 4. Evaluate the code
-      // Security Note: This still uses Function constructor which is risky
-      // TODO: Replace with iframe-based sandboxing for production
-      // Wrapping in try-catch to contain errors
+      // SECURITY WARNING: This uses Function constructor which is risky
+      // The variable shadowing below provides minimal protection and can be bypassed
+      // TODO: CRITICAL - Replace with iframe-based sandboxing for production use
+      // See SECURITY_REVIEW.md for detailed recommendations
       const func = new Function(
         "React",
         "require",
@@ -81,7 +83,8 @@ export function LivePreview({ code }: { code: string }) {
         "exports",
         `
         "use strict";
-        // Prevent access to global objects
+        // Note: These shadowing attempts provide minimal security and can be bypassed
+        // via globalThis, this, or other techniques. This is NOT a secure sandbox.
         const window = undefined;
         const document = undefined;
         const localStorage = undefined;
