@@ -65,19 +65,29 @@ export const appRouter = createTRPCRouter({
         }),
       )
       .mutation(async ({ ctx, input }) => {
-        // File extension validation - more permissive for setups
+        // File extension validation - strict allowlist
         const componentAllowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html"];
         const setupAllowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html", ".json", ".md", ".env", ".yml", ".yaml", ".toml", ".prisma"];
         const allowed = input.type === "setup" ? setupAllowed : componentAllowed;
         
+        // Security: Strict validation - file must have valid extension
         if (
           !input.files.every((f) =>
-            allowed.some((ext) => f.filename.endsWith(ext)) || f.filename.includes(".")
+            allowed.some((ext) => f.filename.toLowerCase().endsWith(ext))
           )
         ) {
           throw new TRPCError({
             code: "BAD_REQUEST",
             message: `Invalid file types. For ${input.type}s, allowed extensions are: ${allowed.join(", ")}`,
+          });
+        }
+
+        // Security: Validate file sizes (prevent DOS)
+        const MAX_FILE_SIZE = 500000; // 500KB per file
+        if (input.files.some((f) => f.code.length > MAX_FILE_SIZE)) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "File size too large. Maximum 500KB per file.",
           });
         }
 
@@ -166,16 +176,17 @@ export const appRouter = createTRPCRouter({
           throw new TRPCError({ code: "NOT_FOUND" });
         }
 
-        // File extension validation - more permissive for setups
+        // File extension validation - strict allowlist
         const isSetup = input.type === "setup" || component.type === "setup";
         const componentAllowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html"];
         const setupAllowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html", ".json", ".md", ".env", ".yml", ".yaml", ".toml", ".prisma"];
         const allowed = isSetup ? setupAllowed : componentAllowed;
         
         if (input.files) {
+          // Security: Strict validation - file must have valid extension
           if (
             !input.files.every((f) =>
-              allowed.some((ext) => f.filename.endsWith(ext)) || f.filename.includes(".")
+              allowed.some((ext) => f.filename.toLowerCase().endsWith(ext))
             )
           ) {
             throw new TRPCError({
@@ -183,6 +194,16 @@ export const appRouter = createTRPCRouter({
               message: "Invalid files or file types",
             });
           }
+          
+          // Security: Validate file sizes (prevent DOS)
+          const MAX_FILE_SIZE = 500000; // 500KB per file
+          if (input.files.some((f) => f.code.length > MAX_FILE_SIZE)) {
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message: "File size too large. Maximum 500KB per file.",
+            });
+          }
+
           if (
             input.mainFile &&
             !input.files.find((f) => f.filename === input.mainFile)
@@ -239,8 +260,13 @@ export const appRouter = createTRPCRouter({
             where: { id: input.id, userId: ctx.userId },
           });
           return { success: true };
-        } catch {
-          throw new TRPCError({ code: "NOT_FOUND" });
+        } catch (error) {
+          // Log error for monitoring
+          console.error("Failed to delete component:", error);
+          throw new TRPCError({ 
+            code: "NOT_FOUND",
+            message: "Component not found or you don't have permission to delete it",
+          });
         }
       }),
 
@@ -274,7 +300,7 @@ export const appRouter = createTRPCRouter({
           where: { alias: { in: aliases } },
         });
 
-        const compMap = new Map();
+        const compMap = new Map<string, any>();
         for (const comp of components) compMap.set(comp.alias, comp);
 
         const result = aliases.map((alias) => {
@@ -284,7 +310,9 @@ export const appRouter = createTRPCRouter({
             if (typeof dependent === "string") {
               try {
                 dependent = JSON.parse(dependent);
-              } catch {}
+              } catch (parseError) {
+                console.error("Failed to parse dependent field:", parseError);
+              }
             }
             return { ...comp, dependent };
           }
@@ -324,16 +352,19 @@ export const appRouter = createTRPCRouter({
         }
 
         if (!user) {
+          const PUBLIC_USER_EMAIL = process.env.PUBLIC_USER_EMAIL || "public@ashish.services";
+          const PUBLIC_USERNAME = process.env.PUBLIC_USERNAME || "public";
+          
           user = await ctx.prisma.user.findUnique({
-            where: { email: "public@ashish.services" },
+            where: { email: PUBLIC_USER_EMAIL },
           });
           if (!user) {
             user = await ctx.prisma.user.create({
               data: {
-                email: "public@ashish.services",
+                email: PUBLIC_USER_EMAIL,
                 name: "Public User",
                 emailVerified: false,
-                username: "public",
+                username: PUBLIC_USERNAME,
               },
             });
           }
@@ -356,7 +387,7 @@ export const appRouter = createTRPCRouter({
 
         // Determine mainFile from code array (first file or one named index)
         const mainFile =
-          input.code.find((f: any) => f.filename.includes("index"))?.filename ||
+          input.code.find((f: { filename: string; code: string }) => f.filename.includes("index"))?.filename ||
           input.code[0]?.filename ||
           "index.tsx";
 
@@ -374,7 +405,7 @@ export const appRouter = createTRPCRouter({
             mainFile,
             userId: user.id,
             files: {
-              create: input.code.map((f: any) => ({
+              create: input.code.map((f: { filename: string; code: string }) => ({
                 filename: f.filename,
                 code: f.code,
               })),

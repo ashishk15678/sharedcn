@@ -29,6 +29,8 @@ const AVAILABLE_IMPORTS: Record<string, any> = {
 export function LivePreview({ code }: { code: string }) {
   const [Component, setComponent] = useState<React.ComponentType | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // TODO: Replace Function constructor with iframe-based sandboxing for production
+  // const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
     if (!code) {
@@ -38,6 +40,12 @@ export function LivePreview({ code }: { code: string }) {
     }
 
     try {
+      // Security: Basic input validation
+      if (code.length > 50000) {
+        setError("Code too large. Please keep it under 50KB.");
+        return;
+      }
+
       // 1. Transform JSX/TSX to JS with CommonJS modules
       const transformed = Babel.transform(code, {
         presets: ["react", "typescript"],
@@ -46,14 +54,16 @@ export function LivePreview({ code }: { code: string }) {
 
       if (!transformed) return;
 
-      // 2. Create a mock require function
+      // 2. Create a mock require function with strict allowlist
       const require = (moduleName: string) => {
+        // Security: Only allow specific, whitelisted imports
         if (AVAILABLE_IMPORTS[moduleName]) {
           return AVAILABLE_IMPORTS[moduleName];
         }
-        // Fallback for relative imports - we can't really support them easily without a proper bundler
-        // so we just return an empty object or warn
-        console.warn(`Module not found in preview: ${moduleName}`);
+        // Log warning for debugging but don't expose in production
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(`Module not found in preview: ${moduleName}`);
+        }
         return {};
       };
 
@@ -62,13 +72,26 @@ export function LivePreview({ code }: { code: string }) {
       const module = { exports };
 
       // 4. Evaluate the code
-      // We wrap it in a function to isolate scope
+      // SECURITY WARNING: This uses Function constructor which is risky
+      // The variable shadowing below provides minimal protection and can be bypassed
+      // TODO: CRITICAL - Replace with iframe-based sandboxing for production use
+      // See SECURITY_REVIEW.md for detailed recommendations
       const func = new Function(
         "React",
         "require",
         "module",
         "exports",
-        transformed,
+        `
+        "use strict";
+        // Note: These shadowing attempts provide minimal security and can be bypassed
+        // via globalThis, this, or other techniques. This is NOT a secure sandbox.
+        const window = undefined;
+        const document = undefined;
+        const localStorage = undefined;
+        const sessionStorage = undefined;
+        const fetch = undefined;
+        ${transformed}
+        `,
       );
 
       func(React, require, module, exports);
@@ -84,9 +107,10 @@ export function LivePreview({ code }: { code: string }) {
           "No default export found. Please export your component as default.",
         );
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
       console.error("Preview render error:", err);
-      setError(err.message);
+      setError(errorMessage);
     }
   }, [code]);
 
