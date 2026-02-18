@@ -3,6 +3,51 @@ import { TRPCError } from "@trpc/server";
 import { baseProcedure, protectedProcedure, createTRPCRouter } from "../init";
 
 export const appRouter = createTRPCRouter({
+  // Profile - public user profile
+  profile: createTRPCRouter({
+    getByUsername: baseProcedure
+      .input(z.object({ username: z.string() }))
+      .query(async ({ ctx, input }) => {
+        const user = await ctx.prisma.user.findFirst({
+          where: { username: input.username.toLowerCase() },
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            username: true,
+            createdAt: true,
+          },
+        });
+
+        if (!user) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+        }
+
+        const components = await ctx.prisma.component.findMany({
+          where: { userId: user.id, isPublic: true },
+          orderBy: { createdAt: "desc" },
+          include: {
+            files: true,
+            metrics: true,
+          },
+        });
+
+        const totalInstallations = await ctx.prisma.metrics.aggregate({
+          where: { userId: user.id },
+          _sum: { installations: true },
+        });
+
+        return {
+          user,
+          components,
+          stats: {
+            totalComponents: components.length,
+            totalInstallations: totalInstallations._sum.installations || 0,
+          },
+        };
+      }),
+  }),
+
   // Components
   components: createTRPCRouter({
     // Get all components for authenticated user
@@ -18,9 +63,10 @@ export const appRouter = createTRPCRouter({
       return components;
     }),
 
-    // Get all components (public)
+    // Get all components (public) - with pagination
     all: baseProcedure.query(async ({ ctx }) => {
       const data = await ctx.prisma.component.findMany({
+        where: { isPublic: true },
         include: {
           metrics: true,
           files: true,
@@ -29,12 +75,64 @@ export const appRouter = createTRPCRouter({
       return data;
     }),
 
+    // List public components with pagination
+    listPublic: baseProcedure
+      .input(
+        z.object({
+          limit: z.number().min(1).max(50).default(12),
+          cursor: z.string().optional(),
+          tag: z.string().optional(),
+        }).optional()
+      )
+      .query(async ({ ctx, input }) => {
+        const limit = input?.limit ?? 12;
+        const cursor = input?.cursor;
+        const tag = input?.tag;
+
+        const components = await ctx.prisma.component.findMany({
+          take: limit + 1, // Take one extra to determine if there's more
+          cursor: cursor ? { id: cursor } : undefined,
+          where: {
+            isPublic: true,
+            ...(tag ? { tags: { has: tag } } : {}),
+          },
+          orderBy: { createdAt: "desc" },
+          include: {
+            metrics: true,
+            files: true,
+            user: {
+              select: { username: true, name: true, image: true },
+            },
+          },
+        });
+
+        let nextCursor: string | undefined = undefined;
+        if (components.length > limit) {
+          const nextItem = components.pop();
+          nextCursor = nextItem?.id;
+        }
+
+        // Get all unique tags for filtering
+        const allTags = await ctx.prisma.component.findMany({
+          where: { isPublic: true },
+          select: { tags: true },
+        });
+        const uniqueTags = [...new Set(allTags.flatMap((c) => c.tags))].sort();
+
+        return {
+          items: components,
+          nextCursor,
+          tags: uniqueTags,
+        };
+      }),
+
     // Get component by ID
     get: protectedProcedure
       .input(z.object({ id: z.string() }))
       .query(async ({ ctx, input }) => {
         const component = await ctx.prisma.component.findUnique({
           where: { id: input.id, userId: ctx.userId },
+          include: { files: true, metrics: true },
         });
         if (!component) {
           throw new TRPCError({ code: "NOT_FOUND" });

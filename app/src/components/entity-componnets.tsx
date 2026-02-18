@@ -50,7 +50,8 @@ export default function EntityPage({
         key={item.id}
         className={cn(
           "flex h-full w-full flex-col gap-4 rounded-xl border border-zinc-200/70  backdrop-blur-lg px-3 py-2 transition hover:border-zinc-300 dark:border-zinc-800 ",
-          isSetupCard && "ring-1 ring-amber-300/40 dark:ring-amber-300/20",
+          isSetupCard &&
+            "ring-1 ring-amber-300/40 dark:ring-amber-300/20 relative",
         )}
         style={{ aspectRatio: items.length > 3 ? "3 / 1" : undefined }}
       >
@@ -67,7 +68,7 @@ export default function EntityPage({
         </div>
 
         {preview.markup ? (
-          <div className="rounded-2xl border border-zinc-100 bg-white/90 p-4 text-sm text-zinc-800 shadow-inner dark:border-zinc-800 dark:bg-zinc-950/40 dark:text-zinc-100">
+          <div className="rounded-2xl border  border-zinc-100 bg-white/90 p-4 text-sm text-zinc-800 shadow-inner dark:border-zinc-800 dark:bg-zinc-950/40 dark:text-zinc-100">
             <div dangerouslySetInnerHTML={{ __html: preview.markup }} />
           </div>
         ) : (
@@ -130,13 +131,20 @@ export default function EntityPage({
 
   return (
     <section className="p-6 md:p-8">
-      <div className="flex flex-col gap-1">
-        <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-          {title}
-        </h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          {description}
-        </p>
+      <div className="flex flex-row gap-1 w-full items-center justify-between">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+            {title}
+          </h2>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            {description}
+          </p>
+        </div>
+        <Link href={"/component/new"} prefetch>
+          <Button variant={"secondary"} className="border border-border">
+            Create new {type} <PlusIcon />
+          </Button>
+        </Link>
       </div>
       {content}
     </section>
@@ -259,7 +267,7 @@ function buildPreview(component: ComponentEntity) {
   if (!main) return { code: "", markup: "" };
   const snippet = main.code ?? "";
   const markup = extractMarkup(snippet);
-  return { code: snippet.slice(0, 600), markup };
+  return { code: snippet, markup };
 }
 
 function extractMarkup(code: string) {

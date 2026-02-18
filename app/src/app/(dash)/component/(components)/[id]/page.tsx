@@ -2,7 +2,6 @@
 import { components } from "@/components";
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon, Copy } from "lucide-react";
-import Error from "next/error";
 import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
 

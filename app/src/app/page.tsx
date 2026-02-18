@@ -14,6 +14,8 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 import Image from "next/image";
+import { AppHeader } from "@/components/app-header";
+import { SiteHeader } from "@/components/landing/site-header";
 
 export default function LandingPage() {
   return (
@@ -21,37 +23,7 @@ export default function LandingPage() {
       {/* Header */}
       <header className="fixed top-0 w-full z-50 border-b border-white/10 bg-background/50 backdrop-blur-md">
         <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-white rounded-sm flex items-center justify-center">
-              <Image src="/shadcn-logo.png" alt="Logo" width={24} height={24} />
-            </div>
-            <span className="font-bold text-xl tracking-tight">sharedcn</span>
-          </div>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-primary/60">
-            <a href="#" className="hover:text-primary transition-colors">
-              Components
-            </a>
-            <a href="#" className="hover:text-primary transition-colors">
-              Marketplace
-            </a>
-            <a href="#" className="hover:text-primary transition-colors">
-              Dashboard
-            </a>
-            <a href="#" className="hover:text-primary transition-colors">
-              CLI
-            </a>
-          </nav>
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <Link href={"/login"} prefetch>
-              <Button
-                variant="ghost"
-                className="text-primary/60 hover:text-primary hover:bg-white/10"
-              >
-                Sign In
-              </Button>
-            </Link>
-          </div>
+          <SiteHeader />
         </div>
       </header>
 

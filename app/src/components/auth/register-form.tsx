@@ -1,7 +1,7 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { ReactNode } from "react";
+import { ReactNode, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { IconType } from "react-icons/lib";
 import z from "zod";
@@ -20,6 +20,8 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { AuthSuccessOverlay } from "./auth-success-overlay";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const formSchema = z.object({
   name: z.string().min(1, "Name is a required field"),
@@ -29,6 +31,7 @@ export const formSchema = z.object({
 });
 
 export function RegisterForm() {
+  const [authSuccess, setAuthSuccess] = useState(false);
   const form = useForm<z.Infer<typeof formSchema>>({
     defaultValues: {
       name: "",
@@ -40,6 +43,11 @@ export function RegisterForm() {
   });
 
   const router = useRouter();
+
+  const handleSuccessComplete = useCallback(() => {
+    router.push("/dashboard?msg=Successfully+signed+in");
+  }, [router]);
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (values.password !== values.confirmPassword) {
       toast.error("Password and confirm password donot match");
@@ -53,7 +61,7 @@ export function RegisterForm() {
       },
       {
         onSuccess: () => {
-          router.push("/dashboard?msg=Successfully+signed+in");
+          setAuthSuccess(true);
         },
         onError: (error) => {
           toast.error(`${error.error.cause} : ${error.error.message}`);
@@ -65,111 +73,137 @@ export function RegisterForm() {
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full flex flex-col gap-y-3"
-        >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-bold text-black/50">Name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="John doe"
-                    type="text"
-                    {...field}
-                    className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <AnimatePresence mode="wait">
+          {authSuccess ? (
+            <motion.div
+              key="register-success"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <AuthSuccessOverlay
+                show={authSuccess}
+                message="Account created!"
+                onComplete={handleSuccessComplete}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="register-form"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.25 }}
+            >
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="w-full flex flex-col gap-y-3"
+              >
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold text-black/50">Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="John doe"
+                          type="text"
+                          {...field}
+                          className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          {/* --- Email Field --- */}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-bold text-black/50">Email</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="you@example.com"
-                    type="email"
-                    className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                {/* --- Email Field --- */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold text-black/50">Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="you@example.com"
+                          type="email"
+                          className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          {/* --- Password Field --- */}
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-bold text-black/50">
-                  Password
-                </FormLabel>
-                <FormControl>
-                  {/* Note: Use type="password" for sensitive fields */}
-                  <InputWithPassword
-                    placeholder="Enter your password"
-                    type="password"
-                    className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                {/* --- Password Field --- */}
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold text-black/50">
+                        Password
+                      </FormLabel>
+                      <FormControl>
+                        <InputWithPassword
+                          placeholder="Enter your password"
+                          type="password"
+                          className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          {/* --- Confirm Password Field --- */}
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-bold text-black/50">
-                  Confirm Password
-                </FormLabel>
-                <FormControl>
-                  <InputWithPassword
-                    placeholder="Confirm your password"
-                    type="password"
-                    className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                {/* --- Confirm Password Field --- */}
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold text-black/50">
+                        Confirm Password
+                      </FormLabel>
+                      <FormControl>
+                        <InputWithPassword
+                          placeholder="Confirm your password"
+                          type="password"
+                          className="ring ring-zinc-300/50 text-black/50 rounded-2xl"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <Button
-            type="submit"
-            className="rounded-3xl ring-2 ring-zinc-300 bg-zinc-100 mt-4 text-black/50 hover:text-black/80"
-            variant={"outline"}
-            disabled={form.formState.isSubmitting}
-          >
-            Sign up using email
-          </Button>
-        </form>
+                <Button
+                  type="submit"
+                  className="rounded-3xl ring-2 ring-zinc-300 bg-zinc-100 mt-4 text-black/50 hover:text-black/80"
+                  variant={"outline"}
+                  disabled={form.formState.isSubmitting}
+                >
+                  Sign up using email
+                </Button>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Form>
-      <div className="w-full flex justify-end">
-        <Link href={"/login"} prefetch>
-          <Button variant={"link"} className="cursor-pointer text-black/60">
-            Already have an account ?
-          </Button>
-        </Link>
-      </div>
+      {!authSuccess && (
+        <div className="w-full flex justify-end">
+          <Link href={"/login"} prefetch>
+            <Button variant={"link"} className="cursor-pointer text-black/60">
+              Already have an account ?
+            </Button>
+          </Link>
+        </div>
+      )}
     </>
   );
 }

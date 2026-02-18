@@ -1,5 +1,5 @@
 import "./globals.css";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, Suspense } from "react";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { HydrateClient } from "@/trpc/server";
@@ -9,6 +9,7 @@ import { GlobalBreadcrumbs } from "@/components/global-bread-crumbs";
 import { TRPCReactProvider } from "@/trpc/client";
 import { APP_IMAGE } from "@/constants";
 import { GlobaErrorBoundary } from "@/components/ui/Global-Error-Comp";
+import { TopLoader } from "@/components/top-loader";
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,6 +27,9 @@ export default function RootLayout({
           ></meta>
           <body>
             <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+              <Suspense>
+                <TopLoader />
+              </Suspense>
               <ErrorBoundary fallback={<GlobaErrorBoundary />}>
                 {children}
               </ErrorBoundary>

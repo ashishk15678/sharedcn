@@ -20,12 +20,10 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
   FileIcon,
-  FilesIcon,
   FoldersIcon,
   TrashIcon,
   Settings2Icon,
   ComponentIcon,
-  AlertTriangleIcon,
   CheckIcon,
   PlusIcon,
   ChevronRightIcon,
@@ -33,15 +31,15 @@ import {
   EyeIcon,
   Code2Icon,
   RocketIcon,
+  Loader2,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/trpc/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import * as Babel from "@babel/standalone";
-import { motion, AnimatePresence } from "framer-motion";
 import { LivePreview } from "@/components/live-preview";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   componentName: z.string().min(1, "Component name is required."),
@@ -63,23 +61,15 @@ type Action =
   | { type: "add-file"; name: string }
   | { type: "update-content"; name: string; data: string }
   | { type: "delete-file"; name: string }
-  | { type: "set-main-file"; name: string };
+  | { type: "set-files"; files: File[] };
 
 const fileReducer = (prevState: File[], action: Action): File[] => {
   switch (action.type) {
     case "add-file": {
       const exists = prevState.find((f) => f.fileName === action.name);
       if (exists) return prevState;
-
-      return [
-        ...prevState,
-        {
-          fileName: action.name,
-          content: "",
-        },
-      ];
+      return [...prevState, { fileName: action.name, content: "" }];
     }
-
     case "update-content": {
       return prevState.map((file) =>
         file.fileName === action.name
@@ -87,9 +77,11 @@ const fileReducer = (prevState: File[], action: Action): File[] => {
           : file,
       );
     }
-
     case "delete-file": {
       return prevState.filter((file) => file.fileName != action.name);
+    }
+    case "set-files": {
+      return action.files;
     }
     default:
       return prevState;
@@ -102,18 +94,25 @@ const STEPS = [
   { id: 3, name: "Review", icon: RocketIcon },
 ];
 
-export default function Page() {
+export default function EditComponentPage() {
   const router = useRouter();
+  const params = useParams();
+  const componentId = params.id as string;
+  
   const [step, setStep] = useState(1);
-  const { data: usernameData, isLoading: usernameLoading } =
-    trpc.username.get.useQuery();
-  const createComponentMutation = trpc.components.create.useMutation({
-    onSuccess: (data) => {
-      toast.success("Created successfully!");
+  const [isInitialized, setIsInitialized] = useState(false);
+  
+  const { data: usernameData } = trpc.username.get.useQuery();
+  const { data: componentData, isLoading: componentLoading, error: componentError } = 
+    trpc.components.get.useQuery({ id: componentId });
+  
+  const updateComponentMutation = trpc.components.update.useMutation({
+    onSuccess: () => {
+      toast.success("Updated successfully!");
       router.push(`/dashboard`);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to create");
+      toast.error(error.message || "Failed to update");
     },
   });
 
@@ -134,35 +133,60 @@ export default function Page() {
   const creationType = form.watch("type");
   const componentName = form.watch("componentName");
 
-  const [files, changeFiles] = useReducer(fileReducer, [
-    {
-      fileName: "index.tsx",
-      content:
-        'import React from \'react\';\nimport { Button } from \'@/components/ui/button\';\n\nexport default function Component() {\n  return (\n    <div className="p-4 border rounded-lg shadow-sm">\n      <h2 className="text-lg font-bold mb-2">Hello World</h2>\n      <p className="text-gray-500 mb-4">This is a preview of your component.</p>\n      <Button>Click Me</Button>\n    </div>\n  );\n}',
-    },
-  ]);
-  const [selectedFile, setSelectedFile] = useState<File>(files[0]);
-  const [mainFile, setMainFile] = useState<string>(files[0]?.fileName || "");
+  const [files, changeFiles] = useReducer(fileReducer, []);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [mainFile, setMainFile] = useState<string>("");
   const [creatingNewFile, setCreatingNewFile] = useState(false);
 
-  // Initialize main file when files
+  // Initialize form with component data
   useEffect(() => {
-    if (files.length > 0 && !files.find((f) => f.fileName === mainFile)) {
-      setMainFile(files[0].fileName);
+    if (componentData && !isInitialized) {
+      // Extract name from alias (e.g., "@user/component-name" -> "component-name")
+      const aliasName = componentData.alias?.split("/").pop() || "";
+      
+      form.reset({
+        componentName: aliasName,
+        description: componentData.description || "",
+        isPublic: componentData.isPublic ?? true,
+        type: componentData.type as "component" | "setup",
+        tags: componentData.tags?.join(", ") || "",
+        dependencies: componentData.dependencies?.join(", ") || "",
+        registryDependencies: componentData.registryDependencies?.join(", ") || "",
+        installCommand: componentData.installCommand || "",
+      });
+
+      // Set files
+      if (componentData.files && componentData.files.length > 0) {
+        const mappedFiles = componentData.files.map((f: any) => ({
+          fileName: f.filename,
+          content: f.code,
+        }));
+        changeFiles({ type: "set-files", files: mappedFiles });
+        setMainFile(componentData.mainFile || mappedFiles[0]?.fileName || "");
+        setSelectedFile(mappedFiles[0] || null);
+      }
+      
+      setIsInitialized(true);
+    }
+  }, [componentData, isInitialized, form]);
+
+  // Update selected file when files change
+  useEffect(() => {
+    if (files.length > 0 && !selectedFile) {
       setSelectedFile(files[0]);
     }
-  }, [files, mainFile]);
+    if (selectedFile) {
+      const updated = files.find((f) => f.fileName === selectedFile.fileName);
+      if (updated) {
+        setSelectedFile(updated);
+      }
+    }
+  }, [files, selectedFile]);
 
   const handleNext = async () => {
     if (step === 1) {
-      const valid = await form.trigger([
-        "componentName",
-        "description",
-        "type",
-      ]);
-      if (valid) {
-        setStep(2);
-      }
+      const valid = await form.trigger(["componentName", "description", "type"]);
+      if (valid) setStep(2);
     } else if (step === 2) {
       if (files.length === 0) {
         toast.error("Please add at least one file");
@@ -176,15 +200,7 @@ export default function Page() {
     if (step > 1) setStep(step - 1);
   };
 
-  const username = usernameData?.username || "user";
-
   async function onSubmit(values: z.Infer<typeof formSchema>) {
-    if (!usernameData?.username) {
-      toast.error("Please set your username first in settings");
-      router.push("/settings");
-      return;
-    }
-
     if (files.length === 0) {
       toast.error("Please add at least one file");
       return;
@@ -195,38 +211,26 @@ export default function Page() {
       return;
     }
 
-    // Validate all files have content
-    const emptyFiles = files.filter(
-      (f) => !f.content || f.content.trim() === "",
-    );
+    const emptyFiles = files.filter((f) => !f.content || f.content.trim() === "");
     if (emptyFiles.length > 0) {
-      toast.error(
-        `Please add content to: ${emptyFiles.map((f) => f.fileName).join(", ")}`,
-      );
+      toast.error(`Please add content to: ${emptyFiles.map((f) => f.fileName).join(", ")}`);
       return;
     }
 
-    // Type-specific Validation
+    // Babel Validation for components
     if (values.type === "component") {
-      // 1. Extension validation
       const allowed = [".js", ".ts", ".jsx", ".tsx", ".css", ".html"];
       const invalidFiles = files.filter(
         (f) => !allowed.some((ext) => f.fileName.endsWith(ext)),
       );
       if (invalidFiles.length > 0) {
-        toast.error(
-          `Invalid file types for component. Only ${allowed.join(", ")} are allowed.`,
-        );
+        toast.error(`Invalid file types for component. Only ${allowed.join(", ")} are allowed.`);
         return;
       }
 
-      // 2. Babel Validation
       try {
         files.forEach((file) => {
-          if (
-            file.fileName.endsWith(".tsx") ||
-            file.fileName.endsWith(".jsx")
-          ) {
+          if (file.fileName.endsWith(".tsx") || file.fileName.endsWith(".jsx")) {
             Babel.transform(file.content || "", {
               presets: ["react"],
               filename: file.fileName,
@@ -234,7 +238,6 @@ export default function Page() {
           }
         });
       } catch (err: any) {
-        console.error("Babel validation error:", err);
         toast.error(`Syntax error in component: ${err.message}`);
         return;
       }
@@ -242,34 +245,23 @@ export default function Page() {
 
     try {
       const tagsList = values.tags
-        ? values.tags
-            .split(",")
-            .map((t) => t.trim())
-            .filter(Boolean)
+        ? values.tags.split(",").map((t) => t.trim()).filter(Boolean)
         : [];
-
       const dependenciesList = values.dependencies
-        ? values.dependencies
-            .split(",")
-            .map((t) => t.trim())
-            .filter(Boolean)
+        ? values.dependencies.split(",").map((t) => t.trim()).filter(Boolean)
         : [];
-
       const registryList = values.registryDependencies
-        ? values.registryDependencies
-            .split(",")
-            .map((t) => t.trim())
-            .filter(Boolean)
+        ? values.registryDependencies.split(",").map((t) => t.trim()).filter(Boolean)
         : [];
 
-      await createComponentMutation.mutateAsync({
-        name: values.componentName,
+      await updateComponentMutation.mutateAsync({
+        id: componentId,
         description: values.description,
         type: values.type,
         tags: tagsList,
         dependencies: dependenciesList,
         registryDependencies: registryList,
-        installCommand: values.installCommand || undefined,
+        installCommand: values.installCommand || null,
         isPublic: values.isPublic,
         files: files.map((f) => ({
           filename: f.fileName,
@@ -282,24 +274,6 @@ export default function Page() {
     }
   }
 
-  // Effect to add default files based on type
-  useEffect(() => {
-    if (files.length === 0) {
-      if (creationType === "component") {
-        // Logic handled by default useReducer
-      } else if (creationType === "setup") {
-        changeFiles({
-          type: "add-file",
-          name: "src/utils/setup.ts",
-        });
-        // Set main
-        setTimeout(() => {
-          setMainFile("src/utils/setup.ts");
-        }, 0);
-      }
-    }
-  }, [creationType, files.length]);
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && creatingNewFile) {
@@ -310,23 +284,50 @@ export default function Page() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [creatingNewFile]);
 
+  // Loading state
+  if (componentLoading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+          <p className="text-muted-foreground">Loading component...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (componentError) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <AlertTriangle className="w-12 h-12 text-destructive" />
+          <h2 className="text-xl font-bold">Component Not Found</h2>
+          <p className="text-muted-foreground">
+            This component doesn't exist or you don't have permission to edit it.
+          </p>
+          <Button onClick={() => router.push("/dashboard")}>
+            Back to Dashboard
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full h-full  bg-background text-foreground flex flex-col">
+    <div className="w-full h-full bg-background text-foreground flex flex-col">
       <div
         className={cn(
-          `flex-1 container  mx-auto py-8 px-6 transition-all duration-300`,
+          `flex-1 container mx-auto py-8 px-6 transition-all duration-300`,
           step == 1 && "max-w-xl",
           step == 2 && "max-w-7xl",
           step == 3 && "max-w-xl",
         )}
       >
-        <div
-          className="
-          border border-border w-full  flex flex-col rounded-3xl flex-1  shadow-sm"
-        >
-          <div className="py-2 px-4 bg-secondary/50  overflow-hidden bg-clip-border">
+        <div className="border border-border w-full flex flex-col rounded-3xl flex-1 shadow-sm">
+          <div className="py-2 px-4 bg-secondary/50 overflow-hidden bg-clip-border">
             <h1 className="text-xl font-bold line-clamp-1">
-              New {creationType === "setup" ? "Setup" : "Component"}
+              Edit {creationType === "setup" ? "Setup" : "Component"}
             </h1>
 
             <div className="flex items-center">
@@ -339,7 +340,7 @@ export default function Page() {
                         ? "border-border bg-background shadow-xl text-muted-foreground"
                         : step > s.id
                           ? "border-primary bg-secondary text-muted-foreground"
-                          : " text-muted-foreground",
+                          : "text-muted-foreground",
                     )}
                   >
                     {step > s.id ? <CheckIcon className="w-4 h-4" /> : s.id}
@@ -347,9 +348,7 @@ export default function Page() {
                   <span
                     className={cn(
                       "ml-2 text-sm font-medium hidden sm:block",
-                      step === s.id
-                        ? "text-foreground"
-                        : "text-muted-foreground",
+                      step === s.id ? "text-foreground" : "text-muted-foreground",
                     )}
                   >
                     {s.name}
@@ -371,11 +370,11 @@ export default function Page() {
                 {/* STEP 1: Details */}
                 {step === 1 && (
                   <div className="max-w-xl mx-auto w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="space-y-6  w-full rounded-xl">
-                      <div className="mb-6 ">
-                        <h2 className="text-xl ">Component Details</h2>
+                    <div className="space-y-6 w-full rounded-xl">
+                      <div className="mb-6">
+                        <h2 className="text-xl">Edit Details</h2>
                         <p className="text-muted-foreground">
-                          Tell us about what you are building.
+                          Update your component information.
                         </p>
                       </div>
 
@@ -385,14 +384,12 @@ export default function Page() {
                         name="type"
                         render={({ field }) => (
                           <FormItem className="space-y-4">
-                            <FormLabel className="text-base font-semibold">
-                              Type
-                            </FormLabel>
+                            <FormLabel className="text-base font-semibold">Type</FormLabel>
                             <FormControl>
                               <div className="grid grid-cols-2 gap-4">
                                 <div
                                   className={cn(
-                                    "cursor-pointer rounded-xl border-2 px-4 py-1 transition-all  hover:bg-muted/50 flex flex-col gap-1 items-center text-center",
+                                    "cursor-pointer rounded-xl border-2 px-4 py-1 transition-all hover:bg-muted/50 flex flex-col gap-1 items-center text-center",
                                     field.value === "component"
                                       ? "border-border bg-secondary"
                                       : "border-muted",
@@ -408,14 +405,12 @@ export default function Page() {
                                       }
                                       size={18}
                                     />
-                                    <span className="font-semibold">
-                                      Component
-                                    </span>
+                                    <span className="font-semibold">Component</span>
                                   </div>
                                 </div>
                                 <div
                                   className={cn(
-                                    "cursor-pointer rounded-xl border-2 px-4 py-1 transition-all  hover:bg-muted/50 flex flex-col gap-1 items-center text-center",
+                                    "cursor-pointer rounded-xl border-2 px-4 py-1 transition-all hover:bg-muted/50 flex flex-col gap-1 items-center text-center",
                                     field.value === "setup"
                                       ? "border-border bg-secondary"
                                       : "border-muted",
@@ -449,22 +444,19 @@ export default function Page() {
                             <FormControl>
                               <div className="flex rounded-md shadow-sm ring-offset-background">
                                 <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-muted-foreground text-sm">
-                                  {usernameData?.username
-                                    ? `@${usernameData.username}/`
-                                    : "user/"}
+                                  {usernameData?.username ? `@${usernameData.username}/` : "user/"}
                                 </span>
                                 <Input
                                   placeholder="my-component"
                                   className="rounded-l-none"
+                                  disabled
                                   {...field}
                                 />
                               </div>
                             </FormControl>
-                            {!usernameData?.username && (
-                              <FormDescription className="text-destructive">
-                                Please set username in settings.
-                              </FormDescription>
-                            )}
+                            <FormDescription className="text-xs">
+                              Component name cannot be changed after creation.
+                            </FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -495,14 +487,9 @@ export default function Page() {
                           <FormItem>
                             <FormLabel>Tags</FormLabel>
                             <FormControl>
-                              <Input
-                                placeholder="react, ui, dark-mode"
-                                {...field}
-                              />
+                              <Input placeholder="react, ui, dark-mode" {...field} />
                             </FormControl>
-                            <FormDescription>
-                              Comma separated keywords.
-                            </FormDescription>
+                            <FormDescription>Comma separated keywords.</FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -514,10 +501,8 @@ export default function Page() {
                           control={form.control}
                           render={({ field }) => (
                             <FormItem className="flex flex-row items-center justify-between rounded-xl border px-4 py-1">
-                              <div className="">
-                                <FormLabel className="text-base">
-                                  Public
-                                </FormLabel>
+                              <div>
+                                <FormLabel className="text-base">Public</FormLabel>
                                 <FormDescription className="text-sm">
                                   Visible to everyone
                                 </FormDescription>
@@ -551,22 +536,12 @@ export default function Page() {
                 {step === 2 && (
                   <div className="h-[calc(100vh-14rem)] flex flex-col gap-4 animate-in fade-in slide-in-from-right-8 duration-500">
                     <div className="flex items-center justify-between mb-2">
-                      <h2 className="text-2xl  flex items-center gap-2">
-                        Code & Preview
-                      </h2>
+                      <h2 className="text-2xl flex items-center gap-2">Code & Preview</h2>
                       <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          onClick={handleBack}
-                          className="rounded-2xl"
-                        >
+                        <Button variant="outline" onClick={handleBack} className="rounded-2xl">
                           Back
                         </Button>
-                        <Button
-                          onClick={handleNext}
-                          variant={"outline"}
-                          className="rounded-2xl "
-                        >
+                        <Button onClick={handleNext} variant={"outline"} className="rounded-2xl">
                           Next: Review
                         </Button>
                       </div>
@@ -575,7 +550,6 @@ export default function Page() {
                     <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 h-full overflow-hidden">
                       {/* LEFT: Editor */}
                       <div className="flex flex-col border rounded-xl overflow-hidden bg-zinc-100 dark:bg-[#1e1e1e] shadow-md h-full">
-                        {/* Toolbar */}
                         <div className="h-10 border-b border-zinc-200 dark:border-[#333] bg-zinc-100 dark:bg-[#252526] flex items-center justify-between px-3">
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-bold text-muted-foreground uppercase">
@@ -600,7 +574,7 @@ export default function Page() {
                         <div className="flex-1 flex overflow-hidden">
                           {/* File Tree */}
                           <div className="w-48 border-r border-zinc-200 dark:border-[#333] bg-zinc-50 dark:bg-[#252526] flex flex-col">
-                            <div className="flex-1 overflow-y-auto ">
+                            <div className="flex-1 overflow-y-auto p-2">
                               <FileTree
                                 files={files}
                                 selectedFile={selectedFile}
@@ -610,13 +584,9 @@ export default function Page() {
                                 onDelete={(name) => {
                                   if (files.length > 1) {
                                     changeFiles({ type: "delete-file", name });
-                                    // Adjust selection if needed
-                                    if (selectedFile.fileName === name) {
-                                      const remaining = files.filter(
-                                        (f) => f.fileName !== name,
-                                      );
-                                      if (remaining.length > 0)
-                                        setSelectedFile(remaining[0]);
+                                    if (selectedFile?.fileName === name) {
+                                      const remaining = files.filter((f) => f.fileName !== name);
+                                      if (remaining.length > 0) setSelectedFile(remaining[0]);
                                     }
                                   }
                                 }}
@@ -631,28 +601,15 @@ export default function Page() {
                                     onKeyDown={(e) => {
                                       if (e.key === "Enter") {
                                         e.preventDefault();
-                                        const val =
-                                          e.currentTarget.value.trim();
-                                        if (
-                                          val &&
-                                          !files.find((f) => f.fileName === val)
-                                        ) {
-                                          changeFiles({
-                                            type: "add-file",
-                                            name: val,
-                                          });
-                                          setSelectedFile({
-                                            fileName: val,
-                                            content: "",
-                                          });
+                                        const val = e.currentTarget.value.trim();
+                                        if (val && !files.find((f) => f.fileName === val)) {
+                                          changeFiles({ type: "add-file", name: val });
+                                          setSelectedFile({ fileName: val, content: "" });
                                           setCreatingNewFile(false);
                                         } else {
-                                          toast.error(
-                                            "Invalid or duplicate file name",
-                                          );
+                                          toast.error("Invalid or duplicate file name");
                                         }
-                                      } else if (e.key === "Escape")
-                                        setCreatingNewFile(false);
+                                      } else if (e.key === "Escape") setCreatingNewFile(false);
                                     }}
                                     onBlur={() => setCreatingNewFile(false)}
                                   />
@@ -699,12 +656,8 @@ export default function Page() {
                           <span className="font-semibold text-sm">Preview</span>
                         </div>
                         <div className="flex-1 relative">
-                          {/* Always preview the Main File */}
                           <LivePreview
-                            code={
-                              files.find((f) => f.fileName === mainFile)
-                                ?.content || ""
-                            }
+                            code={files.find((f) => f.fileName === mainFile)?.content || ""}
                           />
                         </div>
                       </div>
@@ -719,9 +672,9 @@ export default function Page() {
                       <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                         <RocketIcon className="w-8 h-8 text-primary" />
                       </div>
-                      <h2 className="text-3xl font-bold">Ready to Launch?</h2>
+                      <h2 className="text-3xl font-bold">Save Changes?</h2>
                       <p className="text-muted-foreground mt-2">
-                        Review your component details before publishing.
+                        Review your changes before updating.
                       </p>
                     </div>
 
@@ -729,15 +682,11 @@ export default function Page() {
                       <div className="p-6 grid gap-6">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <h3 className="text-sm font-medium text-muted-foreground mb-1">
-                              Name
-                            </h3>
+                            <h3 className="text-sm font-medium text-muted-foreground mb-1">Name</h3>
                             <p className="font-mono text-lg">{componentName}</p>
                           </div>
                           <div>
-                            <h3 className="text-sm font-medium text-muted-foreground mb-1">
-                              Type
-                            </h3>
+                            <h3 className="text-sm font-medium text-muted-foreground mb-1">Type</h3>
                             <Badge variant="outline" className="capitalize">
                               {creationType}
                             </Badge>
@@ -748,9 +697,7 @@ export default function Page() {
                           <h3 className="text-sm font-medium text-muted-foreground mb-1">
                             Description
                           </h3>
-                          <p className="text-sm">
-                            {form.getValues("description")}
-                          </p>
+                          <p className="text-sm">{form.getValues("description")}</p>
                         </div>
 
                         <div>
@@ -759,11 +706,7 @@ export default function Page() {
                           </h3>
                           <div className="flex gap-2 flex-wrap">
                             {files.map((f) => (
-                              <Badge
-                                key={f.fileName}
-                                variant="secondary"
-                                className="font-mono"
-                              >
+                              <Badge key={f.fileName} variant="secondary" className="font-mono">
                                 {f.fileName}
                               </Badge>
                             ))}
@@ -771,21 +714,15 @@ export default function Page() {
                         </div>
                       </div>
                       <div className="bg-muted/30 p-4 border-t flex justify-end gap-3">
-                        <Button
-                          variant="ghost"
-                          onClick={handleBack}
-                          type="button"
-                        >
+                        <Button variant="ghost" onClick={handleBack} type="button">
                           Back to Code
                         </Button>
                         <Button
                           type="submit"
                           className="px-8 font-bold"
-                          disabled={createComponentMutation.isPending}
+                          disabled={updateComponentMutation.isPending}
                         >
-                          {createComponentMutation.isPending
-                            ? "Publishing..."
-                            : "Publish Component"}
+                          {updateComponentMutation.isPending ? "Saving..." : "Save Changes"}
                         </Button>
                       </div>
                     </div>
@@ -800,8 +737,7 @@ export default function Page() {
   );
 }
 
-// Helper Components
-
+// File Tree Components
 type TreeNode = {
   name: string;
   fullPath: string;
@@ -843,7 +779,7 @@ function FileTree({
   onDelete,
 }: {
   files: File[];
-  selectedFile: File;
+  selectedFile: File | null;
   mainFile: string;
   onSelect: (file: File) => void;
   onSetMain: (name: string) => void;
@@ -877,7 +813,7 @@ function RecursiveTree({
 }: {
   nodes: Record<string, TreeNode>;
   depth: number;
-  selectedFile: File;
+  selectedFile: File | null;
   mainFile: string;
   onSelect: (file: File) => void;
   onSetMain: (name: string) => void;
@@ -888,7 +824,6 @@ function RecursiveTree({
       {Object.values(nodes).map((node) => (
         <div key={node.fullPath}>
           {node.type === "folder" ? (
-            // Folder
             <div className="pl-2">
               <div
                 className="flex items-center gap-1.5 py-1 px-2 text-xs text-muted-foreground font-medium select-none"
@@ -908,11 +843,10 @@ function RecursiveTree({
               />
             </div>
           ) : (
-            // File
             <div
               className={cn(
                 "group flex items-center justify-between py-1 text-xs cursor-pointer transition-colors rounded-sm mx-1",
-                selectedFile.fileName === node.file!.fileName
+                selectedFile?.fileName === node.file!.fileName
                   ? "bg-primary/10 text-primary font-medium"
                   : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800",
               )}
@@ -926,10 +860,7 @@ function RecursiveTree({
 
               <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-1">
                 {mainFile === node.file!.fileName ? (
-                  <span
-                    className="text-[9px] text-blue-500 font-bold px-1"
-                    title="Main Entry file"
-                  >
+                  <span className="text-[9px] text-blue-500 font-bold px-1" title="Main Entry file">
                     M
                   </span>
                 ) : (
